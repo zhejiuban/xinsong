@@ -16394,7 +16394,7 @@ body.m-content--skin-light2 {
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
   height: 70px;
-  width: 300px;
+  width: 255px;
   padding: 0px 30px; }
   .m-brand--hidden .m-brand {
     display: none; }
@@ -17043,7 +17043,7 @@ body.m-content--skin-light2 {
   -ms-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
-  width: 300px; }
+  width: 255px; }
   .m-aside-left.m-aside-left--skin-dark {
     background-color: #2c2e3e; }
   .m-aside-left.m-aside-left--skin-light {
@@ -20524,7 +20524,7 @@ body.m-content--skin-light2 {
     -ms-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
-    margin-left: 300px;
+    margin-left: 255px;
     margin-top: -60px; }
   .m-footer--push.m-aside-left--enabled:not(.m-footer--fixed).m-aside-left--minimize .m-footer {
     -webkit-transition: all 0.3s ease;
