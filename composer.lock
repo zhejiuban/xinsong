@@ -865,16 +865,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.5.18",
+            "version": "v5.5.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "1cc21baac11551377734b8c17ead17db4c34fe21"
+                "reference": "c678100e84934ec85c9f8bc26bd0a60222682719"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/laravel/framework/1cc21baac11551377734b8c17ead17db4c34fe21.zip",
-                "reference": "1cc21baac11551377734b8c17ead17db4c34fe21",
+                "url": "https://files.phpcomposer.com/files/laravel/framework/c678100e84934ec85c9f8bc26bd0a60222682719.zip",
+                "reference": "c678100e84934ec85c9f8bc26bd0a60222682719",
                 "shasum": ""
             },
             "require": {
@@ -992,7 +992,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-10-19T12:50:26+00:00"
+            "time": "2017-10-25T19:10:45+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -1889,16 +1889,16 @@
         },
         {
             "name": "spatie/laravel-permission",
-            "version": "2.7.3",
+            "version": "2.7.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "dff9df3237e82200d9e50abf7d2370bf1e6f1673"
+                "reference": "02d22e415ee5b2c73de19f2cd8331bb9980b3094"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/spatie/laravel-permission/dff9df3237e82200d9e50abf7d2370bf1e6f1673.zip",
-                "reference": "dff9df3237e82200d9e50abf7d2370bf1e6f1673",
+                "url": "https://files.phpcomposer.com/files/spatie/laravel-permission/02d22e415ee5b2c73de19f2cd8331bb9980b3094.zip",
+                "reference": "02d22e415ee5b2c73de19f2cd8331bb9980b3094",
                 "shasum": ""
             },
             "require": {
@@ -1950,7 +1950,7 @@
                 "security",
                 "spatie"
             ],
-            "time": "2017-10-22T04:22:18+00:00"
+            "time": "2017-10-26T13:38:53+00:00"
         },
         {
             "name": "spatie/temporary-directory",
@@ -2953,16 +2953,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v8.1.1",
+            "version": "v8.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "70ea9184e00cc2e09a9c8772858c5fe04338b3fc"
+                "reference": "0c68668a46d4488127bf0978d86a3de55ff42109"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/yajra/laravel-datatables/70ea9184e00cc2e09a9c8772858c5fe04338b3fc.zip",
-                "reference": "70ea9184e00cc2e09a9c8772858c5fe04338b3fc",
+                "url": "https://files.phpcomposer.com/files/yajra/laravel-datatables/0c68668a46d4488127bf0978d86a3de55ff42109.zip",
+                "reference": "0c68668a46d4488127bf0978d86a3de55ff42109",
                 "shasum": ""
             },
             "require": {
@@ -3019,7 +3019,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2017-10-17T03:09:05+00:00"
+            "time": "2017-10-26T12:05:45+00:00"
         }
     ],
     "packages-dev": [

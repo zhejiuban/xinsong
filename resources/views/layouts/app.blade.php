@@ -12,6 +12,7 @@
         <!--begin::Base Styles -->
         <link href="{{ asset('assets/vendors/base/vendors.bundle.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/theme/default/base/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/vendors/custom/sweetalert/sweetalert.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/theme/default/base/custom.css') }}" rel="stylesheet" type="text/css" />
         <!--end::Base Styles -->
         <link rel="shortcut icon" href="{{ asset('assets/theme/default/media/img/logo/favicon.ico') }}" />
@@ -30,7 +31,7 @@
                             <div class="m-stack m-stack--ver m-stack--general">
                                 <div class="m-stack__item m-stack__item--middle m-brand__logo">
                                     <a href="index.html" class="m-brand__logo-wrapper">
-                                        <img alt="" src="assets/theme/default/media/img/logo/logo_default_dark.png"/>
+                                        <img alt="" src="{{ asset('assets/theme/default/media/img/logo/logo_default_dark.png') }}"/>
                                     </a>
                                 </div>
                                 <div class="m-stack__item m-stack__item--middle m-brand__tools">
@@ -477,40 +478,7 @@
                 <div class="m-grid__item m-grid__item--fluid m-wrapper">
                     <!-- BEGIN: Subheader -->
                     <div class="m-subheader ">
-                        <div class="d-flex align-items-center">
-                            <div class="mr-auto">
-                                <h3 class="m-subheader__title m-subheader__title--separator">
-                                    控制面板
-                                </h3>
-                                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
-                                    <li class="m-nav__item m-nav__item--home">
-                                        <a href="#" class="m-nav__link m-nav__link--icon">
-                                            <i class="m-nav__link-icon la la-home"></i>
-                                        </a>
-                                    </li>
-                                    <li class="m-nav__separator">
-                                        -
-                                    </li>
-                                    <li class="m-nav__item">
-                                        <a href="" class="m-nav__link">
-                                            <span class="m-nav__link-text">
-                                                Base
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="m-nav__separator">
-                                        -
-                                    </li>
-                                    <li class="m-nav__item">
-                                        <a href="" class="m-nav__link">
-                                            <span class="m-nav__link-text">
-                                                Bootstrap Notify
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        @include('layouts.breadcrumb')
                     </div>
                     <!-- END: Subheader -->
                     <div class="m-content">
@@ -1134,6 +1102,17 @@
         <!--begin::Base Scripts -->
         <script src="{{ asset('assets/vendors/base/vendors.bundle.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/theme/default/base/scripts.bundle.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/vendors/custom/lodash/lodash.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/vendors/custom/sweetalert/sweetalert.min.js') }}" type="text/javascript"></script>
+
+        <script src="{{ asset('assets/theme/default/base/custom.js') }}" type="text/javascript"></script>
+        <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        </script>
         <!--end::Base Scripts -->
         <!--begin::Page Snippets -->
         @yield('js')

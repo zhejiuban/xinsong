@@ -3,8 +3,8 @@
     <!-- BEGIN: Aside Menu -->
     <div id="m_ver_menu" class="m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark " data-menu-vertical="true" data-menu-scrollable="false" data-menu-dropdown-timeout="500" >
         <ul class="m-menu__nav  m-menu__nav--dropdown-submenu-arrow ">
-            <li class="m-menu__item  m-menu__item--active" aria-haspopup="true" >
-                <a  href="index.html" class="m-menu__link ">
+            <li class="m-menu__item  {{ active_class(if_route('home'),'m-menu__item--active') }}" aria-haspopup="true" >
+                <a  href="{{ url('home') }}" class="m-menu__link ">
                     <i class="m-menu__link-icon flaticon-line-graph"></i>
                     <span class="m-menu__link-title">
                         <span class="m-menu__link-wrap">
@@ -20,14 +20,8 @@
                     </span>
                 </a>
             </li>
-            <li class="m-menu__section">
-                <h4 class="m-menu__section-text">
-                    Components
-                </h4>
-                <i class="m-menu__section-icon flaticon-more-v3"></i>
-            </li>
-            <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"  data-menu-submenu-toggle="hover">
-                <a  href="#" class="m-menu__link m-menu__toggle">
+            <li class="m-menu__item  m-menu__item--submenu {{ active_class(if_uri_pattern('user/*'),'m-menu__item--expanded m-menu__item--open')}}" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+                <a  href="javascript:;" class="m-menu__link m-menu__toggle">
                     <i class="m-menu__link-icon flaticon-map"></i>
                     <span class="m-menu__link-text">
                         组织权限中心
@@ -38,7 +32,7 @@
                     <span class="m-menu__arrow"></span>
                     <ul class="m-menu__subnav">
                         <li class="m-menu__item " aria-haspopup="true" >
-                            <a  href="components/base/treeview.html" class="m-menu__link ">
+                            <a  href="" class="m-menu__link ">
                                 <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                     <span></span>
                                 </i>
@@ -57,8 +51,8 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="m-menu__item " aria-haspopup="true" >
-                            <a  href="components/base/toastr.html" class="m-menu__link ">
+                        <li class="m-menu__item {{ active_class(if_route('groups.index'),'m-menu__item--active')}}" aria-haspopup="true" >
+                            <a  href="{{route('groups.index')}}" class="m-menu__link ">
                                 <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                     <span></span>
                                 </i>

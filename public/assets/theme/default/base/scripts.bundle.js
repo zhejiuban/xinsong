@@ -736,7 +736,7 @@ jQuery.fn.extend({
 		// debug enabled?
 		// 1) state will be cleared on each refresh
 		// 2) etc.
-		datatable.debug = false;
+		datatable.debug = true;
 
 		/********************
 		 ** PRIVATE METHODS
@@ -792,7 +792,7 @@ jQuery.fn.extend({
 				// for normal, run layoutUpdate
 				if (options.data.type === null || options.data.type === 'local') dt.layoutUpdate();
 
-				$(window).resize(dt.fullRender);
+				// $(window).resize(dt.fullRender);
 
 				// main menu collapse, redraw datatable when document size changed
 				// new ResizeSensor(datatable, function () {
@@ -808,6 +808,7 @@ jQuery.fn.extend({
 			 * This method will run each time window resize
 			 */
 			layoutUpdate: function () {
+
 				// setup nested datatable, if option enabled
 				dt.setupSubDatatable.call();
 
@@ -1664,11 +1665,12 @@ jQuery.fn.extend({
 				}
 
 				if (options.data.type === 'remote') {
-					params.url = API.getOption('data.source.read.url');
+                    params.url = API.getOption('data.source.read.url');
+                    params.type = API.getOption('data.source.type');
 					if (typeof params.url !== 'string') params.url = API.getOption('data.source.read');
 					if (typeof params.url !== 'string') params.url = API.getOption('data.source');
 					params.data['datatable'] = $.extend({}, API.getDataSourceParam(), API.getOption('data.source.read.params'));
-					params.method = 'POST';
+					params.method = params.type != undefined && params.type != '' ? params.type : 'POST';
 				}
 
 				return $.ajax(params)
@@ -1734,6 +1736,7 @@ jQuery.fn.extend({
 
 						// default callback function, contains remote pagination handler
 						pg.callback = pg.serverCallback;
+
 						// custom callback function
 						if (typeof callback === 'function') pg.callback = callback;
 
@@ -1743,9 +1746,10 @@ jQuery.fn.extend({
 						pg.meta.page = Math.max(pg.meta.page || 1, pg.meta.page);
 
 						$(datatable).trigger(pg.paginateEvent, pg.meta);
+
 						if (pg.initCallback) {
 							// need to execute callback on init, remote data but without server pagination
-							pg.callback(pg, pg.meta);
+							//pg.callback(pg, pg.meta);
 						}
 
 						pg.pagingBreakpoint.call();
@@ -2311,7 +2315,7 @@ jQuery.fn.extend({
 			dataPlaceholder: function (template, data) {
 				var result = template;
 				$.each(data, function (key, val) {
-					result = result.replace('{{' + key + '}}', val);
+					result = result.replace('{#' + key + '#}', val);
 				});
 				return result;
 			},
@@ -2546,6 +2550,7 @@ jQuery.fn.extend({
 			sorting: function () {
 				var sortObj = {
 					init: function () {
+            // console.log(options);
 						if (options.sortable) {
 							$(datatable.tableHead).find('.m-datatable__cell').addClass('m-datatable__cell--sort').off('click').on('click', sortObj.sortClick);
 							// first init
@@ -2573,10 +2578,9 @@ jQuery.fn.extend({
 						var column = dt.getColumnByField(field);
 						$(datatable.tableHead).find('.m-datatable__cell > span > i').remove();
 
-						dt.spinnerCallback(true);
-
 						// sort is disabled for this column
 						if (typeof column.sortable !== 'undefined' && column.sortable === false) return;
+            dt.spinnerCallback(true);
 
 						var sort = 'desc';
 						if (meta.field === field) {
@@ -3321,22 +3325,22 @@ jQuery.fn.extend({
 		// By default the stirngs will be in the plugin source and here can override it
 		translate: {
 			records: {
-				processing: 'Please wait...',
-				noRecords: 'No records found'
+				processing: '加载中...',
+				noRecords: '暂无记录'
 			},
 			toolbar: {
 				pagination: {
 					items: {
 						default: {
-							first: 'First',
-							prev: 'Previous',
-							next: 'Next',
-							last: 'Last',
-							more: 'More pages',
-							input: 'Page number',
-							select: 'Select page size'
+							first: '首页',
+							prev: '上一页',
+							next: '下一页',
+							last: '末页',
+							more: '更多',
+							input: '跳转页',
+							select: '每页'
 						},
-						info: 'Displaying {{start}} - {{end}} of {{total}} records'
+						info: '显示 {#start#} - {#end#} of {#total#} 记录'
 					}
 				}
 			}
