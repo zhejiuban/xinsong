@@ -1220,7 +1220,7 @@
         },
         {
             "name": "mtdowling/cron-expression",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mtdowling/cron-expression.git",
@@ -1368,16 +1368,16 @@
         },
         {
             "name": "overtrue/laravel-lang",
-            "version": "3.0.6",
+            "version": "3.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/laravel-lang.git",
-                "reference": "914fc271b5040621daabac49ac422909bae1936f"
+                "reference": "c49d5f86c2ab2302c06e10d7ebd66a1ac73e0bab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/overtrue/laravel-lang/914fc271b5040621daabac49ac422909bae1936f.zip",
-                "reference": "914fc271b5040621daabac49ac422909bae1936f",
+                "url": "https://files.phpcomposer.com/files/overtrue/laravel-lang/c49d5f86c2ab2302c06e10d7ebd66a1ac73e0bab.zip",
+                "reference": "c49d5f86c2ab2302c06e10d7ebd66a1ac73e0bab",
                 "shasum": ""
             },
             "require": {
@@ -1415,7 +1415,7 @@
                 "laravel",
                 "overtrue"
             ],
-            "time": "2017-07-31T02:22:53+00:00"
+            "time": "2017-10-28T12:10:43+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1816,16 +1816,16 @@
         },
         {
             "name": "spatie/laravel-backup",
-            "version": "5.0.5",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-backup.git",
-                "reference": "b8ca5a58d8710d60ccbc2d0b3913efd874a705ee"
+                "reference": "ed7e63804defe791b3cb4387275cb913921dd99c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/spatie/laravel-backup/b8ca5a58d8710d60ccbc2d0b3913efd874a705ee.zip",
-                "reference": "b8ca5a58d8710d60ccbc2d0b3913efd874a705ee",
+                "url": "https://files.phpcomposer.com/files/spatie/laravel-backup/ed7e63804defe791b3cb4387275cb913921dd99c.zip",
+                "reference": "ed7e63804defe791b3cb4387275cb913921dd99c",
                 "shasum": ""
             },
             "require": {
@@ -1885,7 +1885,7 @@
                 "laravel-backup",
                 "spatie"
             ],
-            "time": "2017-10-14T23:47:20+00:00"
+            "time": "2017-11-01T16:23:17+00:00"
         },
         {
             "name": "spatie/laravel-permission",
@@ -2953,16 +2953,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v8.3.0",
+            "version": "v8.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "0c68668a46d4488127bf0978d86a3de55ff42109"
+                "reference": "b5ecb425414b1baf2ce2f82fe2849e77e51230e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/yajra/laravel-datatables/0c68668a46d4488127bf0978d86a3de55ff42109.zip",
-                "reference": "0c68668a46d4488127bf0978d86a3de55ff42109",
+                "url": "https://files.phpcomposer.com/files/yajra/laravel-datatables/b5ecb425414b1baf2ce2f82fe2849e77e51230e0.zip",
+                "reference": "b5ecb425414b1baf2ce2f82fe2849e77e51230e0",
                 "shasum": ""
             },
             "require": {
@@ -3019,7 +3019,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2017-10-26T12:05:45+00:00"
+            "time": "2017-10-27T06:13:31+00:00"
         }
     ],
     "packages-dev": [

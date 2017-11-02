@@ -6,3 +6,12 @@
   margin-top: 30px;
   margin-bottom: 20px;
 }
+.m-form__group.row .m-checkbox-inline, .m-form__group.row .m-radio-inline{
+  margin-top: 8px;
+}
+.m-demo-icon{
+  cursor: pointer;
+}
+.table th.middle,.table td.middle{
+  vertical-align:middle;
+}

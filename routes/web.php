@@ -20,9 +20,13 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 /*组织权限管理*/
-Route::group(['prefix'=>'user','middleware'=>'auth'], function()
-{
+Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 //    Route::get('groups/lists','GroupController@getList');
-    Route::resource('groups','GroupController');//用户组管理
-    Route::match(['get','post'],'group_power/{group}','GroupController@power')->name('groups.power');
+    Route::resource('groups', 'GroupController');//用户组管理
+    Route::match(['get', 'post'], 'group_power/{group}', 'GroupController@power')->name('groups.power');
+    Route::resource('departments', 'DepartmentController');//用户组管理
+});
+
+Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
+    Route::resource('menus','MenuController');
 });

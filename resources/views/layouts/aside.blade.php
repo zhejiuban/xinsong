@@ -41,8 +41,8 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="m-menu__item " aria-haspopup="true" >
-                            <a  href="components/base/bootstrap-notify.html" class="m-menu__link ">
+                        <li class="m-menu__item {{ active_class(if_route('departments.index'),'m-menu__item--active')}}" aria-haspopup="true" >
+                            <a  href="{{route('departments.index')}}" class="m-menu__link ">
                                 <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                     <span></span>
                                 </i>
@@ -58,6 +58,40 @@
                                 </i>
                                 <span class="m-menu__link-text">
                                     角色管理
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="m-menu__item  m-menu__item--submenu {{ active_class(if_uri_pattern('system/*'),'m-menu__item--expanded m-menu__item--open')}}" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+                <a  href="javascript:;" class="m-menu__link m-menu__toggle">
+                    <i class="m-menu__link-icon flaticon-settings"></i>
+                    <span class="m-menu__link-text">
+                        系统设置
+                    </span>
+                    <i class="m-menu__ver-arrow la la-angle-right"></i>
+                </a>
+                <div class="m-menu__submenu">
+                    <span class="m-menu__arrow"></span>
+                    <ul class="m-menu__subnav">
+                        <li class="m-menu__item  {{ active_class(if_route('menus.index'),'m-menu__item--active')}}" aria-haspopup="true" >
+                            <a  href="{{route('menus.index')}}" class="m-menu__link ">
+                                <i class="m-menu__link-bullet m-menu__link-bullet--dot">
+                                    <span></span>
+                                </i>
+                                <span class="m-menu__link-text">
+                                    菜单管理
+                                </span>
+                            </a>
+                        </li>
+                        <li class="m-menu__item " aria-haspopup="true" >
+                            <a  href="components/base/bootstrap-notify.html" class="m-menu__link ">
+                                <i class="m-menu__link-bullet m-menu__link-bullet--dot">
+                                    <span></span>
+                                </i>
+                                <span class="m-menu__link-text">
+                                    参数设置
                                 </span>
                             </a>
                         </li>

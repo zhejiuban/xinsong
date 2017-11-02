@@ -51,15 +51,29 @@ var mAppExtend = function() {
       });
   };
 
+  var handleSelect2 = function() {
+        if ($().select2) {
+            // $.fn.select2.defaults.set("theme", "bootstrap");
+            $('.select2').select2({
+                width: '100%'
+            });
+        }
+    };
+
   return {
     init: function(){
       handleReloadHtml();
+      handleSelect2();
     },
     laravelRoute: function(routeUrl, param) {
       return route(routeUrl, param);
     },
     //返回某个url页面
     backUrl: function (url,time) {
+        if(url == 'reload'){
+            location.reload();
+            return;
+        }
         if (time) {
             window.setTimeout(function () {
                window.location.href = url;

@@ -59,27 +59,27 @@
                 .removeClass('m-loader m-loader--light m-loader--right');
               },
               success: function(response, status, xhr, $form) {
-                  if(response.status == 'error'){
-                    $.notify({'message':response.message},{
-                        type: 'danger',
-                        placement: {
-                            from: "top",
-                            align: "center"
-                        },delay:1000
-                    });
+                  if(response.status == 'success'){
+                      datatable.load(); //加载数据列表
+                      $.notify({'message':response.message},{
+                          type: 'success',
+                          placement: {
+                              from: "top",
+                              align: "center"
+                          },delay:500,
+                          onClose:function() {
+                              $('#m_role_modal').modal('hide');
+                              // mAppExtend.backUrl(response.url);
+                          }
+                      });
                   }else{
-                    datatable.load(); //加载数据列表
-                    $.notify({'message':response.message},{
-                        type: 'success',
-                        placement: {
-                            from: "top",
-                            align: "center"
-                        },delay:500,
-                        onClose:function() {
-                          $('#m_role_modal').modal('hide');
-                          // mAppExtend.backUrl(response.url);
-                        }
-                    });
+                      $.notify({'message':response.message},{
+                          type: 'danger',
+                          placement: {
+                              from: "top",
+                              align: "center"
+                          },delay:1000
+                      });
                   }
               },
               error:function (xhr, textStatus, errorThrown) {

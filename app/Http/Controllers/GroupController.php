@@ -134,6 +134,7 @@ class GroupController extends Controller
         }else{
             $role->name = $request->name;
             $role->remark = $request->remark;
+            $role->updated_at = date('Y-m-d H:i:s');
             if($role->save()){
                 return response()->json([
                     'status'=>'success','message'=>'编辑成功',

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="m-portlet m-portlet--mobile">
+<div class="m-portlet m-portlet--mobile m--margin-bottom-0">
 	<div class="m-portlet__body">
 		<!--begin: Search Form -->
 		<div class="m-form m-form--label-align-right  m--margin-bottom-20">
@@ -21,9 +21,9 @@
 					</div>
 				</div>
 				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<a href="{{ route('groups.create') }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+					<a href="{{ route('groups.create') }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
 						<span>
-							<i class="la la-plus"></i>
+							<i class="fa fa-plus"></i>
 							<span>
 								新增
 							</span>
@@ -203,7 +203,19 @@
         '#m_role_modal_edit .modal-content',
         url,
         {},true,function() {
-        },function() {
+        },function(xhr, textStatus, errorThrown) {
+            if(xhr.status == 401){ //未认证
+                $.notify({'message':'登录超时'},{
+                    type: 'danger',
+                    placement: {
+                        from: "top",
+                        align: "center"
+                    },delay:1000,
+                    onClose:function() {
+                        mAppExtend.backUrl('reload');
+                    }
+                });
+            }
         });
     });
     $('.m_datatable').on('click', 'a.action-delete', function(event) {
