@@ -46,7 +46,7 @@ class MenuRequest extends FormRequest
             'url.required' => '请输入访问地址',
             'hide.required' => '请选择是否隐藏',
             'target.required' => '请选择是窗口打开方式',
-            'status.required' => '请菜单状态',
+            'status.required' => '请选择菜单状态',
         ];
     }
 }

@@ -6,7 +6,7 @@
         <div class="m-portlet__head-caption">
             <div class="m-portlet__head-title">
                     <span class="m-portlet__head-icon">
-                        <i class="flaticon-list-2"></i>
+                        <i class="flaticon-list-1"></i>
                     </span>
                 <h3 class="m-portlet__head-text m--font-primary">
                     编辑菜单
@@ -38,6 +38,7 @@
                 <select name="parent_id" id="parent_id" class="form-control select2 m-select2">
                     {!! menu_select($menu->parent_id) !!}
                 </select>
+                <span class="m-form__help">请选择上级菜单</span>
             </div>
         </div>
         <div class="form-group m-form__group row">

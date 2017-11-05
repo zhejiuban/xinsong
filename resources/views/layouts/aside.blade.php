@@ -41,7 +41,7 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="m-menu__item {{ active_class(if_route('departments.index'),'m-menu__item--active')}}" aria-haspopup="true" >
+                        <li class="m-menu__item {{ active_class(if_uri_pattern('user/departments*'),'m-menu__item--active')}}" aria-haspopup="true" >
                             <a  href="{{route('departments.index')}}" class="m-menu__link ">
                                 <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                     <span></span>
@@ -51,7 +51,7 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="m-menu__item {{ active_class(if_route('groups.index'),'m-menu__item--active')}}" aria-haspopup="true" >
+                        <li class="m-menu__item {{ active_class(if_uri_pattern('user/groups*'),'m-menu__item--active')}}" aria-haspopup="true" >
                             <a  href="{{route('groups.index')}}" class="m-menu__link ">
                                 <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                     <span></span>
@@ -75,7 +75,7 @@
                 <div class="m-menu__submenu">
                     <span class="m-menu__arrow"></span>
                     <ul class="m-menu__subnav">
-                        <li class="m-menu__item  {{ active_class(if_route('menus.index'),'m-menu__item--active')}}" aria-haspopup="true" >
+                        <li class="m-menu__item  {{ active_class(if_uri_pattern('system/menus*'),'m-menu__item--active')}}" aria-haspopup="true" >
                             <a  href="{{route('menus.index')}}" class="m-menu__link ">
                                 <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                     <span></span>

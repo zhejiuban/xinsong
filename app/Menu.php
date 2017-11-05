@@ -30,7 +30,7 @@ class Menu extends Model
      * 添加菜单时自动同步至权限
      * @param $menu
      */
-    public function syncPermissions($menu)
+    public static function syncPermissions($menu)
     {
         return Permission::create([
             'name' => $menu->url,
@@ -39,12 +39,27 @@ class Menu extends Model
         ]);
     }
 
-    public function syncUpdatePermissions($menu, $origin)
+    /**
+     * 同步更新权限
+     * @param $menu
+     * @param $origin
+     * @return mixed
+     */
+    public static function syncUpdatePermissions($menu, $origin)
     {
         return Permission::where('name', $origin)->update([
             'name' => $menu->url,
             'display_name' => $menu->title,
             'guard_name' => $menu->guard_name ? $menu->guard_name : 'web'
         ]);
+    }
+
+    /**
+     * 同步删除权限
+     * @param $menu
+     * @return mixed
+     */
+    public static function syncDeletePermissions($menu){
+        return Permission::where('name',$menu->url)->delete();
     }
 }

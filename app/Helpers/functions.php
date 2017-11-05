@@ -16,6 +16,7 @@ function route_uri($name)
 {
     return app('router')->getRoutes()->getByName($name)->uri();
 }
+
 /**
  *  对象装换成数组
  * @param unknown $cgi
@@ -193,7 +194,7 @@ if (!function_exists('formatTreeData')) {
         if ($data) {
             foreach ($data as $v) {
                 if ($v[$parent_id] == $root) {
-                    $v['level'] = $level + 1;
+//                    $v['level'] = $level + 1;
                     $v['space'] = $root != 0 ? str_repeat($space, $level) : '' . str_repeat($space, $level);
                     $arr[] = $v;
                     $arr = array_merge($arr, formatTreeData($data, $id, $parent_id, $v[$id], $space, $level + 1));
@@ -230,9 +231,10 @@ if (!function_exists('menu_select')) {
     }
 }
 if (!function_exists('gurad_name_select')) {
-    function gurad_name_select($selected = 'web'){
+    function gurad_name_select($selected = 'web')
+    {
         $data = [
-            'web'=>'默认分组'
+            'web' => '默认分组'
         ];
         $str = '';
         if ($data) {
@@ -246,7 +248,75 @@ if (!function_exists('gurad_name_select')) {
     }
 }
 if (!function_exists('_404')) {
-    function _404($message){
-        return view('layouts._404',compact('message'));
+    function _404($message = '您访问的信息不存在', $data = null, $url = '', $time = 0)
+    {
+        $request = request();
+        if ($request->ajax()) {
+            if ($request->method() == 'GET') {
+                return view('layouts._error', compact('message'));
+            } else {
+                return response()->json([
+                    'message' => $message, 'data' => $data,
+                    'status' => 'error', 'url' => $url
+                ]);
+            }
+        } else {
+            return view('layouts._404', compact('message'));
+        }
     }
 }
+
+if (!function_exists('department_level')) {
+    /**
+     * 获取组织机构级别
+     * @param $level
+     * @return mixed|null
+     */
+    function department_level($level)
+    {
+        $data = [
+            1 => '总部', 2 => '分部', 3 => '部门'
+        ];
+        return isset($data[$level]) ? $data[$level] : null;
+    }
+}
+/**
+ * 获取总部信息
+ * @param bool $field
+ * @return null
+ */
+function headquarters($field = true)
+{
+    $info = \App\Department::where('level', 1)->first();
+    if ($info) {
+        if ($field === true) {
+            return $info;
+        }
+        return isset($info->$field) ? $info->$field : null;
+    } else {
+        return null;
+    }
+}
+
+if (!function_exists('department_select')) {
+    /**
+     * 部门选择
+     * @param int $selected
+     * @return string
+     */
+    function department_select($selected = 0)
+    {
+        $list = \App\Department::getTreeData();
+        $str = '<option value="">请选择部门</option>';
+        if ($list) {
+            foreach ($list as $key => $val) {
+                $str .= '<option value="' . $val['id'] . '" '
+                    . ($selected == $val['id'] ? 'selected="selected"' : '') . '>'
+                    . $val['space'] . $val['name'] . '</option>';
+            }
+        }
+        return $str;
+    }
+}
+
+

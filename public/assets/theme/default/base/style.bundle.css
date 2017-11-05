@@ -34,10 +34,11 @@ body {
   padding: 0px;
   font-size: 14px;
   font-weight: 300;
-  font-family: "Poppins";
+  font-family: 微软雅黑, sans-serif;
   -ms-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
+  /*-webkit-font-smoothing: antialiased;*/
+  /*-moz-osx-font-smoothing: grayscale;*/
+}
   html a:active,
   html a:focus,
   body a:active,

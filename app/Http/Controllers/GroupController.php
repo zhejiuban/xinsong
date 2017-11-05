@@ -110,9 +110,7 @@ class GroupController extends Controller
         if ($role) {
             return view('user.group.edit', ['role' => $role]);
         } else {
-            return view('layouts._error', [
-                'message'=>'你访问信息不存在'
-            ]);
+            return _404('你访问的信息不存在');
         }
     }
 
@@ -178,5 +176,14 @@ class GroupController extends Controller
             $result['message'] = '您操作的信息不存在';
         }
         return response()->json($result);
+    }
+
+    public function power($id){
+        $role = Role::find($id);
+        if ($role) {
+            return view('user.group.power', ['role' => $role]);
+        } else {
+            return _404('你访问信息不存在');
+        }
     }
 }

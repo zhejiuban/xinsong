@@ -9,14 +9,14 @@
                         <i class="flaticon-list-1"></i>
                     </span>
                 <h3 class="m-portlet__head-text m--font-primary">
-                    新增菜单
+                    新增部门
                 </h3>
             </div>
         </div>
         <div class="m-portlet__head-tools">
             <ul class="m-portlet__nav">
                 <li class="m-portlet__nav-item">
-                    <a href="{{ route('menus.index')  }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
+                    <a href="{{ route('departments.index')  }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
                         <span>
                             <i class="fa fa-reply"></i>
                             <span>
@@ -28,99 +28,25 @@
             </ul>
         </div>
     </div>
-    <form class="m-form m-form--label-align-right" action="{{ route('menus.store') }}" method="post" id="data-form">
+    <form class="m-form m-form--label-align-right" action="{{ route('departments.sub') }}" method="post" id="data-form">
     <div class="m-portlet__body">
         <div class="form-group m-form__group row">
             <label class="col-lg-3 col-form-label">
-                上级菜单:
+                上级部门:
             </label>
             <div class="col-lg-6">
                 <select name="parent_id" id="parent_id" class="form-control select2 m-select2">
-                    {!! menu_select(request('parent_id',0)) !!}
+                    {!! department_select(request('parent_id')) !!}
                 </select>
-                <span class="m-form__help">请选择上级菜单</span>
+                <span class="m-form__help">请选择上级部门</span>
             </div>
         </div>
         <div class="form-group m-form__group row">
             <label class="col-lg-3 col-form-label">
-                菜单名称:
+                部门名称:
             </label>
             <div class="col-lg-6">
-                <input type="text" name="title" class="form-control input" id="title">
-            </div>
-        </div>
-        <div class="form-group m-form__group row">
-            <label class="col-lg-3 col-form-label">
-                访问地址:
-            </label>
-            <div class="col-lg-6">
-                <input type="text" name="url" class="form-control input" id="url">
-            </div>
-        </div>
-        <div class="form-group m-form__group row">
-            <label class="col-lg-3 col-form-label">
-                图标:
-            </label>
-            <div class="col-lg-6">
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <i id="icon-preview" class="flaticon-visible"></i>
-                    </span>
-                    <input type="text" id="icon_class"  name="icon_class" class="form-control" placeholder="">
-                    <span class="input-group-btn">
-                        <button data-toggle="modal" data-target="#btn_select_modal" class="btn btn-primary" type="button">
-                            选择
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </div>
-        {{--<div class="form-group m-form__group row">--}}
-            {{--<label class="col-lg-3 col-form-label">--}}
-                {{--分组:--}}
-            {{--</label>--}}
-            {{--<div class="col-lg-6">--}}
-                {{--<select name="gurad_name" id="gurad_name" class="form-control select2 m-select2">--}}
-                    {{--{!! gurad_name_select() !!}--}}
-                {{--</select>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-        <div class="form-group m-form__group row">
-            <label class="col-lg-3 col-form-label">
-                是否隐藏:
-            </label>
-            <div class="col-lg-6">
-                <div class="m-radio-inline">
-                    <label class="m-radio">
-                        <input type="radio" name="hide" value="0" checked>
-                        否
-                        <span></span>
-                    </label>
-                    <label class="m-radio">
-                        <input type="radio" name="hide" value="1" >
-                        是
-                        <span></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="m-form__group form-group row">
-            <label class="col-lg-3 col-form-label">
-                打开方式:
-            </label>
-            <div class="col-lg-6">
-                <div class="m-radio-inline">
-                    <label class="m-radio">
-                        <input type="radio" name="target" value="_self" checked>
-                        当前窗口
-                        <span></span>
-                    </label>
-                    <label class="m-radio">
-                        <input type="radio" name="target" value="_blank">
-                        新窗口
-                        <span></span>
-                    </label>
-                </div>
+                <input type="text" name="name" class="form-control input" id="title">
             </div>
         </div>
         <div class="form-group m-form__group row">
@@ -155,7 +81,7 @@
                 描述:
             </label>
             <div class="col-lg-6">
-                <textarea class="form-control" name="tip" id="tip" rows="6"></textarea>
+                <textarea class="form-control" name="remark" id="tip" rows="6"></textarea>
             </div>
         </div>
         {{ csrf_field() }}
@@ -177,53 +103,20 @@
     </div>
     </form>
 </div>
-<div class="modal fade" id="btn_select_modal" tabindex="-1" role="dialog" aria-labelledby="BtnSelectModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg " role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                    选择图标
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                @include('system.menu.icon')
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 @section('js')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('.m-demo-icon').click(function () {
-                var cl = $(this).children('.m-demo-icon__preview').children('i').attr('class');
-                $('#icon-preview').removeClass().addClass(cl);
-                $('#icon_class').val(cl);
-                $('#btn_select_modal').modal('hide');
-            });
-
             var form = $( "#data-form" );
             var submitButton = $( "#submit-button" );
             form.validate({
                 // define validation rules
                 rules: {
-                    parent_id: {
-                        required: true
-                    },
-                    title: {
-                        required: true
-                    },url: {
-                        required: true
-                    }/*,gurad_name: {
-                        required: true
-                    }*/,hide: {
-                        required: true
-                    },target: {
+                    name: {
                         required: true
                     },status: {
+                        required: true
+                    },parent_id:{
                         required: true
                     }
                 },
