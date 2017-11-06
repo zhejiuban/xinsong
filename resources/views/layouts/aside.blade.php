@@ -20,86 +20,39 @@
                     </span>
                 </a>
             </li>
-            <li class="m-menu__item  m-menu__item--submenu {{ active_class(if_uri_pattern('user/*'),'m-menu__item--expanded m-menu__item--open')}}" aria-haspopup="true"  data-menu-submenu-toggle="hover">
-                <a  href="javascript:;" class="m-menu__link m-menu__toggle">
-                    <i class="m-menu__link-icon flaticon-map"></i>
-                    <span class="m-menu__link-text">
-                        组织权限中心
-                    </span>
-                    <i class="m-menu__ver-arrow la la-angle-right"></i>
-                </a>
-                <div class="m-menu__submenu">
-                    <span class="m-menu__arrow"></span>
-                    <ul class="m-menu__subnav">
-                        <li class="m-menu__item " aria-haspopup="true" >
-                            <a  href="" class="m-menu__link ">
-                                <i class="m-menu__link-bullet m-menu__link-bullet--dot">
-                                    <span></span>
-                                </i>
-                                <span class="m-menu__link-text">
-                                    权限管理
-                                </span>
-                            </a>
-                        </li>
-                        <li class="m-menu__item {{ active_class(if_uri_pattern('user/departments*'),'m-menu__item--active')}}" aria-haspopup="true" >
-                            <a  href="{{route('departments.index')}}" class="m-menu__link ">
-                                <i class="m-menu__link-bullet m-menu__link-bullet--dot">
-                                    <span></span>
-                                </i>
-                                <span class="m-menu__link-text">
-                                    组织机构
-                                </span>
-                            </a>
-                        </li>
-                        <li class="m-menu__item {{ active_class(if_uri_pattern('user/groups*'),'m-menu__item--active')}}" aria-haspopup="true" >
-                            <a  href="{{route('groups.index')}}" class="m-menu__link ">
-                                <i class="m-menu__link-bullet m-menu__link-bullet--dot">
-                                    <span></span>
-                                </i>
-                                <span class="m-menu__link-text">
-                                    角色管理
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="m-menu__item  m-menu__item--submenu {{ active_class(if_uri_pattern('system/*'),'m-menu__item--expanded m-menu__item--open')}}" aria-haspopup="true"  data-menu-submenu-toggle="hover">
-                <a  href="javascript:;" class="m-menu__link m-menu__toggle">
-                    <i class="m-menu__link-icon flaticon-settings"></i>
-                    <span class="m-menu__link-text">
-                        系统设置
-                    </span>
-                    <i class="m-menu__ver-arrow la la-angle-right"></i>
-                </a>
-                <div class="m-menu__submenu">
-                    <span class="m-menu__arrow"></span>
-                    <ul class="m-menu__subnav">
-                        <li class="m-menu__item  {{ active_class(if_uri_pattern('system/menus*'),'m-menu__item--active')}}" aria-haspopup="true" >
-                            <a  href="{{route('menus.index')}}" class="m-menu__link ">
-                                <i class="m-menu__link-bullet m-menu__link-bullet--dot">
-                                    <span></span>
-                                </i>
-                                <span class="m-menu__link-text">
-                                    菜单管理
-                                </span>
-                            </a>
-                        </li>
-                        <li class="m-menu__item " aria-haspopup="true" >
-                            <a  href="components/base/bootstrap-notify.html" class="m-menu__link ">
-                                <i class="m-menu__link-bullet m-menu__link-bullet--dot">
-                                    <span></span>
-                                </i>
-                                <span class="m-menu__link-text">
-                                    参数设置
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+            @foreach (get_user_menu() as $key => $value)
+              <li class="m-menu__item  m-menu__item--submenu {{ active_class(if_uri_pattern(active_menu_pattern_str($value['url'])),'m-menu__item--expanded m-menu__item--open')}}" aria-haspopup="true"  data-menu-submenu-toggle="hover">
+                  <a  href="@if (isset($value['_child']) && $value['_child']) javascript:; @else {{url($value['url'],['menu'=>$value['uniqid']])}} @endif" class="m-menu__link m-menu__toggle">
+                      <i class="m-menu__link-icon {{$value['icon_class']}}"></i>
+                      <span class="m-menu__link-text">
+                          {{$value['title']}}
+                      </span>
+                      <i class="m-menu__ver-arrow la la-angle-right"></i>
+                  </a>
+                  @if (isset($value['_child']) && $value['_child'])
+                    <div class="m-menu__submenu">
+                        <span class="m-menu__arrow"></span>
+                        <ul class="m-menu__subnav">
+                            @foreach ($value['_child'] as $sk => $sv)
+                              <li class="m-menu__item {{ active_class(if_uri_pattern(active_menu_pattern_str($sv['url'],1)),'m-menu__item--active')}}" aria-haspopup="true" >
+                                  <a  href="{{menu_url_format($sv['url'],['menu'=>$sv['uniqid']])}}" class="m-menu__link ">
+                                      <i class="m-menu__link-bullet m-menu__link-bullet--dot">
+                                          <span></span>
+                                      </i>
+                                      <span class="m-menu__link-text">
+                                          {{$sv['title']}}
+                                      </span>
+                                  </a>
+                              </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                  @endif
+              </li>
+            @endforeach
         </ul>
     </div>
+
     <!-- END: Aside Menu -->
 </div>
 <!-- END: Left Aside -->

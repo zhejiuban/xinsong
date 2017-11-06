@@ -9,7 +9,7 @@
                         <i class="flaticon-list-1"></i>
                     </span>
                 <h3 class="m-portlet__head-text m--font-primary">
-                    分部编辑
+                    @if($menu->id == headquarters('id'))总部@else分部@endif编辑
                 </h3>
             </div>
         </div>

@@ -14,6 +14,8 @@
         <link href="{{ asset('assets/theme/default/base/style.bundle.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/vendors/custom/sweetalert/sweetalert.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/vendors/custom/jquery-treegrid/css/jquery.treegrid.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/vendors/custom/zTree_v3/css/metroStyle/metroStyle.css') }}" rel="stylesheet" type="text/css" />
+
         <link href="{{ asset('assets/theme/default/base/custom.css') }}" rel="stylesheet" type="text/css" />
         <!--end::Base Styles -->
         <link rel="shortcut icon" href="{{ asset('assets/theme/default/media/img/logo/favicon.ico') }}" />
@@ -1107,6 +1109,7 @@
         <script src="{{ asset('assets/vendors/custom/sweetalert/sweetalert.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/vendors/custom/jquery-treegrid/js/jquery.treegrid.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/vendors/custom/jquery-treegrid/js/jquery.treegrid.bootstrap3.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/vendors/custom/zTree_v3/js/jquery.ztree.all.min.js') }}" type="text/javascript"></script>
 
         <script src="{{ asset('assets/theme/default/base/custom.js') }}" type="text/javascript"></script>
         <script type="text/javascript">

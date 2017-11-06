@@ -1,34 +1,27 @@
 <div class="d-flex align-items-center">
     <div class="mr-auto">
+		<?php $breadcrumb = breadcrumb(request('menu'))?>
         <h3 class="m-subheader__title m-subheader__title--separator  m--font-brand">
-            角色管理
+            {{end($breadcrumb)['title']}}
         </h3>
         <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
             <li class="m-nav__item m-nav__item--home">
-                <a href="#" class="m-nav__link m-nav__link--icon">
+                <a href="{{route('home')}}" class="m-nav__link m-nav__link--icon">
                     <i class="m-nav__link-icon la la-home"></i>
                 </a>
             </li>
-            <li class="m-nav__separator">
-                /
-            </li>
-            <li class="m-nav__item">
-                <a href="" class="m-nav__link">
+			@foreach($breadcrumb as $k=>$v)
+				<li class="m-nav__separator">
+					/
+				</li>
+				<li class="m-nav__item">
+					<a href="@if($k+1 == count($breadcrumb)){{menu_url_format($v['url'],['menu'=>$v['uniqid']])}}@else javascript:; @endif" class="m-nav__link">
                     <span class="m-nav__link-text">
-                        组织权限中心
+                        {{$v['title']}}
                     </span>
-                </a>
-            </li>
-            <li class="m-nav__separator">
-                /
-            </li>
-            <li class="m-nav__item">
-                <a href="" class="m-nav__link">
-                    <span class="m-nav__link-text">
-                        角色管理
-                    </span>
-                </a>
-            </li>
+					</a>
+				</li>
+			@endforeach
         </ul>
     </div>
     <div>

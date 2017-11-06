@@ -148,6 +148,7 @@
             </label>
             <div class="col-lg-6">
                 <input type="text" name="sort" value="{{$menu->sort}}" class="form-control input" id="sort">
+                <span class="m-form__help">数字越大越靠前，同级有效</span>
             </div>
         </div>
         <div class="form-group m-form__group row">

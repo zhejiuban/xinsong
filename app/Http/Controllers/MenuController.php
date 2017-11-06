@@ -16,8 +16,11 @@ class MenuController extends Controller
      */
     public function index()
     {
+        if(!check_permission('system/menus')){
+            return _404('无权操作！');
+        }
         //获取菜单信息
-        $menu = Menu::get()->toArray();
+        $menu = Menu::orderBy('sort','desc')->orderBy('id')->get()->toArray();
         $list = formatTreeData($menu);
         return view('system.menu.index', compact('list'));
     }
@@ -29,6 +32,9 @@ class MenuController extends Controller
      */
     public function create()
     {
+        if(!check_permission('system/menus/create')){
+            return _404('无权操作！');
+        }
         return view('system.menu.create');
     }
 
@@ -40,6 +46,9 @@ class MenuController extends Controller
      */
     public function store(MenuRequest $request)
     {
+        if(!check_permission('system/menus/create')){
+            return _404('无权操作！');
+        }
         $menu = new Menu();
         $menu->parent_id = $request->parent_id;
         $menu->title = $request->title;
@@ -68,17 +77,6 @@ class MenuController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int $id
@@ -86,6 +84,9 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
+        if(!check_permission('system/menus/edit')){
+            return _404('无权操作！');
+        }
         $menu = Menu::find($id);
         if ($menu) {
             return view('system.menu.edit', compact('menu'));
@@ -103,6 +104,9 @@ class MenuController extends Controller
      */
     public function update(MenuRequest $request, $id)
     {
+        if(!check_permission('system/menus/edit')){
+            return _404('无权操作！');
+        }
         $menu = Menu::find($id);
         $origin = $menu->url;
         if ($menu) {
@@ -145,6 +149,9 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
+        if(!check_permission('system/menus/destroy')){
+            return _404('无权操作！');
+        }
         $result = [
             'status' => 'success',
             'message' => '删除成功',
@@ -177,44 +184,10 @@ class MenuController extends Controller
 
     public function sync()
     {
-        $nodes = Menu::where('guard_name', 'web')->get()->toArray();
-        $permission = Permission::where('guard_name', 'web')->get()->toArray();
-
-        $data = array();//保存需要插入和更新的新节点
-        foreach ($nodes as $value) {
-            $temp['name'] = $value['url'];
-            $temp['display_name'] = $value['title'];
-            $temp['guard_name'] = 'web';
-            $data[$temp['name']] = $temp;//去除重复项
+        if(!check_permission('system/menus/sync')){
+            return _404('无权操作！');
         }
-        $update = array();//保存需要更新的节点
-        $ids = array();//保存需要删除的节点的id
-        foreach ($permission as $index => $rule) {
-            $key = $rule['name'];
-            if (isset($data[$key])) {//如果数据库中的规则与配置的节点匹配,说明是需要更新的节点
-                $data[$key]['id'] = $rule['id'];//为需要更新的节点补充id值
-                $update[] = $data[$key];
-                unset($data[$key]);
-                unset($permission[$index]);
-            } else {
-                $ids = $rule['id'];
-            }
-        }
-        if (count($update)) {
-            foreach ($update as $k => $row) {
-                $update_id = $row['id'];
-                unset($row['id']);
-                Permission::where('id', $update_id)->update($row);
-            }
-        }
-        if (count($ids)) {
-            Permission::destroy($ids);
-        }
-        if(count($data)){
-            foreach ($data as $k => $row) {
-                Permission::create($row);
-            }
-        }
+        Menu::sync();
         return response()->json(['message'=>'同步完成','status'=>'success']);
     }
 }

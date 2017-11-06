@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
+use App\Menu;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class GroupController extends Controller
@@ -15,6 +17,9 @@ class GroupController extends Controller
      */
     public function index(Request $request)
     {
+        if(!check_permission('user/groups')){
+            return _404('无权操作！');
+        }
         if ($request->ajax()) {
             $sort_field = $request->input('datatable.sort.field')
                 ? $request->input('datatable.sort.field') : 'id';
@@ -54,6 +59,9 @@ class GroupController extends Controller
      */
     public function create()
     {
+        if(!check_permission('user/groups/create')){
+            return _404('无权操作！');
+        }
         return view('user.group.create');
     }
 
@@ -65,6 +73,9 @@ class GroupController extends Controller
      */
     public function store(RoleRequest $request)
     {
+        if(!check_permission('user/groups/create')){
+            return _404('无权操作！');
+        }
         $result = Role::create([
             'name' => $request->name,
             'remark' => $request->remark,
@@ -88,17 +99,6 @@ class GroupController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int $id
@@ -106,6 +106,9 @@ class GroupController extends Controller
      */
     public function edit($id)
     {
+        if(!check_permission('user/groups/edit')){
+            return _404('无权操作！');
+        }
         $role = Role::find($id);
         if ($role) {
             return view('user.group.edit', ['role' => $role]);
@@ -123,6 +126,9 @@ class GroupController extends Controller
      */
     public function update(RoleRequest $request, $id)
     {
+        if(!check_permission('user/groups/edit')){
+            return _404('无权操作！');
+        }
         $role = Role::find($id);
         if(!$role){
             return response()->json([
@@ -155,6 +161,9 @@ class GroupController extends Controller
      */
     public function destroy($id)
     {
+        if(!check_permission('user/groups/destroy')){
+            return _404('无权操作！');
+        }
         $result = [
             'status' => 'success',
             'message' => '操作成功',
@@ -164,8 +173,14 @@ class GroupController extends Controller
         $dp = Role::find($id);
         if ($dp) {
             $flag = 1;
+            //判断是不是系统角色
+            if($dp->is_system){
+                $flag = 0;
+                $result['status'] = 'error';
+                $result['message'] = '系统角色不允许删除';
+            }
             //判断角色是否有关联用户
-            //判断角色是否有管理权限
+
             //删除
             if ($flag && !$dp->delete()) {
                 $result['status'] = 'error';
@@ -178,10 +193,49 @@ class GroupController extends Controller
         return response()->json($result);
     }
 
-    public function power($id){
+    public function power(Request $request,$id){
+        if(!check_permission('user/groups/power')){
+            return _404('无权操作！');
+        }
         $role = Role::find($id);
+        if($request->method() == 'POST'){
+            if($role){
+                if($result = $role->syncPermissions($request->permission)){
+                    return response()->json([
+                        'status'=>'success','message'=>'授权成功',
+                        'data'=>$role->toArray(),'url'=>route('groups.index')
+                    ]);
+                }else{
+                    return _404('授权失败');
+                }
+            }else{
+                return _404('您操作的信息不存在');
+            }
+        }
         if ($role) {
-            return view('user.group.power', ['role' => $role]);
+            //获取节点数据
+            $node_list = Menu::nodes(false);
+            $all_rules  = Permission::select('name','id')->get()->toArray();
+            $rules = [];
+            if($all_rules){
+                foreach ($all_rules as $k=>$v){
+                    $rules[$v['name']] = $v['id'];
+                }
+            }
+            if($node_list){
+                foreach ($node_list as $k=>$v){
+                    $node_list[$k]['rules'] = isset($rules[$v['url']])?$rules[$v['url']]:'';
+                    $node_list[$k]['permission'] = $v['url'];
+                    unset($node_list[$k]['url']);
+                }
+            }
+            $haved = [];
+            foreach($role->permissions()->get() as $per){
+                $haved[] = $per->id;
+            }
+            return view('user.group.power', [
+                'role' => $role,'haved'=>$haved,'auth_rules'=>$all_rules,'node_list'=>$node_list
+            ]);
         } else {
             return _404('你访问信息不存在');
         }

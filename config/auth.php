@@ -99,4 +99,5 @@ return [
         ],
     ],
 
+    'administrator' => 1
 ];

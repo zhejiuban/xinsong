@@ -86,7 +86,7 @@ class DepartmentController extends Controller
         $menu = Department::find($id);
         if ($menu) {
             $headquarters = headquarters('id');
-            if($menu->id != $headquarters){
+            if ($menu->id != $headquarters) {
                 $menu->status = $request->status;
                 $menu->parent_id = $headquarters;
             }
@@ -115,12 +115,24 @@ class DepartmentController extends Controller
     public function destroy($id)
     {
         //判断是否总部
-
+        if (headquarters('id') == $id) {
+            return _404('总部信息不能删除');
+        }
         //判断是否有子部门信息
+        if (Department::where('parent_id', $id)->first()) {
+            return _404('不能删除，请先删除子部门信息');
+        }
 
-
-
+        if (Department::destroy($id)) {
+            return response()->json([
+                'message' => '您操作的数据已被删除', 'data' => null
+                , 'url' => route('departments.index'), 'status' => 'success'
+            ]);
+        } else {
+            return _404('删除失败，未知错误');
+        }
     }
+
     //新增部门
     public function subCreate(DepartmentRequest $request)
     {
@@ -152,6 +164,7 @@ class DepartmentController extends Controller
         }
         return view('user.department.sub_create');
     }
+
     //编辑部门
     public function subUpdate(DepartmentRequest $request, $id)
     {

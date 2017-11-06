@@ -319,4 +319,138 @@ if (!function_exists('department_select')) {
     }
 }
 
+if (!function_exists('role_select')) {
+    function role_select($selected = '', $type = 0, $vType = 'id')
+    {
+        $list = \Spatie\Permission\Models\Role::get()->toArray();
+        $str = '';
+        if (!$type) { //单选模式
+            $str .= '<option value="">请选择角色</option>';
+        }
+        if ($list) {
+            if ($type) {
+                $selected_arr = [];
+                if (is_array($selected) && count($selected)) {
+                    foreach ($selected as $k => $val) {
+                        $selected_arr[] = $val[$vType];
+                    }
+                }
+            }
+            foreach ($list as $key => $val) {
+                if (!$type) {
+                    $str .= '<option value="' . $val[$vType] . '" '
+                        . ($selected == $val[$vType] ? 'selected="selected"' : '') . '>'
+                        . $val['name'] . '</option>';
+                } else {
+                    $str .= '<option value="' . $val[$vType] . '" '
+                        . (in_array($val[$vType], $selected_arr) ? 'selected="selected"' : '') . '>'
+                        . $val['name'] . '</option>';
+                }
+            }
+        }
+        return $str;
+    }
+}
+/**
+ * 判断当前登录用户是否超级管理员
+ * @param string $guard
+ * @return bool
+ */
+function is_administrator($guard = 'web')
+{
+    return config('auth.administrator') == get_current_login_user_info('id', $guard);
+}
+
+/**
+ * 判断某个用户是否是超级管理员
+ * @param $id
+ * @return bool
+ */
+function is_administrator_user($id)
+{
+    return config('auth.administrator') == $id;
+}
+
+/**
+ * 获取当前登录用户信息
+ */
+if (!function_exists('get_current_login_user_info')) {
+    function get_current_login_user_info($field = 'id', $guard = 'web')
+    {
+        if ($field === true) {
+            return auth($guard)->user();
+        }
+        return auth($guard)->user()->$field;
+    }
+}
+/**
+ * 检测权限
+ * @param $rule
+ * @param null $user
+ * @return bool
+ */
+function check_permission($rule, $user = null)
+{
+    if (!$user) {
+        $user = get_current_login_user_info(true);
+    }
+    if ($user->hasPermissionTo($rule) || is_administrator_user($user->id)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function get_user_menu()
+{
+    return \App\Menu::getUserMenu();
+}
+
+function menu_url_format($url, $params)
+{
+    $p = http_build_query($params);
+    if (stripos($url, '?') !== false) {
+        return url($url . '&' . $p);
+    } else {
+        return url($url . '?' . $p);
+    }
+}
+
+function active_menu_pattern_str($uri, $level = 0)
+{
+    $uri_arr = str2arr($uri, '/');
+    $new = [];
+    foreach ($uri_arr as $key => $val) {
+        if ($key <= $level) {
+            $new[] = $val;
+        }
+    }
+    return arr2str($new, '/') . '*';
+}
+
+function get_all_parent_menu($data, $is_contain_self = 1){
+    //获取某个菜单的所有父级菜单
+    static $info = [];
+    if (is_numeric($data) || is_string($data)) {
+        $data = \App\Menu::info($data);
+    }
+    $info[] = $data;
+    if ($data['parent_id']) {
+        return get_all_parent_menu($data['parent_id'], $is_contain_self);
+    }
+    asort($info);
+    $new_arr = [];
+    foreach ($info as $key => $val) {
+        $new_arr[] = $val;
+        unset($info[$key]);
+    }
+    if (!$is_contain_self) {
+        array_pop($new_arr);
+    }
+    return $new_arr;
+}
+function breadcrumb($menu){
+    return get_all_parent_menu($menu,1);
+}
+
 

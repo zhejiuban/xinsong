@@ -184,6 +184,8 @@ return [
         Overtrue\LaravelLang\TranslationServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         HieuLe\Active\ActiveServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
+
 
     ],
 
@@ -235,6 +237,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Active' => HieuLe\Active\Facades\Active::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 

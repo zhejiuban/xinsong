@@ -15,3 +15,6 @@
 .table th.middle,.table td.middle{
   vertical-align:middle;
 }
+.required {
+  color:#f4516c;
+}

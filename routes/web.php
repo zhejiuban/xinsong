@@ -1,21 +1,11 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::get('/', function () {
     return view('welcome');
 });
 
 Auth::routes();
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -29,7 +19,9 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
         , 'DepartmentController@subCreate')->name('departments.sub');//子部门新增
 
     Route::resource('departments', 'DepartmentController');//分部管理
-
+    Route::post('users/power', 'UserController@power')->name('users.power');//用户授权管理
+    Route::post('users/edit_pwd', 'UserController@editPwd')->name('users.edit_pwd');//重置密码
+    Route::resource('users', 'UserController');//分部管理
 
 });
 
