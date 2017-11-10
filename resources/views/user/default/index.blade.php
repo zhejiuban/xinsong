@@ -21,7 +21,8 @@
 					</div>
 				</div>
 				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<a href="{{ route('users.create') }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+					@if(check_permission('user/users/create'))
+					<a href="{{ menu_url_format(route('users.create'),['mid'=>request('mid')]) }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
 						<span>
 							<i class="fa fa-plus"></i>
 							<span>
@@ -29,22 +30,27 @@
 							</span>
 						</span>
 					</a>
-                    <button data-toggle="modal" data-target="#m_power_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+				  @endif
+					@if(check_permission('user/users/power'))
+            <button data-toggle="modal" data-target="#m_power_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
 						<span>
 							<i class="fa fa-eye"></i>
 							<span>
 								授权
 							</span>
 						</span>
-                    </button>
-                    <button data-toggle="modal" data-target="#m_editpwd_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+            </button>
+						@endif
+						@if(check_permission('user/users/edit'))
+            <button data-toggle="modal" data-target="#m_editpwd_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
 						<span>
 							<i class="fa fa-lock"></i>
 							<span>
 								重置密码
 							</span>
 						</span>
-                    </button>
+	          </button>
+						@endif
 					<div class="m-separator m-separator--dashed d-xl-none"></div>
 				</div>
 			</div>
@@ -204,15 +210,17 @@
         }, {
             field: "roles",
             title: "所属角色",
+						sortable: false,
             template:function (row) {
                 if(row.id == {{config('auth.administrator')}}){
-                    return '超级管理员';
+                    return '<span class="m-badge  m-badge--brand m-badge--wide">超级管理员</span>';
                 }else{
                     var role = [];
                     $.each(row.roles,function (i,v) {
-                        role.push(v.name);
+											var str = '<span class="m-badge  m-badge--brand m-badge--wide">'+v.name+'</span>'
+                        role.push(str);
                     });
-                    return role.join(',');
+                    return role.join('');
                 }
             }
         }, {
@@ -245,22 +253,17 @@
           // locked: {right: 'xl'},
           overflow: 'visible',
           template: function (row) {
-              if(row.id != {{config('auth.administrator')}}){
-                return '\
-                  <a href="'+mAppExtend.laravelRoute('{{route_uri("users.edit")}}',{user:row.id})+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
-                    <i class="la la-edit"></i>\
-                  </a>\
-                  <a href="'+mAppExtend.laravelRoute('{{route_uri("users.destroy")}}',{user:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除">\
-                    <i class="la la-trash"></i>\
-                  </a>\
-                ';
-              }else{
-                  return '\
-                  <a href="'+mAppExtend.laravelRoute('{{route_uri("users.edit")}}',{user:row.id})+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
-                    <i class="la la-edit"></i>\
-                  </a>\
-                ';
-              }
+						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("users.edit")}}',{user:row.id})+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
+								<i class="la la-edit"></i>\
+							</a>';
+						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("users.destroy")}}',{user:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除">\
+							<i class="la la-trash"></i>\
+						</a>';
+            if(row.id != {{config('auth.administrator')}} && row.id != {{get_current_login_user_info()}}){
+							return edit + del;
+            }else{
+              return edit;
+            }
           }
         }]
       });

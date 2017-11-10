@@ -16,11 +16,11 @@ class MenuController extends Controller
      */
     public function index()
     {
-        if(!check_permission('system/menus')){
+        if (!check_permission('system/menus')) {
             return _404('无权操作！');
         }
         //获取菜单信息
-        $menu = Menu::orderBy('sort','desc')->orderBy('id')->get()->toArray();
+        $menu = Menu::orderBy('sort', 'desc')->orderBy('id')->get()->toArray();
         $list = formatTreeData($menu);
         return view('system.menu.index', compact('list'));
     }
@@ -32,7 +32,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        if(!check_permission('system/menus/create')){
+        if (!check_permission('system/menus/create')) {
             return _404('无权操作！');
         }
         return view('system.menu.create');
@@ -46,7 +46,7 @@ class MenuController extends Controller
      */
     public function store(MenuRequest $request)
     {
-        if(!check_permission('system/menus/create')){
+        if (!check_permission('system/menus/create')) {
             return _404('无权操作！');
         }
         $menu = new Menu();
@@ -84,7 +84,7 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
-        if(!check_permission('system/menus/edit')){
+        if (!check_permission('system/menus/edit')) {
             return _404('无权操作！');
         }
         $menu = Menu::find($id);
@@ -104,7 +104,7 @@ class MenuController extends Controller
      */
     public function update(MenuRequest $request, $id)
     {
-        if(!check_permission('system/menus/edit')){
+        if (!check_permission('system/menus/edit')) {
             return _404('无权操作！');
         }
         $menu = Menu::find($id);
@@ -149,7 +149,7 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        if(!check_permission('system/menus/destroy')){
+        if (!check_permission('system/menus/destroy')) {
             return _404('无权操作！');
         }
         $result = [
@@ -168,12 +168,14 @@ class MenuController extends Controller
                 $flag = 0;
             }
             //删除
-            if ($flag && !$dp->delete()) {
-                $result['status'] = 'error';
-                $result['message'] = '删除失败';
-            } else {
-                //同步清除相关权限
-                Menu::syncDeletePermissions($dp);
+            if ($flag) {
+                if ($res = $dp->delete()) {
+                    //同步清除相关权限
+                    Menu::syncDeletePermissions($dp);
+                } else {
+                    $result['status'] = 'error';
+                    $result['message'] = '删除失败';
+                }
             }
         } else {
             $result['status'] = 'error';
@@ -184,10 +186,10 @@ class MenuController extends Controller
 
     public function sync()
     {
-        if(!check_permission('system/menus/sync')){
+        if (!check_permission('system/menus/sync')) {
             return _404('无权操作！');
         }
         Menu::sync();
-        return response()->json(['message'=>'同步完成','status'=>'success']);
+        return response()->json(['message' => '同步完成', 'status' => 'success']);
     }
 }

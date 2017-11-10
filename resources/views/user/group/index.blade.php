@@ -21,7 +21,7 @@
 					</div>
 				</div>
 				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<a href="{{ route('groups.create') }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+					<a href="{{ menu_url_format(route('groups.create'),['mid'=>request('mid')]) }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
 						<span>
 							<i class="fa fa-plus"></i>
 							<span>
@@ -112,12 +112,15 @@
           field: "name",
           title: "角色名称",
           filterable: false
+        },{
+          field: "remark",
+          title: "描述"
         }, {
           field: "created_at",
-          title: "创建时间"
+          title: "创建时间",width:150
         }, {
           field: "updated_at",
-          title: "更新时间"
+          title: "更新时间",width:150
         }, {
           field: "actions",
           width: 110,
@@ -126,19 +129,15 @@
           // locked: {right: 'xl'},
           overflow: 'visible',
           template: function (row) {
-            var dropup = (row.getDatatable().getPageSize() - row.getIndex()) <= 4 ? 'dropup' : '';
-
+						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("groups.destroy")}}',{group:row.id })+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
+						if(row.is_system == 1){ del = ''};
             return '\
-            <a href="'+mAppExtend.laravelRoute('{{route_uri("groups.power")}}',{group:row.id})+'" class="action-power m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="授权">\
+            <a href="'+mAppExtend.laravelRoute('{{route_uri("groups.power")}}',{group:row.id,mid:"{{request('mid')}}"})+'" class="action-power m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="授权">\
               <i class="la la-cog"></i>\
             </a>\
               <a href="'+mAppExtend.laravelRoute('{{route_uri("groups.edit")}}',{group:row.id})+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
                 <i class="la la-edit"></i>\
-              </a>\
-              <a href="'+mAppExtend.laravelRoute('{{route_uri("groups.destroy")}}',{group:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除">\
-                <i class="la la-trash"></i>\
-              </a>\
-            ';
+              </a>'+del;
           }
         }]
       });
@@ -191,9 +190,7 @@
       mAppExtend.ajaxGetHtml(
         '#m_role_modal .modal-content',
         "{{ route('groups.create') }}",
-        {},true,function() {
-        },function() {
-        });
+        {},true);
     })
     $('.m_datatable').on('click', 'a.action-edit', function(event) {
       event.preventDefault();
@@ -202,21 +199,7 @@
       mAppExtend.ajaxGetHtml(
         '#m_role_modal_edit .modal-content',
         url,
-        {},true,function() {
-        },function(xhr, textStatus, errorThrown) {
-            if(xhr.status == 401){ //未认证
-                $.notify({'message':'登录超时'},{
-                    type: 'danger',
-                    placement: {
-                        from: "top",
-                        align: "center"
-                    },delay:1000,
-                    onClose:function() {
-                        mAppExtend.backUrl('reload');
-                    }
-                });
-            }
-        });
+        {},true);
     });
     $('.m_datatable').on('click', 'a.action-delete', function(event) {
       event.preventDefault();

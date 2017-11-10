@@ -9,7 +9,7 @@
                     <i class="flaticon-list-2"></i>
                 </span>
                 <h3 class="m-portlet__head-text m--font-primary">
-                    角色授权
+                    角色:{{$role->name}}-模块授权
                 </h3>
             </div>
         </div>
@@ -26,7 +26,7 @@
                     </a>
                 </li>
                 <li class="m-portlet__nav-item">
-                    <a href="{{ route('groups.index')  }}" class="btn btn-metal btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
+                    <a href="{{get_redirect_url()}}" class="btn btn-metal btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
                         <span>
                             <i class="fa fa-reply"></i>
                             <span>
@@ -143,7 +143,7 @@
                                     align: "center"
                                 },delay:500,
                                 onClose:function() {
-                                    mAppExtend.backUrl(response.url);
+                                    mAppExtend.backUrl();
                                 }
                             });
                         }else{

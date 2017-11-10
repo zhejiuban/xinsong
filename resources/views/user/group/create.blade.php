@@ -9,7 +9,7 @@
   </button>
 </div>
 <div class="modal-body">
-  <form action="{{ route('groups.store') }}" method="post" id="data-form">
+  <form class="m-form" action="{{ route('groups.store') }}" method="post" id="data-form">
       <div class="form-group">
         <label for="name" class="form-control-label">
           名称:
@@ -21,6 +21,24 @@
           描述:
         </label>
         <textarea class="form-control" name="remark" id="remark" rows="6"></textarea>
+      </div>
+      <div class="form-group">
+          <label>
+              分部是否可授权:
+          </label>
+          <div class="m-radio-inline">
+              <label class="m-radio">
+                  <input type="radio" name="is_call" value="1">
+                  是
+                  <span></span>
+              </label>
+              <label class="m-radio">
+                  <input type="radio" name="is_call" value="0" checked>
+                  否
+                  <span></span>
+              </label>
+          </div>
+          <span class="m-form__help">分部管理员是否可将角色权限授权于分部用户</span>
       </div>
       {{ csrf_field() }}
     </form>

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Spatie\Permission\Models\Role;
 
 class RoleRequest extends FormRequest
 {
@@ -35,9 +36,13 @@ class RoleRequest extends FormRequest
             }
             case 'PUT':
             case 'PATCH': {
-                return [
-                    'name' => 'bail|required|max:40|unique:roles,name,' . request('group')
-                ];
+                $role = Role::find($this->group);
+                if(!$role->is_system){
+                    return [
+                        'name' => 'bail|required|max:40|unique:roles,name,' . $this->group
+                    ];
+                }
+                return [];
             }
             default:
                 return [];

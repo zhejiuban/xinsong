@@ -22,7 +22,7 @@
             </li>
             @foreach (get_user_menu() as $key => $value)
               <li class="m-menu__item  m-menu__item--submenu {{ active_class(if_uri_pattern(active_menu_pattern_str($value['url'])),'m-menu__item--expanded m-menu__item--open')}}" aria-haspopup="true"  data-menu-submenu-toggle="hover">
-                  <a  href="@if (isset($value['_child']) && $value['_child']) javascript:; @else {{url($value['url'],['menu'=>$value['uniqid']])}} @endif" class="m-menu__link m-menu__toggle">
+                  <a  href="@if (isset($value['_child']) && $value['_child']) javascript:; @else {{url($value['url'],['mid'=>$value['uniqid']])}} @endif" target="{{$value['target']}}" class="m-menu__link m-menu__toggle">
                       <i class="m-menu__link-icon {{$value['icon_class']}}"></i>
                       <span class="m-menu__link-text">
                           {{$value['title']}}
@@ -35,7 +35,7 @@
                         <ul class="m-menu__subnav">
                             @foreach ($value['_child'] as $sk => $sv)
                               <li class="m-menu__item {{ active_class(if_uri_pattern(active_menu_pattern_str($sv['url'],1)),'m-menu__item--active')}}" aria-haspopup="true" >
-                                  <a  href="{{menu_url_format($sv['url'],['menu'=>$sv['uniqid']])}}" class="m-menu__link ">
+                                  <a  href="{{menu_url_format($sv['url'],['mid'=>$sv['uniqid']])}}" target="{{$sv['target']}}" class="m-menu__link ">
                                       <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                           <span></span>
                                       </i>

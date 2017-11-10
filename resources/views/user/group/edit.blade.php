@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title" id="exampleModalLabel">
-    新增角色
+    角色编辑
   </h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">
@@ -9,18 +9,36 @@
   </button>
 </div>
 <div class="modal-body">
-  <form action="{{ route('groups.update',['group'=>$role->id]) }}" method="post" id="data-form-edit">
+  <form class="m-form" action="{{ route('groups.update',['group'=>$role->id]) }}" method="post" id="data-form-edit">
       <div class="form-group">
         <label for="name" class="form-control-label">
           名称:
         </label>
-        <input type="text" name="name" value="{{ $role->name  }}" class="form-control" id="name">
+        <input type="text" name="name" value="{{ $role->name  }}" {{$role->is_system ? 'disabled':''}} class="form-control" id="name">
       </div>
       <div class="form-group">
         <label for="remark" class="form-control-label">
           描述:
         </label>
         <textarea class="form-control" name="remark" id="remark" rows="6">{{ $role->remark  }}</textarea>
+      </div>
+      <div class="form-group">
+          <label>
+              分部是否可授权:
+          </label>
+          <div class="m-radio-inline">
+              <label class="m-radio">
+                  <input type="radio" name="is_call" value="1" {{ $role->is_call ? 'checked' : '' }}>
+                  是
+                  <span></span>
+              </label>
+              <label class="m-radio">
+                  <input type="radio" name="is_call" value="0" {{ $role->is_call ? '' : 'checked' }}>
+                  否
+                  <span></span>
+              </label>
+          </div>
+          <span class="m-form__help">分部管理员是否可将角色权限授权于分部用户</span>
       </div>
       {{ csrf_field() }}
       {{ method_field('PUT') }}

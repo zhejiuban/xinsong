@@ -16,7 +16,7 @@
             <div class="m-portlet__head-tools">
                 <ul class="m-portlet__nav">
                     <li class="m-portlet__nav-item">
-                        <a href="{{ route('menus.create')  }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
+                        <a href="{{ menu_url_format(route('menus.create'),['mid'=>request('mid')])  }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
                             <span>
                                 <i class="fa fa-plus"></i>
                                 <span>
@@ -69,13 +69,13 @@
                             @endif
                         </td>
                         <td class="middle">
-                            <a href="{{ url('system/menus/create?parent_id='.$val['id'])  }}" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="添加子菜单">
+                            <a href="{{ menu_url_format(url('system/menus/create?parent_id='.$val['id']),['mid'=>request('mid')]) }}" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="添加子菜单">
                                 <i class="la la-plus"></i>
                             </a>
-                            <a href="{{ route('menus.edit',['menu'=>$val['id']])  }}" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">
+                            <a href="{{ menu_url_format(route('menus.edit',['menu'=>$val['id']]),['mid'=>request('mid')])  }}" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">
                                 <i class="la la-edit"></i>
                             </a>
-                            <a href="{{ route('menus.destroy',['menu'=>$val['id']])  }}" class="delete-action m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除">
+                            <a href="{{ menu_url_format(route('menus.destroy',['menu'=>$val['id']]),['mid'=>request('mid')])  }}" class="delete-action m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除">
                                 <i class="la la-trash"></i>
                             </a>
                         </td>

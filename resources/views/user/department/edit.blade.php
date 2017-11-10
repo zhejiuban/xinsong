@@ -16,7 +16,7 @@
         <div class="m-portlet__head-tools">
             <ul class="m-portlet__nav">
                 <li class="m-portlet__nav-item">
-                    <a href="{{ route('departments.index')  }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
+                    <a href="javascript:;" onclick="mAppExtend.backUrl()" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
                         <span>
                             <i class="fa fa-reply"></i>
                             <span>

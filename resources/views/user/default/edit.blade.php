@@ -116,7 +116,7 @@
         </div>
       </div>
     </div>
-    @if (!is_administrator_user($user->id))
+    @if (!is_administrator_user($user->id) && $user->id != get_current_login_user_info())
       <div class="row">
         <div class="col-lg-6">
           <div class="form-group">

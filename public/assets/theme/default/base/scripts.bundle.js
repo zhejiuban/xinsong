@@ -289,6 +289,7 @@ var mApp = function() {
                 message: html,
                 centerY: options.centerY,
                 centerX: options.centerX,
+                baseZ:2000,
                 css: {
                     top: '30%',
                     left: '50%',

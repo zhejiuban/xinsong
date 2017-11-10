@@ -322,7 +322,11 @@ if (!function_exists('department_select')) {
 if (!function_exists('role_select')) {
     function role_select($selected = '', $type = 0, $vType = 'id')
     {
-        $list = \Spatie\Permission\Models\Role::get()->toArray();
+        if(!is_administrator()){
+            $list = \Spatie\Permission\Models\Role::where('is_call',1)->get()->toArray();
+        }else{
+            $list = \Spatie\Permission\Models\Role::get()->toArray();
+        }
         $str = '';
         if (!$type) { //单选模式
             $str .= '<option value="">请选择角色</option>';
@@ -393,6 +397,8 @@ function check_permission($rule, $user = null)
 {
     if (!$user) {
         $user = get_current_login_user_info(true);
+    } elseif (is_numeric($user)) {
+        $user = \App\User::find($user);
     }
     if ($user->hasPermissionTo($rule) || is_administrator_user($user->id)) {
         return true;
@@ -401,21 +407,40 @@ function check_permission($rule, $user = null)
     }
 }
 
+/**
+ * 获取用户可用菜单
+ * @return array
+ */
 function get_user_menu()
 {
     return \App\Menu::getUserMenu();
 }
 
-function menu_url_format($url, $params)
+/**
+ * url格式化
+ * @param $url
+ * @param array $params
+ * @return \Illuminate\Contracts\Routing\UrlGenerator|string
+ */
+function menu_url_format($url, $params = [])
 {
+    if (!$url) {
+        return 'javascript:;';
+    }
     $p = http_build_query($params);
     if (stripos($url, '?') !== false) {
-        return url($url . '&' . $p);
+        return $p ? url($url . '&' . $p) : url($url);
     } else {
-        return url($url . '?' . $p);
+        return $p ? url($url . '?' . $p) : url($url);
     }
 }
 
+/**
+ * 激活状态菜单前缀
+ * @param $uri
+ * @param int $level
+ * @return string
+ */
 function active_menu_pattern_str($uri, $level = 0)
 {
     $uri_arr = str2arr($uri, '/');
@@ -428,7 +453,14 @@ function active_menu_pattern_str($uri, $level = 0)
     return arr2str($new, '/') . '*';
 }
 
-function get_all_parent_menu($data, $is_contain_self = 1){
+/**
+ * 获取某个菜单的所有父级菜单
+ * @param $data
+ * @param int $is_contain_self 是否包含自身
+ * @return array
+ */
+function get_all_parent_menu($data, $is_contain_self = 1)
+{
     //获取某个菜单的所有父级菜单
     static $info = [];
     if (is_numeric($data) || is_string($data)) {
@@ -449,8 +481,144 @@ function get_all_parent_menu($data, $is_contain_self = 1){
     }
     return $new_arr;
 }
-function breadcrumb($menu){
-    return get_all_parent_menu($menu,1);
+
+/**
+ * 面包屑
+ * @param $menu
+ * @return array
+ */
+function breadcrumb($menu)
+{
+    return get_all_parent_menu($menu, 1);
+}
+
+/**
+ * 设置跳转页面URL
+ * 使用函数再次封装，方便以后选择不同的存储方式（目前使用cookie存储）
+ */
+function set_redirect_url($url = '', $name = '_redirect_url_')
+{
+    if (!$url) {
+        $url = url()->full();
+    }
+    Cookie::queue($name, $url, 30);
+}
+
+/**
+ * 获取跳转页面URL
+ * @return string 跳转页URL
+ */
+function get_redirect_url($name = '_redirect_url_')
+{
+    $url = Cookie::get($name);
+    return $url ? $url : url()->previous();
+}
+
+/**
+ * 获取用户所属分部
+ * @param null $user
+ * @return mixed
+ */
+function get_user_company_id($user = null)
+{
+    if (is_numeric($user)) {
+        $user = \App\User::with('department')->find($user);
+    } elseif (!$user) {
+        $user = get_current_login_user_info(true);
+    }
+    if ($user->department->company_id) {
+        return $user->department->company_id;
+    } else {
+        return $user->department->id;
+    }
+}
+
+/**
+ * 检测是否分部管理员
+ * @param $user
+ * @return bool
+ */
+function check_company_admin($user)
+{
+    if (!is_object($user)) {
+        $user = \App\User::find($user);
+    }
+    if ($user->hasPermissionTo('分部管理员')) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * 检测用户所属分部
+ * @param $company
+ * @param $user
+ * @return bool
+ */
+function check_user_company($company, $user)
+{
+    if (!is_object($user)) {
+        $user = \App\User::with('department')->find($user);
+    }
+    $user_company_id = $user->department->company_id;
+    if (!$user_company_id) {
+        $user_company_id = $user->department->id;
+    }
+    if ($company == $user_company_id) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * 获取某个分部所有部门信息
+ * @param $company
+ * @param string $field
+ * @param string $type
+ * @return mixed
+ */
+function get_company_deparent($company, $field = 'id', $type = 'array')
+{
+    if (is_array($company)) {
+        $dep = \App\Department::whereIn('company_id', $company)->get();
+    } else {
+        $dep = \App\Department::where('company_id', $company)->orWhere('id', $company)->get();
+    }
+    if($field === true){
+        return $type == 'array' ? $dep->toArray() : $dep;
+    }else{
+        return $type == 'array' ? $dep->pluck($field)->toArray() : $dep->pluck($field);
+    }
+}
+
+/**
+ * 获取部门人数
+ * @param $id
+ * @param $level
+ * @return null
+ */
+function get_department_user_count($id,$level){
+    switch ($level){
+        case 1:
+            //总部
+            return \App\User::count();
+        case 2:
+            //获取分部所有部门信息
+            $dep = get_company_deparent($id);
+            if($dep && count($dep)){
+                return \App\User::where('department_id',$id)
+                    ->orWhereIn('department_id',$dep)->count();
+            }else{
+                return \App\User::where('department_id',$id)->count();
+            }
+        case 3:
+            //部门
+            return \App\User::where('department_id',$id)->count();
+        default:
+            return null;
+    }
 }
 
 
