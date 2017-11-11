@@ -34,6 +34,41 @@
   			<!--end::Section-->
   		</div>
     </div>
+
+    <div class="col-md-6">
+      <div class="m-portlet">
+  			<div class="m-portlet__head">
+  				<div class="m-portlet__head-caption">
+  					<div class="m-portlet__head-title">
+  						<h3 class="m-portlet__head-text">
+  							动态
+  						</h3>
+  					</div>
+  				</div>
+  			</div>
+  			<div class="m-portlet__body">
+  			</div>
+  			<!--end::Section-->
+  		</div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="m-portlet">
+  			<div class="m-portlet__head">
+  				<div class="m-portlet__head-caption">
+  					<div class="m-portlet__head-title">
+  						<h3 class="m-portlet__head-text">
+  							积分
+  						</h3>
+  					</div>
+  				</div>
+        </div>
+  			<div class="m-portlet__body">
+  			</div>
+  			<!--end::Section-->
+  		</div>
+    </div>
+
 </div>
 @endsection
 @section('js')

@@ -146,7 +146,6 @@ class Menu extends Model
             $menu = self::where('status', 1)->where('hide', 0)->orderBy('sort', 'desc')->orderBy('id')->get();
         } else {
             $permission = get_current_login_user_info(true)->getAllPermissions();
-//            dump($permission);
             $all = $permission->pluck('name')->toArray();
             $menu = self::whereIn('url', $all)->where('status', 1)->where('hide', 0)->orderBy('sort', 'desc')->orderBy('id')->get();
         }

@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title" id="exampleModalLabel">
-    新增用户
+    编辑用户
   </h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">
