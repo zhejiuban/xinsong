@@ -33,7 +33,7 @@
                         <div class="m-stack__item m-brand  m-brand--skin-dark ">
                             <div class="m-stack m-stack--ver m-stack--general">
                                 <div class="m-stack__item m-stack__item--middle m-brand__logo">
-                                    <a href="index.html" class="m-brand__logo-wrapper">
+                                    <a href="#" class="m-brand__logo-wrapper">
                                         <img alt="" src="{{ asset('assets/theme/default/media/img/logo/logo_default_dark.png') }}"/>
                                     </a>
                                 </div>
@@ -80,7 +80,7 @@
                                                         <form  class="m-list-search__form">
                                                             <div class="m-list-search__form-wrapper">
                                                                 <span class="m-list-search__form-input-wrapper">
-                                                                    <input id="m_quicksearch_input" autocomplete="off" type="text" name="q" class="m-list-search__form-input" value="" placeholder="Search...">
+                                                                    <input id="m_quicksearch_input" autocomplete="off" type="text" name="q" class="m-list-search__form-input" value="" placeholder="搜索模块...">
                                                                 </span>
                                                                 <span class="m-list-search__form-icon-close" id="m_quicksearch_close">
                                                                     <i class="la la-remove"></i>
@@ -96,7 +96,7 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center  m-dropdown--mobile-full-width" data-dropdown-toggle="click" data-dropdown-persistent="true">
+                                        <li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right  m-dropdown--mobile-full-width" data-dropdown-toggle="click" data-dropdown-persistent="true">
                                             <a href="#" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_icon">
                                                 <span class="m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger"></span>
                                                 <span class="m-nav__link-icon">
@@ -104,14 +104,14 @@
                                                 </span>
                                             </a>
                                             <div class="m-dropdown__wrapper">
-                                                <span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
+                                                <span class="m-dropdown__arrow m-dropdown__arrow--right"></span>
                                                 <div class="m-dropdown__inner">
                                                     <div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/notification_bg.jpg') }}); background-size: cover;">
                                                         <span class="m-dropdown__header-title">
-                                                            9 New
+                                                            9 个未读消息
                                                         </span>
                                                         <span class="m-dropdown__header-subtitle">
-                                                            User Notifications
+                                                            消息提醒
                                                         </span>
                                                     </div>
                                                     <div class="m-dropdown__body">
@@ -119,17 +119,17 @@
                                                             <ul class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand" role="tablist">
                                                                 <li class="nav-item m-tabs__item">
                                                                     <a class="nav-link m-tabs__link active" data-toggle="tab" href="#topbar_notifications_notifications" role="tab">
-                                                                        Alerts
+                                                                        系统
                                                                     </a>
                                                                 </li>
                                                                 <li class="nav-item m-tabs__item">
                                                                     <a class="nav-link m-tabs__link" data-toggle="tab" href="#topbar_notifications_events" role="tab">
-                                                                        Events
+                                                                        任务
                                                                     </a>
                                                                 </li>
                                                                 <li class="nav-item m-tabs__item">
                                                                     <a class="nav-link m-tabs__link" data-toggle="tab" href="#topbar_notifications_logs" role="tab">
-                                                                        Logs
+                                                                        用户
                                                                     </a>
                                                                 </li>
                                                             </ul>
@@ -137,7 +137,7 @@
                                                                 <div class="tab-pane active" id="topbar_notifications_notifications" role="tabpanel">
                                                                     <div class="m-scrollable" data-scrollable="true" data-max-height="250" data-mobile-max-height="200">
                                                                         <div class="m-list-timeline m-list-timeline--skin-light">
-                                                                            <div class="m-list-timeline__items">
+                                                                            <!--<div class="m-list-timeline__items">
                                                                                 <div class="m-list-timeline__item">
                                                                                     <span class="m-list-timeline__badge -m-list-timeline__badge--state-success"></span>
                                                                                     <span class="m-list-timeline__text">
@@ -223,13 +223,14 @@
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
+                                                                          -->
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="tab-pane" id="topbar_notifications_events" role="tabpanel">
                                                                     <div class="m-scrollable" m-scrollabledata-scrollable="true" data-max-height="250" data-mobile-max-height="200">
                                                                         <div class="m-list-timeline m-list-timeline--skin-light">
-                                                                            <div class="m-list-timeline__items">
+                                                                            <!--<div class="m-list-timeline__items">
                                                                                 <div class="m-list-timeline__item">
                                                                                     <span class="m-list-timeline__badge m-list-timeline__badge--state1-success"></span>
                                                                                     <a href="" class="m-list-timeline__text">
@@ -285,6 +286,7 @@
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
+                                                                          -->
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -292,9 +294,7 @@
                                                                     <div class="m-stack m-stack--ver m-stack--general" style="min-height: 180px;">
                                                                         <div class="m-stack__item m-stack__item--center m-stack__item--middle">
                                                                             <span class="">
-                                                                                All caught up!
-                                                                                <br>
-                                                                                No new logs.
+                                                                                暂无消息
                                                                             </span>
                                                                         </div>
                                                                     </div>
@@ -317,11 +317,11 @@
                                                 <div class="m-dropdown__inner">
                                                     <div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/quick_actions_bg.jpg') }}); background-size: cover;">
                                                         <span class="m-dropdown__header-title">
-                                                            Quick Actions
+                                                            快捷菜单
                                                         </span>
-                                                        <span class="m-dropdown__header-subtitle">
+                                                        <!--<span class="m-dropdown__header-subtitle">
                                                             Shortcuts
-                                                        </span>
+                                                        </span>-->
                                                     </div>
                                                     <div class="m-dropdown__body m-dropdown__body--paddingless">
                                                         <div class="m-dropdown__content">
@@ -331,13 +331,13 @@
                                                                         <a href="#" class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-file"></i>
                                                                             <span class="m-nav-grid__text">
-                                                                                Generate Report
+                                                                                创建项目
                                                                             </span>
                                                                         </a>
                                                                         <a href="#" class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-time"></i>
                                                                             <span class="m-nav-grid__text">
-                                                                                Add New Event
+                                                                                创建任务
                                                                             </span>
                                                                         </a>
                                                                     </div>
@@ -345,13 +345,13 @@
                                                                         <a href="#" class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-folder"></i>
                                                                             <span class="m-nav-grid__text">
-                                                                                Create New Task
+                                                                                创建计划
                                                                             </span>
                                                                         </a>
                                                                         <a href="#" class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-clipboard"></i>
                                                                             <span class="m-nav-grid__text">
-                                                                                Completed Tasks
+                                                                                创建动态
                                                                             </span>
                                                                         </a>
                                                                     </div>
@@ -363,12 +363,13 @@
                                             </div>
                                         </li>
                                         <li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light" data-dropdown-toggle="click">
+                                            <?php $login_user = get_current_login_user_info(true); ?>
                                             <a href="#" class="m-nav__link m-dropdown__toggle">
                                                 <span class="m-topbar__userpic">
                                                     <img src="{{ asset('assets/app/media/img/users/user4.jpg') }}" class="m--img-rounded m--marginless m--img-centered" alt=""/>
                                                 </span>
                                                 <span class="m-topbar__username m--hide">
-                                                    Nick
+                                                    {{$login_user->name}}
                                                 </span>
                                             </a>
                                             <div class="m-dropdown__wrapper">
@@ -381,10 +382,10 @@
                                                             </div>
                                                             <div class="m-card-user__details">
                                                                 <span class="m-card-user__name m--font-weight-500">
-                                                                    Mark Andre
+                                                                  {{$login_user->name}}
                                                                 </span>
-                                                                <a href="" class="m-card-user__email m--font-weight-300 m-link">
-                                                                    mark.andre@gmail.com
+                                                                <a href="javascript:;" class="m-card-user__email m--font-weight-300 m-link">
+                                                                    {{$login_user->email}}
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -398,59 +399,52 @@
                                                                     </span>
                                                                 </li>
                                                                 <li class="m-nav__item">
-                                                                    <a href="header/profile.html" class="m-nav__link">
+                                                                    <a href="#" class="m-nav__link">
                                                                         <i class="m-nav__link-icon flaticon-profile-1"></i>
                                                                         <span class="m-nav__link-title">
                                                                             <span class="m-nav__link-wrap">
                                                                                 <span class="m-nav__link-text">
-                                                                                    My Profile
+                                                                                    我的资料
                                                                                 </span>
-                                                                                <span class="m-nav__link-badge">
+                                                                                <!--<span class="m-nav__link-badge">
                                                                                     <span class="m-badge m-badge--success">
                                                                                         2
                                                                                     </span>
-                                                                                </span>
+                                                                                </span>-->
                                                                             </span>
                                                                         </span>
                                                                     </a>
                                                                 </li>
-                                                                <li class="m-nav__item">
+                                                                <!--<li class="m-nav__item">
                                                                     <a href="header/profile.html" class="m-nav__link">
                                                                         <i class="m-nav__link-icon flaticon-share"></i>
                                                                         <span class="m-nav__link-text">
                                                                             Activity
                                                                         </span>
                                                                     </a>
-                                                                </li>
+                                                                </li>-->
                                                                 <li class="m-nav__item">
-                                                                    <a href="header/profile.html" class="m-nav__link">
+                                                                    <a href="#" class="m-nav__link">
                                                                         <i class="m-nav__link-icon flaticon-chat-1"></i>
                                                                         <span class="m-nav__link-text">
-                                                                            Messages
+                                                                            消息通知
                                                                         </span>
                                                                     </a>
                                                                 </li>
                                                                 <li class="m-nav__separator m-nav__separator--fit"></li>
+
                                                                 <li class="m-nav__item">
-                                                                    <a href="header/profile.html" class="m-nav__link">
-                                                                        <i class="m-nav__link-icon flaticon-info"></i>
-                                                                        <span class="m-nav__link-text">
-                                                                            FAQ
-                                                                        </span>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="m-nav__item">
-                                                                    <a href="header/profile.html" class="m-nav__link">
+                                                                    <a href="#" class="m-nav__link">
                                                                         <i class="m-nav__link-icon flaticon-lifebuoy"></i>
                                                                         <span class="m-nav__link-text">
-                                                                            Support
+                                                                            帮助文档
                                                                         </span>
                                                                     </a>
                                                                 </li>
                                                                 <li class="m-nav__separator m-nav__separator--fit"></li>
                                                                 <li class="m-nav__item">
                                                                     <a href="{{ route('logout') }}" class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">
-                                                                        Logout
+                                                                        退出
                                                                     </a>
                                                                 </li>
                                                             </ul>
@@ -459,13 +453,14 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <li id="m_quick_sidebar_toggle" class="m-nav__item">
+                                        <!-- <li id="m_quick_sidebar_toggle" class="m-nav__item">
                                             <a href="#" class="m-nav__link m-dropdown__toggle">
                                                 <span class="m-nav__link-icon">
                                                     <i class="flaticon-grid-menu"></i>
                                                 </span>
                                             </a>
                                         </li>
+                                      -->
                                     </ul>
                                 </div>
                             </div>

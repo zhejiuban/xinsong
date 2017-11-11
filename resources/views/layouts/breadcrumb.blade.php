@@ -36,16 +36,16 @@
 						<div class="m-dropdown__body">
 							<div class="m-dropdown__content">
 								<ul class="m-nav">
-									<li class="m-nav__section m-nav__section--first m--hide">
+									<li class="m-nav__section m-nav__section--first ">
 										<span class="m-nav__section-text">
-											Quick Actions
+											快捷操作
 										</span>
 									</li>
 									<li class="m-nav__item">
 										<a href="" class="m-nav__link">
 											<i class="m-nav__link-icon flaticon-share"></i>
 											<span class="m-nav__link-text">
-												Activity
+												项目
 											</span>
 										</a>
 									</li>
@@ -53,7 +53,7 @@
 										<a href="" class="m-nav__link">
 											<i class="m-nav__link-icon flaticon-chat-1"></i>
 											<span class="m-nav__link-text">
-												Messages
+												消息
 											</span>
 										</a>
 									</li>
@@ -61,7 +61,7 @@
 										<a href="" class="m-nav__link">
 											<i class="m-nav__link-icon flaticon-info"></i>
 											<span class="m-nav__link-text">
-												FAQ
+												协作
 											</span>
 										</a>
 									</li>
@@ -69,7 +69,7 @@
 										<a href="" class="m-nav__link">
 											<i class="m-nav__link-icon flaticon-lifebuoy"></i>
 											<span class="m-nav__link-text">
-												Support
+												帮助
 											</span>
 										</a>
 									</li>

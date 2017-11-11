@@ -44,7 +44,7 @@ class UserRequest extends FormRequest
             case 'PUT':
             case 'PATCH':
             {
-                return [
+                $rule = [
                     'username'=>'bail|required|min:4|max:40|unique:users,username,'.request('user'),
                     'password'=>'bail|nullable|min:6',
                     'name'=>'bail|required',
@@ -53,6 +53,11 @@ class UserRequest extends FormRequest
                     'tel'=>'bail|required|unique:users,tel,'.request('user'),
                     'status'=>'bail|required',
                 ];
+                if(is_administrator_user($this->user)){
+                    unset($rule['department_id']);
+                    unset($rule['status']);
+                }
+                return $rule;
             }
             default:break;
         }
@@ -73,7 +78,8 @@ class UserRequest extends FormRequest
             'email.unique'=>'邮箱已存在',
             'tel.required'=>'请输入手机号',
             'tel.unique'=>'手机号已存在',
-            'department_id.required'=>'请选择所属部门'
+            'department_id.required'=>'请选择所属部门',
+            'status.required'=>'请选择用户状态'
         ];
     }
 }
