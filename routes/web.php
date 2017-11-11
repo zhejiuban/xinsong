@@ -32,4 +32,5 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::resource('projects', 'ProjectController');
+    Route::resource('devices', 'DeviceController');
 });

@@ -400,7 +400,7 @@ function check_permission($rule, $user = null)
     } elseif (is_numeric($user)) {
         $user = \App\User::find($user);
     }
-    if ($user->hasPermissionTo($rule) || is_administrator_user($user->id)) {
+    if (is_administrator_user($user->id) || $user->hasPermissionTo($rule) ) {
         return true;
     } else {
         return false;
