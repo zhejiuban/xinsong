@@ -1098,7 +1098,7 @@
         </div>
         <!-- end::Scroll Top -->
         <!--begin::Base Scripts -->
-        <script src="{{ asset('assets/vendors/base/vendors.bundle.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/vendors/base/vendors.bundle.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/theme/default/base/scripts.bundle.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/vendors/custom/lodash/lodash.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/vendors/custom/sweetalert/sweetalert.min.js') }}" type="text/javascript"></script>

@@ -1,9 +1,8 @@
 <?php
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
-
 Auth::routes();
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
@@ -28,6 +27,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
     Route::post('menus/sync', 'MenuController@sync')->name('menus.sync');
     Route::resource('menus', 'MenuController');
+    Route::get('logs','LogController@index')->name('logs.index');
 });
 
 Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {

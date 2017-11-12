@@ -22,6 +22,7 @@ class MenuController extends Controller
         //获取菜单信息
         $menu = Menu::orderBy('sort', 'desc')->orderBy('id')->get()->toArray();
         $list = formatTreeData($menu);
+        set_redirect_url();
         return view('system.menu.index', compact('list'));
     }
 
@@ -64,8 +65,10 @@ class MenuController extends Controller
         if ($menu->save()) {
             //权限同步
             $menu->syncPermissions($menu);
+            activity()->performedOn($menu)
+                ->withProperties($menu->toArray())->log('菜单添加成功');
             return response()->json([
-                'message' => '添加成功', 'url' => route('menus.index'),
+                'message' => '添加成功', 'url' => get_redirect_url(),
                 'data' => $menu->toArray(), 'status' => 'success'
             ]);
         } else {
@@ -124,6 +127,8 @@ class MenuController extends Controller
             if ($menu->save()) {
                 //权限同步
                 $menu->syncUpdatePermissions($menu, $origin);
+                activity()->performedOn($menu)
+                    ->withProperties($menu->toArray())->log('菜单编辑成功');
                 return response()->json([
                     'message' => '编辑成功', 'url' => route('menus.index'),
                     'data' => $menu->toArray(), 'status' => 'success'
@@ -172,6 +177,8 @@ class MenuController extends Controller
                 if ($res = $dp->delete()) {
                     //同步清除相关权限
                     Menu::syncDeletePermissions($dp);
+                    activity()->performedOn($dp)
+                        ->withProperties($dp->toArray())->log('菜单删除成功');
                 } else {
                     $result['status'] = 'error';
                     $result['message'] = '删除失败';

@@ -185,6 +185,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         HieuLe\Active\ActiveServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Spatie\Activitylog\ActivitylogServiceProvider::class,
 
 
     ],

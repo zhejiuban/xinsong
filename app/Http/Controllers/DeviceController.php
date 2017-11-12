@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Device;
 use App\Http\Requests\DeviceRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DeviceController extends Controller
 {
@@ -81,6 +82,8 @@ class DeviceController extends Controller
             'status' => $request->status ? 1 : 0
         ]);
         if ($result) {
+            //记录日志
+            activity()->withProperties($result->toArray())->log('设备类型添加成功');
             return response()->json([
                 'message' => '添加成功'
                 , 'status' => 'success'
@@ -141,6 +144,8 @@ class DeviceController extends Controller
             $role->remark = $request->remark;
             $role->updated_at = date('Y-m-d H:i:s');
             if ($role->save()) {
+                activity()->performedOn($role)
+                    ->withProperties($role->toArray())->log('设备类型编辑成功');
                 return response()->json([
                     'status' => 'success', 'message' => '编辑成功',
                     'data' => $role->toArray(), 'url' => route('devices.index')
@@ -175,11 +180,20 @@ class DeviceController extends Controller
         if ($dp) {
             $flag = 1;
             //判断是否有关联项目
-
-            //删除
-            if ($flag && !$dp->delete()) {
+            if(count($dp->projects)){
+                $flag = 0;
                 $result['status'] = 'error';
-                $result['message'] = '删除失败';
+                $result['message'] = '存在关联项目，不能删除';
+            }
+            //删除
+            if ($flag) {
+                if ($dp->delete()) {
+                    activity()->performedOn($dp)
+                        ->withProperties($dp->toArray())->log('设备类型删除成功');
+                } else {
+                    $result['status'] = 'error';
+                    $result['message'] = '删除失败';
+                }
             }
         } else {
             $result['status'] = 'error';
