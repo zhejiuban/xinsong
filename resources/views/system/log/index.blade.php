@@ -98,7 +98,8 @@
           title: "操作用户",
 					sortable:false,
 					template:function(row) {
-						return row.causer.name;
+						// console.log(row);
+						return row.causer ? row.causer.name : row.properties.username;
 					}
         }, {
           field: "created_at",

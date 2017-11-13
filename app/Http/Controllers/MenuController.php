@@ -130,7 +130,7 @@ class MenuController extends Controller
                 activity()->performedOn($menu)
                     ->withProperties($menu->toArray())->log('菜单编辑成功');
                 return response()->json([
-                    'message' => '编辑成功', 'url' => route('menus.index'),
+                    'message' => '编辑成功', 'url' => get_redirect_url(),
                     'data' => $menu->toArray(), 'status' => 'success'
                 ]);
             } else {

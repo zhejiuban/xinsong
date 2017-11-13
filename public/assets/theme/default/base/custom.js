@@ -50,7 +50,10 @@ var mAppExtend = function () {
             }
         });
     };
-
+    /**
+     * 下框初始化
+     * @return {[type]} [description]
+     */
     var handleSelect2 = function () {
         if ($().select2) {
             // $.fn.select2.defaults.set("theme", "bootstrap");
@@ -59,6 +62,10 @@ var mAppExtend = function () {
             });
         }
     };
+    /**
+     * 手机号验证
+     * @return {[type]} [description]
+     */
     var handleValidatorExtendMethod = function () {
         if ($.validator) {
             // 手机号码验证
@@ -69,12 +76,97 @@ var mAppExtend = function () {
             }, "请正确填写您的手机号码");
         }
     };
-
+    var initToastr = function () {
+      if(toastr){
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": true,
+          "progressBar": false,
+          "positionClass": "toast-top-center",
+          "preventDuplicates": true,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "2000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        };
+      }
+    }
     return {
         init: function () {
+            initToastr();
             handleReloadHtml();
             handleSelect2();
             handleValidatorExtendMethod();
+        },
+        notification: function(message,type,notifyType,callback,options){
+          if(notifyType == 'notify'){
+            var option = $.extend(true,{
+              'message':'',
+              'options':{
+                  type: 'success',
+                  placement: {
+                      from: "top",
+                      align: "center"
+                  },
+                  delay:1000,
+                  onClose:null
+              }
+            },options);
+            if(type != undefined){
+              option.options.type = type;
+            }
+            if(message != undefined){
+              option.message = message;
+            }
+            if(callback != undefined){
+              option.options.onClose = callback;
+            }
+            $.notify(option.message,option.options);
+          }else{
+            var option = $.extend(true,{
+              'message':'',
+              'title':null,
+              'options':{
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": false,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": true,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+              }
+            },options);
+            if(message != undefined){
+              option.message = message;
+            }
+            if(type == undefined){
+              type = 'info';
+            }
+            toastr.options = option.options;
+            if(option.title){
+              toastr[type](option.message,option.title);
+            }else{
+              toastr[type](option.message);
+            }
+            if(callback instanceof Function){
+              window.setTimeout(function () {
+                callback();
+              }, option.options.hideDuration);
+            }
+          }
+
         },
         laravelRoute: function (routeUrl, param) {
             return route(routeUrl, param);
@@ -139,25 +231,13 @@ var mAppExtend = function () {
                         errorCallback(xhr, textStatus, errorThrown);
                     } else {
                         if (xhr.status == 401) { //未认证
-                            $.notify({'message': '登录超时'}, {
-                                type: 'danger',
-                                placement: {
-                                    from: "top",
-                                    align: "center"
-                                }, delay: 1000,
-                                onClose: function () {
-                                    mAppExtend.backUrl('reload');
-                                }
-                            });
+                          mAppExtend.notification('登录超时'
+                            ,'error','toastr',function() {
+                                mAppExtend.backUrl('reload');
+                              });
                         } else {
-                            //toastr.error('请求错误，请重试', '警告');
-                            $.notify({'message': '请求错误，请重试'}, {
-                                type: 'danger',
-                                placement: {
-                                    from: "top",
-                                    align: "center"
-                                }, delay: 1000
-                            });
+                          mAppExtend.notification('请求错误，请重试'
+                            ,'error');
                         }
                     }
                 }
@@ -202,27 +282,15 @@ var mAppExtend = function () {
                         option.callback(data, textStatus, xhr);
                     } else {
                         if (data.status == 'success') {
-                            $.notify({'message': data.message}, {
-                                type: 'success',
-                                placement: {
-                                    from: "top",
-                                    align: "center"
-                                }, delay: 500,
-                                onClose: function () {
-                                    if (option.redirect) {
-                                        mAppExtend.backUrl(data.url);
-                                    }
+                          mAppExtend.notification(data.message
+                            ,'success','toastr',function() {
+                                if (option.redirect) {
+                                    mAppExtend.backUrl(data.url);
                                 }
                             });
                         } else {
-                            $.notify({'message': data.message}, {
-                                type: 'danger',
-                                placement: {
-                                    from: "top",
-                                    align: "center"
-                                }, delay: 1000,
-                                mouse_over: 'pause'
-                            });
+                          mAppExtend.notification(data.message
+                            ,'error');
                         }
                     }
                 },
@@ -241,13 +309,8 @@ var mAppExtend = function () {
                                 });
                             }
                         }
-                        $.notify({'message': _err_mes}, {
-                            type: 'danger',
-                            placement: {
-                                from: "top",
-                                align: "center"
-                            }, delay: 1000, mouse_over: 'pause'
-                        });
+                        mAppExtend.notification(_err_mes
+                          ,'error');
                     }
                 }
             });
