@@ -29,11 +29,11 @@
                             </a>
                         </div>
                         <div class="m-login__signin">
-                            <div class="m-login__head">
+                            {{-- <!--<div class="m-login__head">
                                 <h3 class="m-login__title">
-                                    新松项目管理系统
+                                    {{ config('app.name', '新松项目管理系统') }}
                                 </h3>
-                            </div>
+                            </div>--> --}}
                             <form class="m-login__form m-form"  method="POST" action="{{ route('login') }}">
                                 {{ csrf_field() }}
                                 <div class="form-group m-form__group {{ $errors->has('email') ? ' has-danger' : '' }}">
@@ -167,4 +167,3 @@
     </body>
     <!-- end::Body -->
 </html>
-

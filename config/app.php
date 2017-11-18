@@ -186,6 +186,7 @@ return [
         HieuLe\Active\ActiveServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Spatie\Activitylog\ActivitylogServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
 
     ],
@@ -239,6 +240,7 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Active' => HieuLe\Active\Facades\Active::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 

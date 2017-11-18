@@ -13,6 +13,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
+        if (!check_permission('project/projects')) {
+            return _404('无权操作！');
+        }
         return view('project.default.index');
     }
 
@@ -23,7 +26,10 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        if (!check_permission('project/projects/create')) {
+            return _404('无权操作！');
+        }
+        return view('project.default.create');
     }
 
     /**
@@ -34,7 +40,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dump($request);
     }
 
     /**

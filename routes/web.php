@@ -34,3 +34,11 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::resource('projects', 'ProjectController');
     Route::resource('devices', 'DeviceController');
 });
+
+Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
+    Route::get('users/selector/data','Plugin\UserSelectorController@data')->name('users.selector.data');
+    Route::get('users/selector','Plugin\UserSelectorController@index')->name('users.selector');
+    Route::post('image/upload', 'Plugin\FileController@imageUpload')->name('image.upload');
+    Route::post('file/upload', 'Plugin\FileController@fileUpload')->name('file.upload');
+    Route::post('video/upload', 'Plugin\FileController@videoUpload')->name('video.upload');
+});

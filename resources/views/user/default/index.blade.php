@@ -237,7 +237,7 @@
             field: "department_id",
             title: "所属部门",
             template:function (row) {
-                return row.department.name;
+                return row.department ? row.department.name : null;
             }
         }, {
           field: "created_at",

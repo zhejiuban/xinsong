@@ -51,7 +51,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
 
@@ -61,6 +61,41 @@ return [
             'secret' => env('AWS_SECRET'),
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
+        ],
+
+        'image' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/image'),
+            'base_path' => 'uploads/image',
+            'url' => env('APP_URL') . '/uploads/image',
+            'validate' => [
+                'size' => 5*1024, //单位kb
+                'ext' => ['jpg', 'jpeg','png','gif']
+            ],
+            'upload_path_format' => date("Ym", time())
+                . '/' . date("d", time()),
+        ],
+        'file' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/file'),
+            'base_path' => 'uploads/file',
+            'url' => env('APP_URL') . '/uploads/file',
+            'validate' => [
+                'size' => 20*1024,//单位kb
+                'ext' => [
+                    'jpg', 'jpeg','png','gif','doc', 'docx',
+                    'zip','rar','tar','gz','7z','doc',
+                    'docx','txt','pdf','xls','xlsx'
+                ]
+            ],
+            'upload_path_format' => date("Ym", time())
+                . '/' . date("d", time()),
+        ],
+        'video' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/video'),
+            'base_path' => 'uploads/video',
+            'url' => env('APP_URL') . '/uploads/video',
         ],
 
     ],

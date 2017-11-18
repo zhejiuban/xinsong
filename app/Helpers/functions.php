@@ -188,16 +188,19 @@ if (!function_exists('list_sort_by')) {
     }
 }
 if (!function_exists('formatTreeData')) {
-    function formatTreeData($data, $id = "id", $parent_id = "parent_id", $root = 0, $space = '&nbsp;&nbsp;|--&nbsp;', $level = 0)
+    function formatTreeData($data, $id = "id", $parent_id = "parent_id"
+        , $root = 0, $space = '&nbsp;&nbsp;|--&nbsp;', $level = 0)
     {
         $arr = array();
         if ($data) {
             foreach ($data as $v) {
                 if ($v[$parent_id] == $root) {
 //                    $v['level'] = $level + 1;
-                    $v['space'] = $root != 0 ? str_repeat($space, $level) : '' . str_repeat($space, $level);
+                    $v['space'] = $root != 0 ? str_repeat($space, $level) : ''
+                        . str_repeat($space, $level);
                     $arr[] = $v;
-                    $arr = array_merge($arr, formatTreeData($data, $id, $parent_id, $v[$id], $space, $level + 1));
+                    $arr = array_merge($arr, formatTreeData($data, $id,
+                        $parent_id, $v[$id], $space, $level + 1));
                 }
             }
         }
@@ -322,9 +325,9 @@ if (!function_exists('department_select')) {
 if (!function_exists('role_select')) {
     function role_select($selected = '', $type = 0, $vType = 'id')
     {
-        if(!is_administrator()){
-            $list = \Spatie\Permission\Models\Role::where('is_call',1)->get()->toArray();
-        }else{
+        if (!is_administrator()) {
+            $list = \Spatie\Permission\Models\Role::where('is_call', 1)->get()->toArray();
+        } else {
             $list = \Spatie\Permission\Models\Role::get()->toArray();
         }
         $str = '';
@@ -400,7 +403,7 @@ function check_permission($rule, $user = null)
     } elseif (is_numeric($user)) {
         $user = \App\User::find($user);
     }
-    if (is_administrator_user($user->id) || $user->hasPermissionTo($rule) ) {
+    if (is_administrator_user($user->id) || $user->hasPermissionTo($rule)) {
         return true;
     } else {
         return false;
@@ -584,11 +587,12 @@ function get_company_deparent($company, $field = 'id', $type = 'array')
     if (is_array($company)) {
         $dep = \App\Department::whereIn('company_id', $company)->get();
     } else {
-        $dep = \App\Department::where('company_id', $company)->orWhere('id', $company)->get();
+        $dep = \App\Department::where('company_id', $company)
+            ->orWhere('id', $company)->get();
     }
-    if($field === true){
+    if ($field === true) {
         return $type == 'array' ? $dep->toArray() : $dep;
-    }else{
+    } else {
         return $type == 'array' ? $dep->pluck($field)->toArray() : $dep->pluck($field);
     }
 }
@@ -599,26 +603,58 @@ function get_company_deparent($company, $field = 'id', $type = 'array')
  * @param $level
  * @return null
  */
-function get_department_user_count($id,$level){
-    switch ($level){
+function get_department_user_count($id, $level)
+{
+    switch ($level) {
         case 1:
             //总部
             return \App\User::count();
         case 2:
             //获取分部所有部门信息
             $dep = get_company_deparent($id);
-            if($dep && count($dep)){
-                return \App\User::where('department_id',$id)
-                    ->orWhereIn('department_id',$dep)->count();
-            }else{
-                return \App\User::where('department_id',$id)->count();
+            if ($dep && count($dep)) {
+                return \App\User::where('department_id', $id)
+                    ->orWhereIn('department_id', $dep)->count();
+            } else {
+                return \App\User::where('department_id', $id)->count();
             }
         case 3:
             //部门
-            return \App\User::where('department_id',$id)->count();
+            return \App\User::where('department_id', $id)->count();
         default:
             return null;
     }
+}
+
+/**
+ * 设备类型选择项
+ * @param string $selected
+ * @return string
+ */
+function device_select($selected = '')
+{
+    $list = \App\Device::lists()->toArray();
+    $str = '<option value="">请选择设备类型</option>';
+    if ($list) {
+        foreach ($list as $key => $val) {
+            $str .= '<option value="' . $val['id'] . '" '
+                . ($selected == $val['id'] ? 'selected="selected"' : '') . '>'
+                . $val['name'] . '</option>';
+        }
+    }
+    return $str;
+}
+/**
+ * 格式化字节大小
+ * @param  number $size 字节数
+ * @param  string $delimiter 数字和单位分隔符
+ * @return string            格式化后的带单位的大小
+ */
+function format_bytes($size, $delimiter = '')
+{
+    $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+    for ($i = 0; $size >= 1024 && $i < 5; $i++) $size /= 1024;
+    return round($size, 2) . $delimiter . $units[$i];
 }
 
 

@@ -7,11 +7,14 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Device extends Model
 {
-//    use LogsActivity;
+//  use LogsActivity;
     protected $fillable = [
         'name', 'remark','status'
     ];
     public function projects(){
         return $this->belongsToMany('App\Project');
+    }
+    public static function lists(){
+        return self::where('status',1)->get();
     }
 }

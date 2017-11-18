@@ -18,3 +18,110 @@
 .required {
   color:#f4516c;
 }
+.select2-result-repository__title {
+    color: #000;
+    font-weight: 700;
+    word-wrap: break-word;
+    line-height: 1.1;
+    margin-bottom: 4px;
+}
+.select2-result-repository__description {
+    font-size: 13px;
+    color: #777;
+    margin-top: 4px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__clear {
+    cursor: pointer;
+    float: right;
+    font-weight: bold;
+    margin-top: 2px;
+    margin-right: 10px;
+}
+
+.btn-upload .webuploader-pick{
+  background: #0e9aef;
+  padding: 6px 10px;
+}
+.btn-upload .pickers{display: inline-block;}
+.btn-upload .webuploader-pick-hover {
+  background: #0c87d2;
+}
+.multi-file-upload .file-item,
+.multi-file-upload .webuploader-container,
+.multi-image-upload .file-item,
+.multi-image-upload .webuploader-container{width: 168px;height: 108px;}
+
+.multi-file-upload .uploader-picker,
+.multi-image-upload .uploader-picker{border: 1px dashed #ddd;}
+.multi-file-upload .webuploader-container label,
+.multi-image-upload .webuploader-container label
+{margin-bottom: 0;}
+.multi-file-upload .webuploader-pick,
+.multi-image-upload .webuploader-pick{
+  width: 100%;height: 100%;
+  background: #fff;
+  color: #676a6c;
+  padding-top: 20px;
+}
+.file-item .file-delete,
+.file-item .file-cannel{padding: 0px 5px 0 0;}
+.file-item .file-info{padding: 0px 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+.file-item .file-state{padding: 3px;}
+.multi-image-upload .full-height{height: 100%;}
+.multi-image-upload .file-item{
+  position: relative;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+.multi-image-upload .file-item .file-item-bg{
+  position: absolute;
+  top: 0;left: 0;
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+.multi-image-upload .file-item .file-preview{
+  display: table;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ddd;
+}
+.multi-image-upload .file-item .file-preview span.preview{
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+.multi-image-upload .file-item .file-preview span.preview img{
+  display: inline-block;
+  max-width: 100%;
+  max-height: 96px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.multi-image-upload-lg .webuploader-container,
+.multi-image-upload-lg .file-item{
+  width: 200px;height: 150px;
+}
+.multi-image-upload-lg .webuploader-container .webuploader-pick{
+  padding-top: 40px;
+}
+.multi-image-upload-lg .file-item .file-preview span.preview img{
+  max-height: 138px;
+}
+.multi-image-upload-lg .file-item .file-progress{padding-top: 20px;}
+
+.p-tb-xs{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.p-r-xxs{padding-right: 5px;}
+.p-r-xs{padding-right: 10px;}
+.p-b-xs{padding-bottom: 10px;}
+.fa-2x{font-size:2em;}
