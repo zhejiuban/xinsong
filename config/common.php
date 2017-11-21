@@ -6,7 +6,17 @@
  * Time: 下午2:04
  */
 return [
-    'page'=>[
-        'per_page'=>10
+    'page' => [
+        'per_page' => 10
+    ],
+    'question_status' => [
+        0 => ['title' => '待接收', 'class' => ' m-badge--danger'],
+        1 => ['title' => '处理中', 'class' => ' m-badge--warning'],
+        2 => ['title' => '已回复', 'class' => ' m-badge--primary'],
+        3 => ['title' => '已关闭', 'class' => ' m-badge--success'],
+    ],
+    'status' => [
+        0 => ['title' => '禁用', 'class' => ' m-badge--danger'],
+        1 => ['title' => '可用', 'class' => ' m-badge--success'],
     ]
 ];

@@ -21,7 +21,7 @@
 					</div>
 				</div>
 				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<a href="{{ menu_url_format(route('devices.create'),['mid'=>request('mid')]) }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+					<a href="{{ route('question.personal.create',['back'=>'personal','mid'=>'33b831058807f08d98879f28b9847613']) }}" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
 						<span>
 							<i class="fa fa-plus"></i>
 							<span>
@@ -38,15 +38,9 @@
 		<!--begin: Datatable -->
 		<div class="m_datatable" id="ajax_data"></div>
 		<!--end: Datatable -->
-    <!--begin::Modal-->
-		<div class="modal fade" id="m_role_modal" tabindex="-1" role="dialog" aria-labelledby="RoleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-				</div>
-			</div>
-		</div>
-    <div class="modal fade" id="m_role_modal_edit" tabindex="-1" role="dialog" aria-labelledby="RoleModalEditLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
+		<!--begin::Modal-->
+		<div class="modal fade" id="question_modal" tabindex="-1" role="dialog" aria-labelledby="QuestionModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
 				</div>
 			</div>
@@ -71,11 +65,11 @@
           source: {
             type:'get',
             read: {
-              url: '{{ route("devices.index") }}',
+              url: '{{ url("question/personal") }}',
               param:{}
             }
           },
-          pageSize: 10,
+          pageSize: {{config('common.page.per_page',10)}},
           saveState: {
             cookie: true,
             webstorage: true
@@ -112,25 +106,38 @@
             field: "status",
             title: "状态",width: 60,
             template:function (row) {
-                var status = {
-                    1: {'title': '启用', 'class': ' m-badge--success'},
-                    0: {'title': '禁用', 'class': ' m-badge--danger'}
-                };
-                return '<span class="m-badge ' + status[row.status].class + ' m-badge--wide">' + status[row.status].title + '</span>';
+                var status = @json(config('common.question_status'));
+								var rowStatus = Number(row.status);
+                return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
             }
         }, {
-          field: "name",
-          title: "设备类型",
-          filterable: false
+          field: "title",
+          title: "标题",
+          filterable: false,
+					width:200,
+					template: function (row) {
+						return '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.show")}}',{question:row.id})+'" data-toggle="modal" data-target="#question_modal" class="action-show">'+row.title+'</a>';
+					}
         },{
-          field: "remark",
-          title: "描述"
+          field: "question_category_id",
+          title: "所属版块",
+					sortable:false,
+					template: function (row) {
+						return row.category ? row.category.name : null;
+					}
+        }, {
+          field: "receive_user_id",
+          title: "接收人",
+					sortable:false,
+					template: function (row) {
+						return row.receive_user ? row.receive_user.name : null;
+					}
+        }, {
+          field: "received_at",
+          title: "接收时间",width:150
         }, {
           field: "created_at",
           title: "创建时间",width:150
-        }, {
-          field: "updated_at",
-          title: "更新时间",width:150
         }, {
           field: "actions",
           width: 110,
@@ -139,10 +146,14 @@
           // locked: {right: 'xl'},
           overflow: 'visible',
           template: function (row) {
-						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("devices.destroy")}}',{device:row.id })+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
-						if(row.is_system == 1){ del = ''};
-            return '<a href="'+mAppExtend.laravelRoute('{{route_uri("devices.edit")}}',{device:row.id})+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
-                <i class="la la-edit"></i></a>'+del;
+						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.destroy")}}',{question:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
+						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.edit")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
+                <i class="la la-edit"></i></a>';
+						if(row.status > 0){
+							del = '';
+							edit = '';
+						}
+            return edit+del;
           }
         }]
       });
@@ -169,19 +180,12 @@
 
   jQuery(document).ready(function () {
     DatatableAjax.init(); //加载数据列表
-    //添加角色弹窗打开时，加载添加页面
-    $('#m_role_modal').on('shown.bs.modal', function (e) {
-      mAppExtend.ajaxGetHtml(
-        '#m_role_modal .modal-content',
-        "{{ route('devices.create') }}",
-        {},true);
-    })
-    $('.m_datatable').on('click', 'a.action-edit', function(event) {
+		$('.m_datatable').on('click', 'a.action-show', function(event) {
       event.preventDefault();
       var url = $(this).attr('href');
-      $('#m_role_modal_edit').modal('show');
+      $('#question_modal').modal('show');
       mAppExtend.ajaxGetHtml(
-        '#m_role_modal_edit .modal-content',
+        '#question_modal .modal-content',
         url,
         {},true);
     });

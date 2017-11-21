@@ -42,3 +42,11 @@ Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
     Route::post('file/upload', 'Plugin\FileController@fileUpload')->name('file.upload');
     Route::post('video/upload', 'Plugin\FileController@videoUpload')->name('video.upload');
 });
+
+Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {
+    Route::get('create',"QuestionController@personalCreate")->name('question.personal.create'); //个人新增协作
+    Route::get('personal',"QuestionController@personal")->name('question.personal'); //个人已发问题
+    Route::get('pending',"QuestionController@pending")->name('question.pending'); //待处理问题
+    Route::resource('questions', 'QuestionController');
+    Route::resource('categories', 'QuestionCategoryController');
+});

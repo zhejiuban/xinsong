@@ -15,6 +15,7 @@
         <link href="{{ asset('assets/vendors/custom/sweetalert/sweetalert.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/vendors/custom/jquery-treegrid/css/jquery.treegrid.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/vendors/custom/zTree_v3/css/metroStyle/metroStyle.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/vendors/custom/lightbox2/css/lightbox.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- webuploader -->
         <link href="{{asset('assets/vendors/custom/webuploader/webuploader.css')}}" rel="stylesheet">
 
@@ -1112,6 +1113,7 @@
         <script src="{{ asset('assets/vendors/custom/datepicker/locales/bootstrap-datepicker.zh-CN.min.js') }}" type="text/javascript"></script>
         <!-- webuploader -->
         <script src="{{asset('assets/vendors/custom/webuploader/webuploader.min.js')}}" type="text/javascript" ></script>
+        <script src="{{asset('assets/vendors/custom/lightbox2/js/lightbox.min.js')}}" type="text/javascript" ></script>
 
         <script src="{{ asset('assets/theme/default/base/custom.js') }}" type="text/javascript"></script>
         <script type="text/javascript">

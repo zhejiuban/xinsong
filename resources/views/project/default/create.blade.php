@@ -274,7 +274,7 @@
             </div>
       		</div>
           <div class="tab-pane" id="m_tabs_6_4" role="tabpanel">
-            <div class="form-group m-form__group row phase-option last-phase-option" id="phase-option-5">
+            <div class="form-group m-form__group row" >
               <div class="col-md-12">
                 <div id="file-upload-instance" class="clearfix multi-image-upload">
                     <div id="file-upload-instance-picker" class="pull-left m-b-sm p-xxs b-r-sm tooltips uploader-picker" data-container="body" data-html=true data-toggle="m-tooltip"

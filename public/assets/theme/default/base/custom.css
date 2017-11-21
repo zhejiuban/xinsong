@@ -125,3 +125,16 @@
 .p-r-xs{padding-right: 10px;}
 .p-b-xs{padding-bottom: 10px;}
 .fa-2x{font-size:2em;}
+.modal .modal-content .padding-top-bottom-none,.padding-top-bottom-none{
+  padding-top: 0px;padding-bottom: 0px;}
+.modal .modal-content .padding-left-right-15{
+  padding-left: 15px;padding-right: 15px;
+}
+.m-form .m-form__group .form-static-text {
+    padding-top: 0.65rem;
+}
+@media (min-width: 993px){
+  .form-group  label.label-right {
+      text-align: right;
+  }
+}

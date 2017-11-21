@@ -21,7 +21,7 @@
 					</div>
 				</div>
 				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-					<a href="{{ menu_url_format(route('devices.create'),['mid'=>request('mid')]) }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+					<a href="{{ menu_url_format(route('categories.create'),['mid'=>request('mid')]) }}" data-toggle="modal" data-target="#m_role_modal" class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
 						<span>
 							<i class="fa fa-plus"></i>
 							<span>
@@ -71,11 +71,11 @@
           source: {
             type:'get',
             read: {
-              url: '{{ route("devices.index") }}',
+              url: '{{ route("categories.index") }}',
               param:{}
             }
           },
-          pageSize: 10,
+          pageSize: {{config('common.page.per_page',10)}},
           saveState: {
             cookie: true,
             webstorage: true
@@ -120,7 +120,7 @@
             }
         }, {
           field: "name",
-          title: "设备类型",
+          title: "版块名称",
           filterable: false
         },{
           field: "remark",
@@ -139,9 +139,9 @@
           // locked: {right: 'xl'},
           overflow: 'visible',
           template: function (row) {
-						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("devices.destroy")}}',{device:row.id })+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
+						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("categories.destroy")}}',{category:row.id })+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
 						if(row.is_system == 1){ del = ''};
-            return '<a href="'+mAppExtend.laravelRoute('{{route_uri("devices.edit")}}',{device:row.id})+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
+            return '<a href="'+mAppExtend.laravelRoute('{{route_uri("categories.edit")}}',{category:row.id})+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
                 <i class="la la-edit"></i></a>'+del;
           }
         }]
@@ -173,7 +173,7 @@
     $('#m_role_modal').on('shown.bs.modal', function (e) {
       mAppExtend.ajaxGetHtml(
         '#m_role_modal .modal-content',
-        "{{ route('devices.create') }}",
+        "{{ route('categories.create') }}",
         {},true);
     })
     $('.m_datatable').on('click', 'a.action-edit', function(event) {

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeviceRequest extends FormRequest
+class QuestionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,15 +28,15 @@ class DeviceRequest extends FormRequest
             case 'DELETE': {
                 return [];
             }
-            case 'POST': {
-                return [
-                    'name' => 'bail|required|max:100|unique:devices,name'
-                ];
-            }
+            case 'POST':
             case 'PUT':
             case 'PATCH': {
                 return [
-                    'name' => 'bail|required|max:100|unique:devices,name,' . $this->device
+                    'title' => 'bail|required',
+                    'question_category_id' => 'bail|required',
+//                    'project_id' => 'bail|required',
+                    'receive_user_id' => 'bail|required',
+                    'content' => 'bail|required',
                 ];
             }
             default:
@@ -44,13 +44,13 @@ class DeviceRequest extends FormRequest
                 break;
         }
     }
-
     public function messages()
     {
         return [
-            'name.required' => '请输入设备类型名称',
-            'name.max' => '不能大于100个字符',
-            'name.unique' => '设备类型已存在'
+            'title.required' => '请输入问题标题',
+            'question_category_id.required' => '请选择所属版块',
+            'receive_user_id.required' => '请输入回复人',
+            'content.required' => '请输入问题详情',
         ];
     }
 }

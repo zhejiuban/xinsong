@@ -657,4 +657,18 @@ function format_bytes($size, $delimiter = '')
     return round($size, 2) . $delimiter . $units[$i];
 }
 
+function question_category_select($selected = '')
+{
+    $list = \App\QuestionCategory::lists()->toArray();
+    $str = '<option value="">请选版块</option>';
+    if ($list) {
+        foreach ($list as $key => $val) {
+            $str .= '<option value="' . $val['id'] . '" '
+                . ($selected == $val['id'] ? 'selected="selected"' : '') . '>'
+                . $val['name'] . '</option>';
+        }
+    }
+    return $str;
+}
+
 

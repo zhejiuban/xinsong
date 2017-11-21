@@ -5898,7 +5898,9 @@ jQuery.validator.setDefaults({
     errorPlacement: function(error, element) { // render error placement for each input type
     	var group = $(element).closest('.form-group');
         var help = group.find('.m-form__help');
-        if (help.length > 0) {
+        if (element.attr("data-error-container")) {
+           error.appendTo(element.attr("data-error-container"));
+        }else if (help.length > 0) {
             help.before(error);
         } else {
             $(element).after(error);
