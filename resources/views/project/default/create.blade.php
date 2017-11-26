@@ -337,6 +337,7 @@
           language:'zh-CN',
           placeholder: "输入姓名、用户名等关键字搜索，选择用户",
           allowClear: true,
+          width:'100%',
           ajax: {
               url: "{{route('users.selector.data')}}",
               dataType: 'json',
@@ -370,6 +371,7 @@
           language:'zh-CN',
           placeholder: "输入姓名、电话、邮箱、用户名等关键字搜索，选择参与用户",
           allowClear: false,
+          width:'100%',
           ajax: {
               url: "{{route('users.selector.data')}}",
               dataType: 'json',

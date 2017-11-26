@@ -82,7 +82,7 @@ class QuestionCategoryController extends Controller
         ]);
         if ($result) {
             //记录日志
-            activity()->withProperties($result->toArray())->log('版块添加成功');
+            activity()->performedOn($result)->withProperties($result->toArray())->log('版块添加成功');
             return response()->json([
                 'message' => '添加成功'
                 , 'status' => 'success'

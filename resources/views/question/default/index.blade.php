@@ -29,6 +29,14 @@
 							</span>
 						</span>
 					</a>
+					<a href="{{ menu_url_format(route('questions.delete'),['mid'=>request('mid')]) }}" class="batch-delete btn btn-sm btn-danger m-btn m-btn--icon m-btn--air m-btn--pill">
+						<span>
+							<i class="fa fa-trash"></i>
+							<span>
+								删除
+							</span>
+						</span>
+					</a>
 					<div class="m-separator m-separator--dashed d-xl-none"></div>
 				</div>
 			</div>
@@ -38,6 +46,14 @@
 		<!--begin: Datatable -->
 		<div class="m_datatable" id="ajax_data"></div>
 		<!--end: Datatable -->
+		<!--begin::Modal-->
+		<div class="modal fade" id="question_modal" tabindex="-1" role="dialog" aria-labelledby="QuestionModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+				</div>
+			</div>
+		</div>
+		<!--end::Modal-->
 	</div>
 </div>
 @endsection
@@ -92,8 +108,10 @@
         columns: [{
           field: "id",
           title: "ID",
-          width: 60,
-          textAlign: 'center'
+					width: 40,
+          textAlign: 'center',
+					sortable: false,
+          selector: {class: 'm-checkbox--solid m-checkbox--brand'}
         },{
             field: "status",
             title: "状态",width: 60,
@@ -108,7 +126,7 @@
           filterable: false,
 					width:200,
 					template: function (row) {
-						return '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.show")}}',{question:row.id})+'">'+row.title+'</a>';
+						return '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.show")}}',{question:row.id})+'" data-toggle="modal" data-target="#question_modal" class="action-show">'+row.title+'</a>';
 					}
         },{
           field: "question_category_id",
@@ -139,7 +157,7 @@
           title: "创建时间",width:150
         }, {
           field: "actions",
-          width: 110,
+          width: 140,
           title: "操作",
           sortable:false,
           // locked: {right: 'xl'},
@@ -148,11 +166,11 @@
 						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.destroy")}}',{question:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
 						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.edit")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
                 <i class="la la-edit"></i></a>';
-						if(row.status > 0){
-							del = '';
-							edit = '';
-						}
-            return edit+del;
+						var reply = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.reply")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-reply m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="接收并回复">\
+		                <i class="la la-reply"></i></a>';
+						var finish = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.finished")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-finished m-portlet__nav-link btn m-btn m-btn--hover-primary m-btn--icon m-btn--icon-only m-btn--pill" title="关闭">\
+		                <i class="la la-check"></i></a>';
+            return edit+del+reply+finish;
           }
         }]
       });
@@ -179,63 +197,58 @@
 
   jQuery(document).ready(function () {
     DatatableAjax.init(); //加载数据列表
-
+		$('.m_datatable').on('click', 'a.action-show,a.action-reply', function(event) {
+			event.preventDefault();
+			var url = $(this).attr('href');
+			$('#question_modal').modal('show');
+			mAppExtend.ajaxGetHtml(
+				'#question_modal .modal-content',
+				url,
+				{},true);
+		});
     $('.m_datatable').on('click', 'a.action-delete', function(event) {
       event.preventDefault();
       var url = $(this).attr('href');
-      swal({
-        title: "你确定要删除吗?",
-        text: "删除的数据无法撤销，请谨慎操作!",
-        type: "warning",
-        cancelButtonText: '取消',
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "确定",
-        closeOnConfirm: false,
-        showLoaderOnConfirm: true
-      },
-      function(){
-        $.ajax({
-          url: url,
-          type: 'POST',
-          dataType: 'json',
-          data: {'_method': 'DELETE'},
-          success:function(response, status, xhr) {
-            if(response.status == 'success'){
-              datatable.load();
-              swal({
-                timer: 1000,
-                title:'删除成功',
-                text:"您的操作数据已被删除",
-                type:'success'
-              });
-            }else{
-              swal({
-                timer: 2000,
-                title:'删除失败',
-                text:response.message,
-                type:'error'
-              });
-            }
-          },error:function(xhr, textStatus, errorThrown) {
-            _$error = xhr.responseJSON.errors;
-            var _err_mes = '未知错误，请重试';
-            if(_$error != undefined){
-                _err_mes = '';
-                $.each(_$error, function (i, v) {
-                    _err_mes += v[0] + '<br>';
-                });
-            }
-            swal({
-              timer: 2000,
-              title:'删除失败',
-              text:_err_mes,
-              type:'error'
-            });
-          }
-        });
-      });
+      mAppExtend.deleteData({
+				'url':url,
+				'callback':function(){
+					datatable.load();
+				}
+			});
     });
+		$('.m_datatable').on('click', 'a.action-finished', function(event) {
+      event.preventDefault();
+      var url = $(this).attr('href');
+			mAppExtend.confirmControllData({
+				'title':'你确定要关闭问题吗？',
+				'url':url,
+				'data':{_method:'POST'},
+				'callback':function(){
+					datatable.load();
+				}
+			});
+    });
+		$(".batch-delete").click(function(event) {
+			event.preventDefault();
+      var url = $(this).attr('href');
+			var _data = datatable.setSelectedRecords().getSelectedRecords();
+			if(_data.length < 1){
+					mAppExtend.notification('请选择要操作的数据','error');
+					return;
+			}
+			var id = [];
+			$.each(_data,function (i,v) {
+					var ids = $(v).find('input').val();
+					id.push(ids);
+			});
+			mAppExtend.deleteData({
+				'url':url,
+				'data':{id:id},
+				'callback':function(){
+					datatable.load();
+				}
+			});
+		});
   });
   </script>
 @endsection

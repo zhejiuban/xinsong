@@ -255,7 +255,7 @@ if (!function_exists('_404')) {
     {
         $request = request();
         if ($request->ajax()) {
-            if ($request->method() == 'GET') {
+            if ($request->isMethod('GET')) {
                 return view('layouts._error', compact('message'));
             } else {
                 return response()->json([
@@ -644,6 +644,7 @@ function device_select($selected = '')
     }
     return $str;
 }
+
 /**
  * 格式化字节大小
  * @param  number $size 字节数
@@ -669,6 +670,28 @@ function question_category_select($selected = '')
         }
     }
     return $str;
+}
+
+function _error($message = '您访问的信息不存在', $data = null, $url = '')
+{
+    return _404($message, $data, $url);
+}
+
+function _success($message = '操作成功', $data = null, $url = '')
+{
+    $request = request();
+    if ($request->ajax()) {
+        if ($request->isMethod('GET')) {
+            return view('layouts._success', compact('message'));
+        } else {
+            return response()->json([
+                'message' => $message, 'data' => $data,
+                'status' => 'success', 'url' => $url
+            ]);
+        }
+    } else {
+        return view('layouts._success', compact('message'));
+    }
 }
 
 

@@ -38,6 +38,14 @@
 		<!--begin: Datatable -->
 		<div class="m_datatable" id="ajax_data"></div>
 		<!--end: Datatable -->
+		<!--begin::Modal-->
+		<div class="modal fade" id="question_modal" tabindex="-1" role="dialog" aria-labelledby="QuestionModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+				</div>
+			</div>
+		</div>
+		<!--end::Modal-->
 	</div>
 </div>
 @endsection
@@ -106,7 +114,10 @@
           field: "title",
           title: "标题",
           filterable: false,
-					width:200
+					width:200,
+					template: function (row) {
+						return '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.show")}}',{question:row.id})+'" data-toggle="modal" data-target="#question_modal" class="action-show">'+row.title+'</a>';
+					}
         },{
           field: "question_category_id",
           title: "所属版块",
@@ -115,11 +126,11 @@
 						return row.category ? row.category.name : null;
 					}
         }, {
-          field: "receive_user_id",
-          title: "接收人",
+          field: "user_id",
+          title: "上报人",
 					sortable:false,
 					template: function (row) {
-						return row.receive_user ? row.receive_user.name : null;
+						return row.user ? row.user.name : null;
 					}
         }, {
           field: "received_at",
@@ -135,14 +146,12 @@
           // locked: {right: 'xl'},
           overflow: 'visible',
           template: function (row) {
-						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.destroy")}}',{question:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
-						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.edit")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
-                <i class="la la-edit"></i></a>';
-						if(row.status > 0){
-							del = '';
+						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.reply")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-reply m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="接收并回复">\
+                <i class="la la-reply"></i></a>';
+						if(row.status == 3){
 							edit = '';
 						}
-            return edit+del;
+            return edit;
           }
         }]
       });
@@ -169,63 +178,15 @@
 
   jQuery(document).ready(function () {
     DatatableAjax.init(); //加载数据列表
-
-    $('.m_datatable').on('click', 'a.action-delete', function(event) {
-      event.preventDefault();
-      var url = $(this).attr('href');
-      swal({
-        title: "你确定要删除吗?",
-        text: "删除的数据无法撤销，请谨慎操作!",
-        type: "warning",
-        cancelButtonText: '取消',
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "确定",
-        closeOnConfirm: false,
-        showLoaderOnConfirm: true
-      },
-      function(){
-        $.ajax({
-          url: url,
-          type: 'POST',
-          dataType: 'json',
-          data: {'_method': 'DELETE'},
-          success:function(response, status, xhr) {
-            if(response.status == 'success'){
-              datatable.load();
-              swal({
-                timer: 1000,
-                title:'删除成功',
-                text:"您的操作数据已被删除",
-                type:'success'
-              });
-            }else{
-              swal({
-                timer: 2000,
-                title:'删除失败',
-                text:response.message,
-                type:'error'
-              });
-            }
-          },error:function(xhr, textStatus, errorThrown) {
-            _$error = xhr.responseJSON.errors;
-            var _err_mes = '未知错误，请重试';
-            if(_$error != undefined){
-                _err_mes = '';
-                $.each(_$error, function (i, v) {
-                    _err_mes += v[0] + '<br>';
-                });
-            }
-            swal({
-              timer: 2000,
-              title:'删除失败',
-              text:_err_mes,
-              type:'error'
-            });
-          }
-        });
-      });
-    });
+		$('.m_datatable').on('click', 'a.action-show,a.action-reply', function(event) {
+			event.preventDefault();
+			var url = $(this).attr('href');
+			$('#question_modal').modal('show');
+			mAppExtend.ajaxGetHtml(
+				'#question_modal .modal-content',
+				url,
+				{},true);
+		});
   });
   </script>
 @endsection

@@ -333,6 +333,77 @@ var mAppExtend = function () {
                 }
             });
         },
+        deleteData:function(options){
+          var options = $.extend(true, {
+            title:'你确定要执行此操作吗?',
+            text:"此操作的数据无法撤销，请谨慎操作!",
+            url:'',
+            data:{'_method': 'DELETE'},
+            callback:null,
+            successTimer:1000,
+            errorTimer:2000
+          }, options);
+          swal({
+            title: options.title,
+            text: options.text,
+            type: "warning",
+            cancelButtonText: '取消',
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "确定",
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true
+          },
+          function(){
+            $.ajax({
+              url: options.url,
+              type: 'POST',
+              dataType: 'json',
+              data: options.data,
+              success:function(response, status, xhr) {
+                if(response.status == 'success'){
+                  swal({
+                    timer: options.successTimer,
+                    title:'操作成功',
+                    text:"您的操作数据已被处理",
+                    type:'success'
+                  });
+                  setTimeout(function () {
+                    if (options.callback instanceof Function) {
+                        options.callback(response, status, xhr);
+                    }
+                  }, options.successTimer);
+                }else{
+                  swal({
+                    timer: options.errorTimer,
+                    title:'操作失败',
+                    text:response.message,
+                    type:'error'
+                  });
+                }
+              },
+              error:function(xhr, textStatus, errorThrown) {
+                _$error = xhr.responseJSON.errors;
+                var _err_mes = '未知错误，请重试';
+                if(_$error != undefined){
+                    _err_mes = '';
+                    $.each(_$error, function (i, v) {
+                        _err_mes += v[0] + '<br>';
+                    });
+                }
+                swal({
+                  timer: options.errorTimer,
+                  title:'删除失败',
+                  text:_err_mes,
+                  type:'error'
+                });
+              }
+            });
+          });
+        },
+        confirmControllData:function(options){
+          mAppExtend.deleteData(options);
+        },
         fileUpload:function(options){
             // {
             //     'uploader':options.uploader, //必须
@@ -657,6 +728,7 @@ var mAppExtend = function () {
                 if(uploaders.getFile($fileid) != undefined){
                     uploaders.removeFile( $fileid,true);
                 }
+                $('#'+pickers).find('#'+$fileid).tooltip('hide');
                 $('#'+pickers).find('#'+$fileid).remove();
                 if (options.fileCannel instanceof Function) {
                     options.fileCannel($fileid, uploaders);
@@ -667,6 +739,7 @@ var mAppExtend = function () {
                 if(uploaders.getFile($fileid) != undefined){
                     uploaders.removeFile( $fileid,true);
                 }
+                $('#'+pickers).find('#'+$fileid).tooltip('hide');
                 $('#'+pickers).find('#'+$fileid).remove();
                 if (options.fileDelete instanceof Function) {
                     options.fileDelete($fileid, uploaders);

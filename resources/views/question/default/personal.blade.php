@@ -100,8 +100,10 @@
         columns: [{
           field: "id",
           title: "ID",
-          width: 60,
-          textAlign: 'center'
+          width: 40,
+          textAlign: 'center',
+					sortable: false,
+          selector: {class: 'm-checkbox--solid m-checkbox--brand'}
         },{
             field: "status",
             title: "状态",width: 60,
@@ -146,14 +148,21 @@
           // locked: {right: 'xl'},
           overflow: 'visible',
           template: function (row) {
+						var look = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.show")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-show m-portlet__nav-link btn m-btn m-btn--hover-primary m-btn--icon m-btn--icon-only m-btn--pill" title="查看">\
+                <i class="la la-eye"></i></a>';
 						var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.destroy")}}',{question:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
 						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.edit")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
                 <i class="la la-edit"></i></a>';
+						var finish = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.finished")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-finished m-portlet__nav-link btn m-btn m-btn--hover-primary m-btn--icon m-btn--icon-only m-btn--pill" title="关闭">\
+                <i class="la la-check"></i></a>';
 						if(row.status > 0){
 							del = '';
 							edit = '';
 						}
-            return edit+del;
+						if(row.status != 2){
+							finish = '';
+						}
+            return look+edit+del+finish;
           }
         }]
       });
@@ -191,60 +200,28 @@
     });
     $('.m_datatable').on('click', 'a.action-delete', function(event) {
       event.preventDefault();
-      var url = $(this).attr('href');
-      swal({
-        title: "你确定要删除吗?",
-        text: "删除的数据无法撤销，请谨慎操作!",
-        type: "warning",
-        cancelButtonText: '取消',
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "确定",
-        closeOnConfirm: false,
-        showLoaderOnConfirm: true
-      },
-      function(){
-        $.ajax({
-          url: url,
-          type: 'POST',
-          dataType: 'json',
-          data: {'_method': 'DELETE'},
-          success:function(response, status, xhr) {
-            if(response.status == 'success'){
-              datatable.load();
-              swal({
-                timer: 1000,
-                title:'删除成功',
-                text:"您的操作数据已被删除",
-                type:'success'
-              });
-            }else{
-              swal({
-                timer: 2000,
-                title:'删除失败',
-                text:response.message,
-                type:'error'
-              });
-            }
-          },error:function(xhr, textStatus, errorThrown) {
-            _$error = xhr.responseJSON.errors;
-            var _err_mes = '未知错误，请重试';
-            if(_$error != undefined){
-                _err_mes = '';
-                $.each(_$error, function (i, v) {
-                    _err_mes += v[0] + '<br>';
-                });
-            }
-            swal({
-              timer: 2000,
-              title:'删除失败',
-              text:_err_mes,
-              type:'error'
-            });
-          }
-        });
-      });
+			var url = $(this).attr('href');
+      mAppExtend.deleteData({
+				'url':url,
+				'callback':function(){
+					datatable.load();
+				}
+			});
     });
+
+		$('.m_datatable').on('click', 'a.action-finished', function(event) {
+      event.preventDefault();
+			var url = $(this).attr('href');
+			mAppExtend.confirmControllData({
+				'title':'你确定要关闭问题吗？',
+				'url':url,
+				'data':{_method:'POST'},
+				'callback':function(){
+					datatable.load();
+				}
+			});
+    });
+
   });
   </script>
 @endsection
