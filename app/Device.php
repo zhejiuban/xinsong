@@ -12,7 +12,7 @@ class Device extends Model
         'name', 'remark','status'
     ];
     public function projects(){
-        return $this->belongsToMany('App\Project');
+        return $this->belongsToMany('App\Project')->withPivot('number');
     }
     public static function lists(){
         return self::where('status',1)->get();

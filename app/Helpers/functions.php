@@ -658,6 +658,11 @@ function format_bytes($size, $delimiter = '')
     return round($size, 2) . $delimiter . $units[$i];
 }
 
+/**
+ * 问题版块下拉选项
+ * @param string $selected
+ * @return string
+ */
 function question_category_select($selected = '')
 {
     $list = \App\QuestionCategory::lists()->toArray();
@@ -672,11 +677,25 @@ function question_category_select($selected = '')
     return $str;
 }
 
+/**
+ * 错误提示
+ * @param string $message
+ * @param null $data
+ * @param string $url
+ * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+ */
 function _error($message = '您访问的信息不存在', $data = null, $url = '')
 {
     return _404($message, $data, $url);
 }
 
+/**
+ * 成功提示
+ * @param string $message
+ * @param null $data
+ * @param string $url
+ * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+ */
 function _success($message = '操作成功', $data = null, $url = '')
 {
     $request = request();

@@ -303,9 +303,6 @@
             });
           }
       });
-      // $("#submit-button").click(function(event) {
-      //   form.submit();
-      // });
   });
   </script>
 @endsection

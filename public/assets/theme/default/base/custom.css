@@ -49,7 +49,7 @@
 .multi-file-upload .file-item,
 .multi-file-upload .webuploader-container,
 .multi-image-upload .file-item,
-.multi-image-upload .webuploader-container{width: 168px;height: 108px;}
+.multi-image-upload .webuploader-container{width: 166px;height: 106px;}
 
 .multi-file-upload .uploader-picker,
 .multi-image-upload .uploader-picker{border: 1px dashed #ddd;}
@@ -77,19 +77,19 @@
   position: relative;
   margin-right: 15px;
   margin-bottom: 15px;
+  border: 1px solid #ddd;
 }
 .multi-image-upload .file-item .file-item-bg{
   position: absolute;
   top: 0;left: 0;
-  padding: 5px;
+  /*padding: 5px;*/
   width: 100%;
-  /*border: 1px solid #ddd;*/
 }
 .multi-image-upload .file-item .file-preview{
   display: table;
   width: 100%;
   height: 100%;
-  border: 1px solid #ddd;
+  /*border: 1px solid #ddd;*/
 }
 .multi-image-upload .file-item .file-preview span.preview{
   display: table-cell;

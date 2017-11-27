@@ -83,7 +83,7 @@
         layout: {
           theme: 'default', // datatable theme
           class: '', // custom wrapper class
-          scroll: true, // enable/disable datatable scroll both horizontal and vertical when needed.
+          // scroll: true, // enable/disable datatable scroll both horizontal and vertical when needed.
           // height:600,
           footer: false // display/hide footer
         },
@@ -135,6 +135,9 @@
         }, {
           field: "received_at",
           title: "接收时间",width:150
+        }, {
+          field: "replied_at",
+          title: "回复时间",width:150
         }, {
           field: "created_at",
           title: "创建时间",width:150

@@ -9,7 +9,7 @@
                     <i class="flaticon-interface-7"></i>
                 </span>
                 <h3 class="m-portlet__head-text m--font-primary">
-                    新增项目
+                    项目编辑
                 </h3>
             </div>
         </div>
@@ -58,7 +58,7 @@
 			</div>
 		</div>
     <!--begin::Form-->
-    <form action="{{route('projects.store')}}" id="project-form" method="post" class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
+    <form action="{{route('projects.update',['project'=>$project->id])}}" id="project-form" method="post" class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
       <div class="m-portlet__body">
         <div class="tab-content">
       		<div class="tab-pane active" id="m_tabs_6_1" role="tabpanel">
@@ -68,7 +68,7 @@
                     <label>
         							项目名称:
         						</label>
-        						<input type="text" name="title" class="form-control m-input" placeholder="请输入项目名称">
+        						<input type="text" name="title" value="{{$project->title}}" class="form-control m-input" placeholder="请输入项目名称">
         						<span class="m-form__help"></span>
                   </div>
       					</div>
@@ -77,7 +77,7 @@
         						<label class="">
         							项目编号:
         						</label>
-        						<input type="text" name="no" class="form-control m-input" placeholder="请输入项目编号">
+        						<input type="text" name="no" value="{{$project->no}}" class="form-control m-input" placeholder="请输入项目编号">
         						<span class="m-form__help"></span>
                   </div>
       					</div>
@@ -87,7 +87,7 @@
         							所属部门:
         						</label>
                     <select class="form-control m-input select2" name="department_id">
-                      {!! department_select() !!}
+                      {!! department_select($project->department_id) !!}
                     </select>
         						<span class="m-form__help"></span>
                   </div>
@@ -98,6 +98,9 @@
         							项目负责人:
         						</label>
                     <select class="form-control m-input" id="user_select" name="leader">
+                      @if($project->leaderUser)
+                        <option selected value="{{$project->leaderUser->id}}">{{$project->leaderUser->name}}</option>
+                      @endif
                     </select>
         						<span class="m-form__help"></span>
                   </div>
@@ -108,6 +111,9 @@
         							现场/代理负责人:
         						</label>
                     <select class="form-control m-input" id="user_select2" name="agent">
+                      @if($project->agentUser)
+                        <option selected value="{{$project->leaderUser->id}}">{{$project->leaderUser->name}}</option>
+                      @endif
                     </select>
         						<span class="m-form__help"></span>
                   </div>
@@ -118,6 +124,11 @@
         							项目参与人:
         						</label>
                     <select class="form-control m-input" id="user_select3" multiple name="project_user[]">
+                      @if($project->users->isNotEmpty())
+                        @foreach ($project->users as $key => $value)
+                          <option value="{{$value->id}}" selected>{{$value->name}}</option>
+                        @endforeach
+                      @endif
                     </select>
         						<span class="m-form__help"></span>
                   </div>
@@ -127,7 +138,7 @@
         						<label class="">
         							项目描述:
         						</label>
-                    <textarea name="remark" class="form-control m-input" rows="8" placeholder="请输入项目描述"></textarea>
+                    <textarea name="remark" class="form-control m-input" rows="8" placeholder="请输入项目描述">{{$project->remark}}</textarea>
         						<span class="m-form__help"></span>
                   </div>
       					</div>
@@ -138,7 +149,7 @@
                     <label class="">
         							客户对接人:
         						</label>
-        						<input type="text" name="customers" class="form-control m-input" placeholder="请输入客户对接人">
+        						<input type="text" name="customers" value="{{$project->customers}}" class="form-control m-input" placeholder="请输入客户对接人">
         						<span class="m-form__help"></span>
                   </div>
       					</div>
@@ -147,7 +158,7 @@
                     <label class="">
         							客户对接人电话:
         						</label>
-        						<input type="text" name="customers_tel" class="form-control m-input" placeholder="请输入客户对接人电话">
+        						<input type="text" name="customers_tel" value="{{$project->customers_tel}}" class="form-control m-input" placeholder="请输入客户对接人电话">
         						<span class="m-form__help"></span>
                   </div>
       					</div>
@@ -156,147 +167,99 @@
                     <label class="">
         							客户地址:
         						</label>
-        						<input type="text" name="customers_address" class="form-control m-input" placeholder="请输入客户地址">
+        						<input type="text" name="customers_address" value="{{$project->customers_address}}" class="form-control m-input" placeholder="请输入客户地址">
         						<span class="m-form__help"></span>
                   </div>
       					</div>
       				</div>
           </div>
       		<div class="tab-pane device-list" id="m_tabs_6_2" role="tabpanel">
-            <div class="form-group m-form__group row device-option last-device-option" id="device-option-1">
-              <div class="col-md-4">
-                <label class="">设备类型:</label>
-                <select class="form-control m-input select2" name="device_project[1][device_id]">
-                  {!! device_select() !!}
-                </select>
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-4">
-                <label class="">数量:</label>
-                <input type="number" name="device_project[1][number]" class="form-control m-input" placeholder="请输入设备数量">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-4">
-                <label class="">&nbsp;</label>
-                <div class="">
-                  <button type="button" title="添加" id="add-device-option"  class="btn btn-primary">
-                    <i class="fa fa-plus"></i>
-                  </button>
+            @if($project->devices->isNotEmpty())
+              @foreach ($project->devices as $device)
+                <div class="form-group m-form__group row device-option @if ($loop->last) last-device-option @endif" id="device-option-{{$loop->iteration}}">
+                  <div class="col-md-4">
+                    <label class="">设备类型:</label>
+                    <select class="form-control m-input select2" name="device_project[{{$loop->iteration}}][device_id]">
+                      {!! device_select($device->id) !!}
+                    </select>
+                    <span class="m-form__help"></span>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="">数量:</label>
+                    <input type="number" name="device_project[{{$loop->iteration}}][number]" value="{{$device->pivot->number}}" class="form-control m-input" placeholder="请输入设备数量">
+                    <span class="m-form__help"></span>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="">&nbsp;</label>
+                    <div class="">
+                      @if ($loop->last)
+                      <button type="button" title="添加" id="add-device-option"  class="btn btn-primary">
+                        <i class="fa fa-plus"></i>
+                      </button>
+                      @else
+                      <button type="button" title="删除" id="del-device-option-{{$loop->iteration}}" onclick="delDeviceOption({{$loop->iteration}});" device-id="{{$loop->iteration}}" class="btn btn-danger del-device-option">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                      @endif
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              @endforeach
+            @endif
           </div>
       		<div class="tab-pane" id="m_tabs_6_3" role="tabpanel">
-            <div class="form-group m-form__group row phase-option" id="phase-option-1">
-              <div class="col-md-1">
-                <h1>1</h1>
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">建设阶段:</label>
-                <input type="text" class="form-control m-input" name="project_phases[1][name]" readonly value="现场装配">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">开始时间:</label>
-                <input type="text" name="project_phases[1][started_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">结束时间:</label>
-                <input type="text" name="project_phases[1][finished_at]" class="form-control m-input  m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-            </div>
-            <div class="form-group m-form__group row phase-option" id="phase-option-2">
-              <div class="col-md-1">
-                <h1>2</h1>
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">建设阶段:</label>
-                <input type="text" class="form-control m-input" name="project_phases[2][name]" readonly value="现场调试">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">开始时间:</label>
-                <input type="text" name="project_phases[2][started_at]" class="form-control m-input  m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">结束时间:</label>
-                <input type="text" name="project_phases[2][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-            </div>
-            <div class="form-group m-form__group row phase-option" id="phase-option-3">
-              <div class="col-md-1">
-                <h1 class="">3</h1>
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">建设阶段:</label>
-                <input type="text" class="form-control m-input" name="project_phases[3][name]" readonly value="陪产试机">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">开始时间:</label>
-                <input type="text" name="project_phases[3][started_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">结束时间:</label>
-                <input type="text" name="project_phases[3][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-            </div>
-            <div class="form-group m-form__group row phase-option" id="phase-option-4">
-              <div class="col-md-1">
-                <h1 class="">4</h1>
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">建设阶段:</label>
-                <input type="text" class="form-control m-input" name="project_phases[4][name]" readonly value="终验整改">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">开始时间:</label>
-                <input type="text" name="project_phases[4][started_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">结束时间:</label>
-                <input type="text" name="project_phases[4][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-            </div>
-            <div class="form-group m-form__group row phase-option last-phase-option" id="phase-option-5">
-              <div class="col-md-1">
-                <h1 class="">5</h1>
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">建设阶段:</label>
-                <input type="text" class="form-control m-input" name="project_phases[5][name]" readonly value="质保售后">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">开始时间:</label>
-                <input type="text" name="project_phases[5][started_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-              <div class="col-md-3">
-                <label class="">结束时间:</label>
-                <input type="text" name="project_phases[5][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
-                <span class="m-form__help"></span>
-              </div>
-            </div>
-      		</div>
+            @if($project->phases->isNotEmpty())
+              @foreach ($project->phases as $phase)
+                <div class="form-group m-form__group row phase-option  @if ($loop->last) last-phase-option @endif" id="phase-option-{{$loop->iteration}}">
+                  <div class="col-md-1">
+                    <h1>{{$loop->iteration}}</h1>
+                    <span class="m-form__help"></span>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="">建设阶段:</label>
+                    <input type="text" class="form-control m-input" value="{{$phase->name}}" name="project_phases[{{$loop->iteration}}][name]" readonly>
+                    <span class="m-form__help"></span>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="">开始时间:</label>
+                    <input type="text" name="project_phases[{{$loop->iteration}}][started_at]" value="{{$phase->started_at}}" class="form-control m-input m-date" placeholder="请选择时间">
+                    <span class="m-form__help"></span>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="">结束时间:</label>
+                    <input type="text" name="project_phases[{{$loop->iteration}}][finished_at]"  value="{{$phase->finished_at}}"  class="form-control m-input  m-date" placeholder="请选择时间">
+                    <span class="m-form__help"></span>
+                  </div>
+                </div>
+              @endforeach
+            @endif
+          </div>
           <div class="tab-pane" id="m_tabs_6_4" role="tabpanel">
             <div class="form-group m-form__group row" >
               <div class="col-md-12">
                 <div id="file-upload-instance" class="clearfix multi-image-upload">
+                  @if($project->files->isNotEmpty())
+                    @foreach ($project->files as $file)
+                       <div id="uploaded-{{$file->id}}" title="{{$file->old_name}}"  data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="{{$file->old_name}}"
+                           class="tooltips file-item pull-left">
+                          <div class="file-item-bg bg-grey-cararra full-height">
+                              <div class="text-right file-cannel">
+                                  <a href="javascript:;" title="删除" data-file-id="uploaded-{{$file->id}}" class="m--font-danger">
+                                      <i class="fa fa-trash"></i>
+                                  </a>
+                              </div>
+                              <div class="file-progress text-center ">
+                                  <i class="fa fa-check-circle-o m--font-primary fa-2x fa-fw"></i>
+                              </div>
+                              <div class="file-state text-center">{{format_bytes($file->size)}}</div>
+                              <div class="file-info text-center" title="{{$file->old_name}}">
+                                  <a href="{{asset($file->path)}}" target="_blank" title="下载">{{$file->old_name}}</a>
+                              </div>
+                          </div>
+                          <input type="hidden" name="file_project[]" value="{{$file->id}}">
+                      </div>
+                    @endforeach
+                  @endif
                     <div id="file-upload-instance-picker" class="pull-left m-b-sm p-xxs b-r-sm tooltips uploader-picker" data-container="body" data-html=true data-toggle="m-tooltip"
                      data-placement="top" data-original-title="单个文件大小{{format_bytes(config('filesystems.disks.file.validate.size')*1024)}}以内,允许上传类型：{{arr2str(config('filesystems.disks.file.validate.ext'))}}">
                         <p class="m-b-sm"><i class="fa fa-plus-circle m--font-primary fa-2x fa-fw"></i></p>
@@ -313,6 +276,7 @@
           <div class="row">
             <div class="col-lg-6">
               {{ csrf_field() }}
+              {{method_field('PUT')}}
               <button type="submit" id="submit-button" class="btn btn-primary">
                 提交
               </button>

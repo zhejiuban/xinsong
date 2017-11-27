@@ -70,8 +70,140 @@
 
 @section('js')
   <script type="text/javascript">
-  jQuery(document).ready(function () {
+    var datatable;
+    var DatatableAjax = function () {
+    //== Private functions
+    // basic demo
+    var DataList = function () {
 
+      datatable = $('.m_datatable').mDatatable({
+        // datasource definition
+        data: {
+          type: 'remote',
+          source: {
+            type:'get',
+            read: {
+              url: '{{ route("projects.index") }}',
+              param:{}
+            }
+          },
+          pageSize: {{config('common.page.per_page',10)}},
+          saveState: {
+            cookie: true,
+            webstorage: true
+          },
+          serverPaging: true,
+          serverFiltering: true,
+          serverSorting: true
+        },
+
+        // layout definition
+        layout: {
+          theme: 'default', // datatable theme
+          class: '', // custom wrapper class
+          //scroll: true, // enable/disable datatable scroll both horizontal and vertical when needed.
+          // height:600,
+          footer: false // display/hide footer
+        },
+
+        // column sorting
+        sortable: true,
+
+        // column based filtering
+        filterable: false,
+
+        pagination: true,
+
+        // columns definition
+        columns: [{
+          field: "id",
+          title: "ID",
+          width: 40,
+          textAlign: 'center',
+					sortable: false,
+          selector: {class: 'm-checkbox--solid m-checkbox--brand'}
+        },{
+            field: "status",
+            title: "状态",width: 60,
+            template:function (row) {
+                var status = @json(config('common.project_status'));
+								var rowStatus = Number(row.status);
+                return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
+            }
+        }, {
+          field: "no",
+          title: "编号"
+        },{
+          field: "title",
+          title: "项目名称"
+        }, {
+          field: "leader",sortable:false,
+          title: "负责人",template:function (row) {
+              if(row.leader_user){
+                return row.leader_user.name;
+              }
+          }
+        }, {
+          field: "agent",sortable:false,
+          title: "代理负责人",template:function (row) {
+              if(row.agent_user){
+                return row.agent_user.name;
+              }
+          }
+        }, {
+          field: "department_id",
+          title: "所属部门",
+          sortable:false,template:function (row) {
+              if(row.department){
+                return row.department.name;
+              }
+          }
+        }, {
+          field: "customers",
+          title: "客户对接人"
+        }, {
+          field: "customers_tel",
+          title: "客户对接人电话"
+        }, {
+          field: "customers_address",
+          title: "客户地址"
+        }, {
+          field: "actions",
+          width: 110,
+          title: "操作",
+          sortable:false,
+          // locked: {right: 'xl'},
+          overflow: 'visible',
+          template: function (row) {
+            var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.destroy")}}',{project:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
+						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.edit")}}',{project:row.id,mid:"{{request('mid')}}" })+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
+                <i class="la la-edit"></i></a>';
+                return edit + del;
+          }
+        }]
+      });
+
+      var query = datatable.getDataSourceQuery();
+
+      $('#m_form_search').on('keyup', function (e) {
+        // shortcode to datatable.getDataSourceParam('query');
+        var query = datatable.getDataSourceQuery();
+        query.search = $(this).val();
+        // shortcode to datatable.setDataSourceParam('query', query);
+        datatable.setDataSourceQuery(query);
+        datatable.load();
+      }).val(query.search);
+    };
+
+    return {
+      // public functions
+      init: function () {
+        DataList();
+      }
+    };
+  }();
+  jQuery(document).ready(function () {
+    DatatableAjax.init();
   });
   </script>
 @endsection
