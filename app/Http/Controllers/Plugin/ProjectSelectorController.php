@@ -25,7 +25,7 @@ class ProjectSelectorController extends Controller
         $list = Project::when($search, function ($query) use ($search) {
             return $query->where('title', 'like', "%$search%")
                 ->orWhere('no', 'like', "%$search%");
-        })->where('status',1)->paginate(config('common.page.per_page'));
+        })->where('status','>=',0)->paginate(config('common.page.per_page'));
         return $list;
     }
 }

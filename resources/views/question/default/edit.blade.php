@@ -49,7 +49,7 @@
               </label>
               <div class="">
                 <select class="form-control m-input" id="user_select" name="receive_user_id" data-error-container="#receive_user_ids-error">
-                  <option value="{{$question->receive_user_id}}">{{$question->receiveUser->name}}</option>
+                  <option value="{{$question->receive_user_id}}" selected>{{$question->receiveUser->name}}</option>
                 </select>
               </div>
               <div id="receive_user_ids-error" class=""></div>
@@ -75,7 +75,9 @@
   						</label>
               <div class="">
                 <select class="form-control m-input select2" id="project_select" name="project_id">
-                  {{$question->project?'<option value="'.$question->project->id.'">'.$question->project->title.'</option>':''}}
+                  @if ($question->project)
+                    <option value="{{$question->project->id}}" selected>{{$question->project->title}}</option>
+                  @endif
                 </select>
               </div>
   						<span class="m-form__help"></span>
