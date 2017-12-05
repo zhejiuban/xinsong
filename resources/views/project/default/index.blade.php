@@ -135,7 +135,10 @@
           title: "编号"
         },{
           field: "title",
-          title: "项目名称"
+          title: "项目名称",
+            template: function (row) {
+                return '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.show")}}',{project:row.id,mid:"{{md5('project/projects/show')}}" })+'" class="action-show m-portlet__nav-link" title="项目概况">'+row.title+'</a>';
+            }
         }, {
           field: "leader",sortable:false,
           title: "负责人",template:function (row) {

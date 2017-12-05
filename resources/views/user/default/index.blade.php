@@ -191,7 +191,8 @@
         columns: [{
           field: "id",
           title: "ID",
-          width: 30,
+					width: 40,
+          textAlign: 'center',
           sortable: false,
           selector: {class: 'm-checkbox--solid m-checkbox--brand'}
         },{

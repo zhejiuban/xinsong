@@ -50,7 +50,19 @@ class ProjectRequest extends FormRequest
             case 'PATCH': {
                 return [
                     'title' => 'bail|required',
-                    'no' => 'bail|required',
+                    'no' => 'bail|required|unique:projects,no,'.request('project'),
+                    'department_id' => 'bail|required',
+                    'leader' => 'bail|required',
+                    'agent' => 'bail|required',
+                    'project_user' => 'bail|required',
+                    'customers' => 'bail|required',
+                    'customers_tel' => 'bail|required',
+                    'customers_address' => 'bail|required',
+                    'device_project.*.device_id' => 'bail|required|distinct',
+                    'device_project.*.number' => 'bail|required',
+                    'project_phases.*.name' => 'bail|required',
+                    'project_phases.*.started_at' => 'bail|required',
+                    'project_phases.*.finished_at' => 'bail|required|after:project_phases.*.started_at',
                 ];
             }
             default:

@@ -112,7 +112,7 @@
         						</label>
                     <select class="form-control m-input" id="user_select2" name="agent">
                       @if($project->agentUser)
-                        <option selected value="{{$project->leaderUser->id}}">{{$project->leaderUser->name}}</option>
+                        <option selected value="{{$project->agentUser->id}}">{{$project->agentUser->name}}</option>
                       @endif
                     </select>
         						<span class="m-form__help"></span>
@@ -213,7 +213,7 @@
                 <div class="form-group m-form__group row phase-option  @if ($loop->last) last-phase-option @endif" id="phase-option-{{$loop->iteration}}">
                   <div class="col-md-1">
                     <h1>{{$loop->iteration}}</h1>
-                    <span class="m-form__help"></span>
+                    <input type="hidden" name="project_phases[{{$loop->iteration}}][id]" value="{{$phase->id}}">
                   </div>
                   <div class="col-md-3">
                     <label class="">建设阶段:</label>
@@ -436,7 +436,7 @@
           fileDelete:function(fileId, uploader){}
       });
 
-      var form = $('#project-form');
+      var form = $('#projects-form');
       var submitButton = $("#submit-button");
       form.validate({
           // define validation rules
