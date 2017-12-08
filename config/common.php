@@ -7,7 +7,7 @@
  */
 return [
     'page' => [
-        'per_page' => 10
+        'per_page' => 15
     ],
     'question_status' => [
         0 => ['title' => '待接收', 'class' => ' m-badge--danger'],
@@ -23,5 +23,14 @@ return [
         0 => ['title' => '未开始', 'class' => ' m-badge--danger'],
         1 => ['title' => '进行中', 'class' => ' m-badge--primary'],
         2 => ['title' => '已完成', 'class' => ' m-badge--success'],
-    ]
+    ],
+    'project_phases_status' => [
+        0 => ['title' => '未开始', 'class' => ' m-badge--danger'],
+        1 => ['title' => '进行中', 'class' => ' m-badge--primary'],
+        2 => ['title' => '已完成', 'class' => ' m-badge--success'],
+    ],
+    'task_status' => [
+        0 => ['title' => '进行中', 'class' => ' m-badge--primary','color'=>'danger'],
+        1 => ['title' => '已完成', 'class' => ' m-badge--success','color'=>'success'],
+    ],
 ];

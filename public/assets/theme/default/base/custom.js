@@ -39,25 +39,35 @@ var mAppExtend = function () {
      * @return {[type]} [description]
      */
     var handleReloadHtml = function () {
-        $('body').on('click', 'a[data-toggle="relaodHtml"],button[data-toggle="relaodHtml"]', function (e) {
+        $('body').on('click', 'a[data-toggle="relaodHtml"],button[data-toggle="relaodHtml"],a[data-toggle="loadHtml"],button[data-toggle="loadHtml"]', function (e) {
             e.preventDefault();
             var el = $(this).data('target');
             var url = $(this).attr('href') ? $(this).attr('href') : $(this).data('href');
             var query = $(this).data('query');
-            var loading = $(this).data('loading') ? true : false;
+            var loading = $(this).data('loading') ? $(this).data('loading') : false;
             if (url) {
                 mAppExtend.ajaxGetHtml(el, url, query, loading);
             }
         });
+        $('[data-toggle="autoLoadHtml"]').each(function(i,v) {
+            var el = $(v).data('target');
+            var url = $(v).attr('href') ? $(v).attr('href') : $(v).data('href');
+            var query = $(v).data('query');
+            var loading = $(v).data('loading') ? $(this).data('loading') : false;
+            if (url) {
+                mAppExtend.ajaxGetHtml(el, url, query, loading);
+            }
+        })
     };
     /**
      * 下框初始化
      * @return {[type]} [description]
      */
-    var handleSelect2 = function () {
+    var handleSelect2 = function (el) {
         if ($().select2) {
             // $.fn.select2.defaults.set("theme", "bootstrap");
-            $('.select2').select2({
+            var ele = el ? el : '.select2';
+            $(ele).select2({
                 language:'zh-CN',
                 width: '100%'
             });
@@ -97,20 +107,56 @@ var mAppExtend = function () {
         };
       }
     };
-    var handleDatePicker = function(){
-      $('.m-date').datepicker({
-          language: "zh-CN",
-          todayBtn: "linked",
-          clearBtn: true,
-          // orientation: "bottom left",
-          zIndexOffset:200,
-          todayHighlight: true,
-          format: "yyyy-mm-dd",
-          autoclose: true,
-          templates: {
-              leftArrow: '<i class="la la-angle-left"></i>',
-              rightArrow: '<i class="la la-angle-right"></i>'
-          }
+    var handleDatePicker = function(el,options){
+        var ele = el ? el : '.m-date';
+        var options = $.extend(true, {
+            language: "zh-CN",
+            todayBtn: "linked",
+            clearBtn: true,
+            // orientation: "bottom left",
+            zIndexOffset: 200,
+            todayHighlight: true,
+            format: "yyyy-mm-dd",
+            autoclose: true,
+            templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+        }, options);
+        $(ele).datepicker(options);
+    }
+    var handleDateTimePicker = function (el, options) {
+        var ele = el ? el : '.m-datetime';
+        var options = $.extend(true, {
+            language: "zh-CN",
+            todayBtn: "linked",
+            clearBtn: true,
+            // orientation: "bottom left",
+            zIndexOffset: 200,
+            todayHighlight: true,
+            format: "yyyy-mm-dd hh:ii:ss",
+            // pickerPosition: 'bottom-left',
+            autoclose: true,
+            templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+        }, options);
+        $(ele).datetimepicker(options);
+    }
+    var handleTooltips = function (el) {
+        // init bootstrap tooltips
+        var el = el ? el : '[data-toggle="m-tooltip"]';
+        $(el).each(function () {
+            var el = $(this);
+            var skin = el.data('skin') ? 'm-tooltip--skin-' + el.data('skin') : '';
+
+            el.tooltip({
+                template: '<div class="m-tooltip ' + skin + ' tooltip" role="tooltip">\
+                    <div class="arrow"></div>\
+                    <div class="tooltip-inner"></div>\
+                </div>'
+            });
         });
     }
     return {
@@ -120,6 +166,7 @@ var mAppExtend = function () {
             handleSelect2();
             handleValidatorExtendMethod();
             handleDatePicker();
+            handleDateTimePicker();
         },
         notification: function(message,type,notifyType,callback,options){
           if(notifyType == 'notify'){
@@ -213,7 +260,7 @@ var mAppExtend = function () {
         /*ajax加载页面*/
         ajaxGetHtml: function (el, url, query, isLoading, callback, errorCallback) {
             var loading = isLoading ? true : false;
-            var loadingEl = isLoading != true ? isLoading : 'body'
+            var loadingEl = isLoading != true ? isLoading : 'body';
             jQuery.ajax({
                 url: url,
                 type: 'GET',
@@ -371,6 +418,8 @@ var mAppExtend = function () {
                   setTimeout(function () {
                     if (options.callback instanceof Function) {
                         options.callback(response, status, xhr);
+                    }else{
+                        mAppExtend.backUrl(response.url);
                     }
                   }, options.successTimer);
                 }else{
@@ -412,6 +461,7 @@ var mAppExtend = function () {
             //     'server':options.server,//必须
             //     'formData':options.formData,
             //     'fileNumLimit':options.fileNumLimit,
+            //     'showTooltip':true,
             //     'isAutoInsertInput':options.isAutoInsertInput,#是否自动追加上传成功后的input存储框
             //     'storageInputName':options.storageInputName,#上传成功后的input存储框名称
             //     'uploadSuccess':function
@@ -420,7 +470,9 @@ var mAppExtend = function () {
             //     'fileDelete':function
             //     'fileCannel':function
             // }
-            options = $.extend(true, {}, options);
+            options = $.extend(true, {
+                'showTooltip':true
+            }, options);
             var pickers = options.picker,
                 uploaders = options.uploader,
                 autoCreateInput = !options.isAutoInsertInput ? options.isAutoInsertInput : true,
@@ -529,16 +581,9 @@ var mAppExtend = function () {
                     options.uploadComplete(file, uploaders);
                 }
                 uploaders.removeFile( file,true);
-                $('#'+pickers+' .tooltips').each(function() {
-                    var el = $(this);
-                    var skin = el.data('skin') ? 'm-tooltip--skin-' + el.data('skin') : '';
-                    el.tooltip({
-                        template: '<div class="m-tooltip ' + skin + ' tooltip" role="tooltip">\
-                            <div class="arrow"></div>\
-                            <div class="tooltip-inner"></div>\
-                        </div>'
-                    });
-                });
+                if (options.showTooltip){
+                    mAppExtend.handleInitTooltips('#' + pickers + ' .tooltips');
+                }
             });
             //未上传取消文件
             $('#'+pickers).on('click', ".file-cannel a", function(){
@@ -571,7 +616,8 @@ var mAppExtend = function () {
             //     'swf':options.swf,//必须
             //     'server':options.server,//必须
             //     'formData':options.formData,
-            //     'fileNumLimit':options.fileNumLimit
+            //     'fileNumLimit':options.fileNumLimit,
+            //     'showTooltip': true
             //     'isAutoInsertInput':options.isAutoInsertInput,#是否自动追加上传成功后的input存储框
             //     'storageInputName':options.storageInputName,#上传成功后的input存储框名称
             //     'uploadSuccess':function
@@ -580,7 +626,9 @@ var mAppExtend = function () {
             //     'fileDelete':function
             //     'fileCannel':function
             // }
-            options = $.extend(true, {}, options);
+            options = $.extend(true, {
+                'showTooltip': true
+            }, options);
             var pickers = options.picker,
                 uploaders = options.uploader,
                 autoCreateInput = !options.isAutoInsertInput ? options.isAutoInsertInput : true,
@@ -711,16 +759,9 @@ var mAppExtend = function () {
                     options.uploadComplete(file, uploaders);
                 }
                 uploaders.removeFile( file,true);
-                $('#'+pickers+' .tooltips').each(function() {
-                    var el = $(this);
-                    var skin = el.data('skin') ? 'm-tooltip--skin-' + el.data('skin') : '';
-                    el.tooltip({
-                        template: '<div class="m-tooltip ' + skin + ' tooltip" role="tooltip">\
-                            <div class="arrow"></div>\
-                            <div class="tooltip-inner"></div>\
-                        </div>'
-                    });
-                });
+                if (options.showTooltip) {
+                    mAppExtend.handleInitTooltips('#' + pickers + ' .tooltips');
+                }
             });
             //未上传取消文件
             $('#'+pickers).on('click', ".file-cannel a", function(){
@@ -745,7 +786,20 @@ var mAppExtend = function () {
                     options.fileDelete($fileid, uploaders);
                 }
             });
+        },
+        datePickerInstance:function (el,options) { 
+            handleDatePicker(el, options);
+        },
+        dateTimePickerInstance: function (el, options) {
+            handleDateTimePicker(el, options);
+        },
+        select2Instance: function (el) {
+            handleSelect2(el);
+        },
+        handleInitTooltips:function (el) {
+            handleTooltips(el);
         }
+
     }
 }();
 $(document).ready(function () {

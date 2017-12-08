@@ -84,7 +84,7 @@ return [
                 'size' => 20*1024,//单位kb
                 'ext' => [
                     'jpg', 'jpeg','png','gif','doc', 'docx',
-                    'zip','rar','tar','gz','7z','doc',
+                    'zip','rar','tar','gz','7z',
                     'docx','txt','pdf','xls','xlsx'
                 ]
             ],

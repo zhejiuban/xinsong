@@ -16,7 +16,7 @@
         <div class="m-portlet__head-tools">
             <ul class="m-portlet__nav">
                 <li class="m-portlet__nav-item">
-                    <a href="{{ (isset($back) && $back=="personal") ? menu_url_format(route('question.personal'),['mid'=>'c41b512b04286cc8f479176a466d23ac']) : menu_url_format(route('questions.index'),['mid'=>request('mid')])   }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
+                    <a href="{{ get_redirect_url() }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
                         <span>
                             <i class="fa fa-reply"></i>
                             <span>
@@ -31,50 +31,53 @@
     <!--begin::Form-->
     <form action="{{route('questions.store',['back'=>$back])}}" id="project-form" method="post" class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
       <div class="m-portlet__body">
-				<div class="row m-form__group ">
-  					<div class="col-md-12">
+        <div class="row m-form__group ">
+            <div class="col-md-12">
               <div class="form-group ">
                 <label>
-    							问题名称:
-    						</label>
-    						<input type="text" name="title" class="form-control m-input" data-error-container="#titles-error" placeholder="请输入问题名称">
+                    问题名称:
+                </label>
+                <input type="text" name="title" class="form-control m-input" data-error-container="#titles-error" placeholder="请输入问题名称">
                 <div id="titles-error" class=""></div>
                 <span class="m-form__help"></span>
-              </div>
-  					</div>
-            <div class="col-md-6">
-              <div class="form-group">
-              <label>
-                问题接收人:
-              </label>
-              <div class="">
-                <select class="form-control m-input" id="user_select" name="receive_user_id" data-error-container="#receive_user_ids-error">
-                </select>
-              </div>
-              <div id="receive_user_ids-error" class=""></div>
-              <span class="m-form__help"></span>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-  						<label class="">
-  							所属版块:
-  						</label>
+                  <label>
+                    问题接收人:
+                  </label>
+                  <div class="">
+                    <select class="form-control m-input" id="user_select" name="receive_user_id" data-error-container="#receive_user_ids-error">
+                    </select>
+                  </div>
+                  <div id="receive_user_ids-error" class=""></div>
+                  <span class="m-form__help"></span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="">
+                    所属版块:
+                </label>
               <select class="form-control m-input select2" name="question_category_id" data-error-container="#question_category_ids-error">
                 {!! question_category_select() !!}
               </select>
               <div id="question_category_ids-error" class=""></div>
   						<span class="m-form__help"></span>
               </div>
-  					</div>
+            </div>
             <div class="col-md-12">
               <div class="form-group">
-  						<label class="">
-  							所属项目:
-  						</label>
-              <select class="form-control m-input select2" id="project_select" name="project_id">
-              </select>
-  						<span class="m-form__help"></span>
+                <label class="">
+                    所属项目:
+                </label>
+                <select class="form-control m-input select2" id="project_select" name="project_id">
+                    @if(request('project_id'))
+                        <option value="{{request('project_id')}}" selected>{{get_project_info(request('project_id'))}}</option>
+                    @endif
+                </select>
+                <span class="m-form__help"></span>
               </div>
   					</div>
             <div class="col-md-12">
@@ -116,7 +119,7 @@
               </button>
             </div>
             <div class="col-lg-6 m--align-right">
-              <a href="{{ (isset($back) && $back=="personal") ? menu_url_format(route('question.personal'),['mid'=>request('mid')]) : menu_url_format(route('questions.index'),['mid'=>request('mid')])   }}"  class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>
+              <a href="{{ get_redirect_url() }}"  class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>
             </div>
           </div>
         </div>

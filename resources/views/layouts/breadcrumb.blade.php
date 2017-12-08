@@ -42,7 +42,7 @@
 									</span>
 								</li>
 								<li class="m-nav__item">
-									<a href="" class="m-nav__link">
+									<a href="{{url('project/projects?mid=bd128edbfd250c9c5eff5396329011cd')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-share"></i>
 										<span class="m-nav__link-text">
 											项目
@@ -58,7 +58,7 @@
 									</a>
 								</li>
 								<li class="m-nav__item">
-									<a href="" class="m-nav__link">
+									<a href="{{url('question/personal?mid=c41b512b04286cc8f479176a466d23ac')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-info"></i>
 										<span class="m-nav__link-text">
 											协作
@@ -75,8 +75,11 @@
 								</li>
 								<li class="m-nav__separator m-nav__separator--fit"></li>
 								<li class="m-nav__item">
-									<a href="#" class="btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm">
-										Submit
+									<a title="返回上一页" href="javascript:history.back(-1);" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
+										<i class="la la-reply"></i>
+									</a>
+									<a title="刷新" href="javascript:location.reload();" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
+										<i class="la la-refresh"></i>
 									</a>
 								</li>
 							</ul>

@@ -32,9 +32,9 @@
   		<!--begin: Search Form -->
   		<div class="m-form m-form--label-align-right  m--margin-bottom-20">
   			<div class="row align-items-center">
-  				<div class="col-xl-8 order-2 order-xl-1">
+  				<div class="col-xl-12 order-2 order-xl-1">
   					<div class="form-group m-form__group row align-items-center">
-  						<div class="col-md-4">
+  						<div class="col-md-3">
   							<div class="m-input-icon m-input-icon--left">
   								<input type="text" class="form-control m-input" placeholder="关键字..." id="m_form_search">
   								<span class="m-input-icon__icon m-input-icon__icon--left">
@@ -44,18 +44,10 @@
   								</span>
   							</div>
   						</div>
+              <div class="col-md-3">
+  							 a
+  						</div>
   					</div>
-  				</div>
-  				<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-  					<a href="#" data-toggle="modal" data-target="#m_role_modal" class="btn btn-default m-btn m-btn--icon m-btn--pill">
-  						<span>
-  							<i class="fa fa-search"></i>
-  							<span>
-  								查询
-  							</span>
-  						</span>
-  					</a>
-  					<div class="m-separator m-separator--dashed d-xl-none"></div>
   				</div>
   			</div>
   		</div>
@@ -137,7 +129,7 @@
           field: "title",
           title: "项目名称",
             template: function (row) {
-                return '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.show")}}',{project:row.id,mid:"{{md5('project/projects/show')}}" })+'" class="action-show m-portlet__nav-link" title="项目概况">'+row.title+'</a>';
+                return '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.show")}}',{project:row.id,mid:"{{request('mid')}}" })+'" class="action-show m-portlet__nav-link" title="项目概况">'+row.title+'</a>';
             }
         }, {
           field: "leader",sortable:false,
@@ -207,6 +199,16 @@
   }();
   jQuery(document).ready(function () {
     DatatableAjax.init();
+    $('.m_datatable').on('click', 'a.action-delete', function(event) {
+      event.preventDefault();
+      var url = $(this).attr('href');
+      mAppExtend.deleteData({
+				'url':url,
+				'callback':function(){
+					datatable.load();
+				}
+			});
+    });
   });
   </script>
 @endsection

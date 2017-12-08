@@ -16,7 +16,7 @@
         <div class="m-portlet__head-tools">
             <ul class="m-portlet__nav">
                 <li class="m-portlet__nav-item">
-                    <a href="{{ menu_url_format(route('projects.index'),['mid'=>request('mid')])  }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
+                    <a href="{{ get_redirect_url() }}" class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
                         <span>
                             <i class="fa fa-reply"></i>
                             <span>
@@ -230,6 +230,13 @@
                     <input type="text" name="project_phases[{{$loop->iteration}}][finished_at]"  value="{{$phase->finished_at}}"  class="form-control m-input  m-date" placeholder="请选择时间">
                     <span class="m-form__help"></span>
                   </div>
+                  <div class="col-md-2">
+                    <label class="">状态:</label>
+                    <select class="form-control m-input select2" name="project_phases[{{$loop->iteration}}][status]">
+                        {!! project_phases_status_select($phase->status) !!}
+                    </select>
+                    <span class="m-form__help"></span>
+                  </div>
                 </div>
               @endforeach
             @endif
@@ -285,7 +292,7 @@
               </button>
             </div>
             <div class="col-lg-6 m--align-right">
-              <a href="{{ menu_url_format(route('projects.index'),['mid'=>request('mid')])  }}" class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>
+              <a href="{{ get_redirect_url() }}" class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>
             </div>
           </div>
         </div>
@@ -436,7 +443,7 @@
           fileDelete:function(fileId, uploader){}
       });
 
-      var form = $('#projects-form');
+      var form = $('#project-form');
       var submitButton = $("#submit-button");
       form.validate({
           // define validation rules

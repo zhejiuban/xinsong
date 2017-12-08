@@ -31,6 +31,14 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
+    Route::post("start_or_finish/{project}",'ProjectController@startedAndFinished')->name('project.start_or_finish');
+    Route::get('projects/{project}/tasks','ProjectController@tasks')->name('project.tasks');
+    Route::get('projects/{project}/dynamics','ProjectController@dynamics')->name('project.dynamics');
+    Route::get('projects/{project}/questions','ProjectController@questions')->name('project.questions');
+    Route::match(['get', 'post'],'projects/{project}/files/create','ProjectController@filesCreate')->name('project.files.create');
+    Route::get('projects/{project}/files','ProjectController@files')->name('project.files');
+    Route::delete('projects/{project}/files/{file}','ProjectController@filesDestroy')->name('project.files.destroy');
+
     Route::resource('projects', 'ProjectController');
     Route::resource('devices', 'DeviceController');
 });
@@ -40,10 +48,13 @@ Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
     Route::get('users/selector','Plugin\UserSelectorController@index')->name('users.selector');
     Route::get('projects/selector/data','Plugin\ProjectSelectorController@data')->name('projects.selector.data');
     Route::get('projects/selector','Plugin\ProjectSelectorController@index')->name('projects.selector');
+    Route::get('projects/logs','Plugin\ProjectLogController@index')->name('projects.logs');
 
     Route::post('image/upload', 'Plugin\FileController@imageUpload')->name('image.upload');
     Route::post('file/upload', 'Plugin\FileController@fileUpload')->name('file.upload');
     Route::post('video/upload', 'Plugin\FileController@videoUpload')->name('video.upload');
+
+    Route::get('file/download/{file}', 'Plugin\FileController@download')->name('file.download');
 });
 
 Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {
@@ -55,4 +66,15 @@ Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {
     Route::delete('questions/delete', 'QuestionController@destroy')->name('questions.delete');
     Route::resource('questions', 'QuestionController');
     Route::resource('categories', 'QuestionCategoryController');
+});
+
+Route::group(['prefix' => 'task', 'middleware' => 'auth'], function () {
+    Route::match(['get', 'post'],'finisk/{task}','TaskController@finish')->name('tasks.finish');
+    Route::resource('tasks', 'TaskController');
+});
+Route::group(['prefix' => 'dynamic', 'middleware' => 'auth'], function () {
+    Route::resource('dynamics', 'DynamicController');
+});
+Route::group(['prefix' => 'plan', 'middleware' => 'auth'], function () {
+    Route::resource('plans', 'PlanController');
 });

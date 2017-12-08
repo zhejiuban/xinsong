@@ -20,4 +20,7 @@ class ProjectPhase extends Model
     public function getFinishedAtAttribute($value){
         return Carbon::parse($value)->toDateString();
     }
+    public function tasks(){
+        return $this->hasMany('App\Task');
+    }
 }

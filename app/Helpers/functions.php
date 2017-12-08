@@ -713,4 +713,187 @@ function _success($message = '操作成功', $data = null, $url = '')
     }
 }
 
+/**
+ * 项目参与人option
+ * @param $project
+ * @param string $selected
+ * @return string
+ */
+function project_user_select($project, $selected = '')
+{
+    if (is_numeric($project)) {
+        $project = \App\Project::find($project);
+    }
+    $str = '<option value="">请选择接收人</option>';
+    if ($project) {
+        if ($project->users->isNotEmpty()) {
+            foreach ($project->users as $key => $user) {
+                if ($selected == $user->id) {
+                    $str .= '<option value="' . $user->id . '" selected="selected">' .
+                        $user->name . ($user->id == get_current_login_user_info() ? '(我自己)' : '') . '</option>';
+                } else {
+                    $str .= '<option value="' . $user->id . '">' .
+                        $user->name . ($user->id == get_current_login_user_info() ? '(我自己)' : '') . '</option>';
+                }
+            }
+        }
+    }
+    return $str;
+}
 
+/**
+ * 建设阶段option
+ * @param $project
+ * @param string $selected
+ * @return string
+ */
+function project_phase_select($project, $selected = '', $type = 0)
+{
+    if (is_numeric($project)) {
+        $project = \App\Project::find($project)->phases;
+    }
+    $str = '';
+    if ($type) {
+        $str .= '<option value="">请选择阶段</option>';
+    }
+    if ($project->isNotEmpty()) {
+        foreach ($project as $key => $phase) {
+            if ($selected == $phase->id) {
+                $str .= '<option value="' . $phase->id . '" selected="selected">' .
+                    $phase->name . '(' . project_phases_status($phase->status) . ')</option>';
+            } else {
+                $str .= '<option value="' . $phase->id . '">' .
+                    $phase->name . '(' . project_phases_status($phase->status) . ')</option>';
+            }
+        }
+    }
+
+    return $str;
+}
+
+/**
+ * 项目建设阶段状态
+ * @param string $selected
+ * @param int $type
+ * @return string
+ */
+function project_phases_status_select($selected = '', $type = 0)
+{
+    $data = config('common.project_phases_status');
+    $str = '';
+    if ($type) {
+        $str = '<option value="">请选择状态</option>';
+    }
+    foreach ($data as $key => $val) {
+        if ($selected == $key) {
+            $str .= '<option value="' . $key . '" selected="selected">' . $val['title'] . '</option>';
+        } else {
+            $str .= '<option value="' . $key . '">' . $val['title'] . '</option>';
+        }
+    }
+    return $str;
+}
+
+/**
+ * 获取项目建设阶段状态名称
+ * @param $status
+ * @return null
+ */
+function project_phases_status($status, $field = 'title')
+{
+    $data = config('common.project_phases_status');
+    return isset($data[$status][$field]) ? $data[$status][$field] : null;
+}
+
+/**
+ * 任务状态信息
+ * @param $status
+ * @param string $field
+ * @return null
+ */
+function tasks_status($status, $field = 'title')
+{
+    $data = config('common.task_status');
+    return isset($data[$status][$field]) ? $data[$status][$field] : null;
+}
+
+/**
+ * 获取某天开始时间与结束时间
+ * @param null $date
+ * @param string $type
+ * @return false|string
+ */
+function date_start_end($date = null, $type = "start")
+{
+    if (!$date) {
+        $date = time();
+    }
+    if (is_string($date)) {
+        $date = strtotime($date);
+    }
+    if ($type == 'start') {
+        return date('Y-m-d 00:00:00', $date);
+    } else {
+        return date('Y-m-d 23:59:59', $date);
+    }
+}
+
+/**
+ * 格式化输出项目参与人
+ * @param $users
+ * @param string $filed
+ * @param string $num
+ * @return string
+ */
+function format_project_users($users,$filed="name",$num='all'){
+    $user_arr = [];
+    if($users){
+        foreach ($users as $key=>$user){
+            $user_arr[] =  $user->$filed;
+            if($num != 'all' && $num == ($key+1)){
+                break;
+            }
+        }
+    }
+    return arr2str($user_arr);
+}
+
+/**
+ * 头像
+ * @param $path
+ * @param string $type
+ * @return string
+ */
+function avatar($path,$type='男'){
+    if (!$path){
+        if($type == '男'){
+            $path = 'assets/app/media/img/users/default.jpg';
+        }
+    }
+    return asset($path);
+}
+
+/**
+ * 获取某个项目的信息
+ * @param $id
+ * @param string $field
+ * @return null
+ */
+function get_project_info($id,$field='title'){
+    $project = \App\Project::find($id);
+    if($project){
+       return  isset($project->$field) ? $project->$field : null;
+    }else{
+        return null;
+    }
+}
+/**
+ * 获取问题状态名称
+ * @param $status
+ * @return null
+ */
+function question_status($status, $field = 'title')
+{
+    $data = config('common.question_status');
+    return isset($data[$status][$field]) ? $data[$status][$field] : null;
+}

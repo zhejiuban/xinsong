@@ -21,7 +21,7 @@
 
         <link href="{{ asset('assets/theme/default/base/custom.css') }}" rel="stylesheet" type="text/css" />
         <!--end::Base Styles -->
-        <link rel="shortcut icon" href="{{ asset('assets/theme/default/media/img/logo/favicon.ico') }}" />
+        <link rel="shortcut icon" href="{{ asset('assets/theme/default/media/img/logo/favicon.ico') }}" />    
     </head>
     <!-- end::Head -->
     <!-- end::Body -->
@@ -331,7 +331,7 @@
                                                             <div class="m-scrollable" data-scrollable="false" data-max-height="380" data-mobile-max-height="200">
                                                                 <div class="m-nav-grid m-nav-grid--skin-light">
                                                                     <div class="m-nav-grid__row">
-                                                                        <a href="#" class="m-nav-grid__item">
+                                                                        <a href="{{url('project/projects/create?mid=bd128edbfd250c9c5eff5396329011cd')}}" class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-file"></i>
                                                                             <span class="m-nav-grid__text">
                                                                                 创建项目
@@ -369,7 +369,7 @@
                                             <?php $login_user = get_current_login_user_info(true); ?>
                                             <a href="#" class="m-nav__link m-dropdown__toggle">
                                                 <span class="m-topbar__userpic">
-                                                    <img src="{{ asset('assets/app/media/img/users/user4.jpg') }}" class="m--img-rounded m--marginless m--img-centered" alt=""/>
+                                                    <img src="{{ avatar($login_user->avatar) }}" class="m--img-rounded m--marginless m--img-centered" alt=""/>
                                                 </span>
                                                 <span class="m-topbar__username m--hide">
                                                     {{$login_user->name}}
@@ -381,7 +381,7 @@
                                                     <div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/user_profile_bg.jpg') }}); background-size: cover;">
                                                         <div class="m-card-user m-card-user--skin-dark">
                                                             <div class="m-card-user__pic">
-                                                                <img src="{{ asset('assets/app/media/img/users/user4.jpg') }}" class="m--img-rounded m--marginless" alt=""/>
+                                                                <img src="{{ asset('assets/app/media/img/users/default.jpg') }}" class="m--img-rounded m--marginless" alt=""/>
                                                             </div>
                                                             <div class="m-card-user__details">
                                                                 <span class="m-card-user__name m--font-weight-500">
@@ -541,7 +541,7 @@
                             <div class="m-messenger__messages">
                                 <div class="m-messenger__message m-messenger__message--in">
                                     <div class="m-messenger__message-pic">
-                                        <img src="assets/app/media/img//users/user3.jpg" alt=""/>
+                                        <img src="../../assets/app/media/img/users/default.jpg" alt=""/>
                                     </div>
                                     <div class="m-messenger__message-body">
                                         <div class="m-messenger__message-arrow"></div>
@@ -567,7 +567,7 @@
                                 </div>
                                 <div class="m-messenger__message m-messenger__message--in">
                                     <div class="m-messenger__message-pic">
-                                        <img src="assets/app/media/img//users/user3.jpg" alt=""/>
+                                        <img src="../../assets/app/media/img//users/default.jpg" alt=""/>
                                     </div>
                                     <div class="m-messenger__message-body">
                                         <div class="m-messenger__message-arrow"></div>
@@ -596,7 +596,7 @@
                                 </div>
                                 <div class="m-messenger__message m-messenger__message--in">
                                     <div class="m-messenger__message-pic">
-                                        <img src="assets/app/media/img//users/user3.jpg"  alt=""/>
+                                        <img src="../../assets/app/media/img//users/default.jpg"  alt=""/>
                                     </div>
                                     <div class="m-messenger__message-body">
                                         <div class="m-messenger__message-arrow"></div>
@@ -663,7 +663,7 @@
                                 </div>
                                 <div class="m-messenger__message m-messenger__message--in">
                                     <div class="m-messenger__message-pic">
-                                        <img src="assets/app/media/img//users/user3.jpg"  alt=""/>
+                                        <img src="../../assets/app/media/img//users/default.jpg"  alt=""/>
                                     </div>
                                     <div class="m-messenger__message-body">
                                         <div class="m-messenger__message-arrow"></div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\QuestionRequest;
+use App\Project;
 use App\Question;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -87,18 +88,18 @@ class QuestionController extends Controller
         $result->project_id = $request->project_id;
         $result->file = $request->input('files') ? arr2str($request->input('files')) : null;
         $result->status = 0;
+        $result->click = 0;
         if ($result->save()) {
             //记录日志
-            activity()->performedOn($result)->withProperties($result->toArray())->log('问题添加成功');
+            activity('项目日志')->performedOn(Project::find($result->project_id))
+                ->withProperties($result->toArray())->log('添加问题:'.$question->title);
             //接收人消息提醒
 
             return response()->json([
                 'message' => '添加成功'
                 , 'status' => 'success'
                 , 'data' => $result->toArray()
-                , 'url' => $request->back == 'personal'
-                    ? route('question.personal', ['mid' => md5('question/personal')])
-                    : route('questions.index', ['mid' => md5('question/questions')])
+                , 'url' => get_redirect_url()
             ]);
         } else {
             return response()->json([
@@ -121,18 +122,31 @@ class QuestionController extends Controller
         if (!check_permission('question/questions/show')) {
             return _404('无权操作！');
         }
+        $user_id = get_current_login_user_info();
         if (is_administrator()) {
             $question = Question::with([
                 'user', 'category', 'receiveUser', 'project'
             ])->find($id);
         } else {
-            $user_id = get_current_login_user_info();
             $question = Question::with([
                 'user', 'category', 'receiveUser', 'project'
             ])->where('user_id', $user_id)
                 ->orWhere('receive_user_id', $user_id)->find($id);
         }
         if ($question) {
+            if(!$question->status && $question->receive_user_id == $user_id){
+                //设置接收时间
+                $question->status = 1;//已接收，待处理
+                $question->received_at = Carbon::now();
+                $question->click = intval($question->click) + 1;
+                $question->save();
+                //写入日志
+                activity('项目日志')->performedOn(Project::find($question->project_id))
+                    ->withProperties($question)->log('问题接收:'.$question->title);
+            }else{
+                $question->increment('click',1);
+//                dd($question);
+            }
             return view('question.default.show', compact('question'));
         } else {
             return _404();
@@ -197,7 +211,8 @@ class QuestionController extends Controller
             $question->file = $request->input('files') ? arr2str($request->input('files')) : null;
             if ($question->save()) {
                 //记录日志
-                activity()->performedOn($question)->withProperties($question->toArray())->log('问题编辑成功');
+                activity('项目日志')->performedOn(Project::find($question->project_id))
+                    ->withProperties($question->toArray())->log('更新问题:'.$question->title);
                 //接收人消息提醒
 
                 return _success('编辑成功',$question->toArray(),get_redirect_url());
@@ -236,8 +251,7 @@ class QuestionController extends Controller
             )->where('status',0)->delete();
         }
         if($res){
-            //记录日志
-            activity()->withProperties($id)->log('问题删除成功');
+            activity('项目日志')->withProperties($id)->log('删除问题');
             return response()->json([
                 'message' => '删除成功', 'data' => $id,
                 'status' => 'success', 'url' => null
@@ -363,7 +377,8 @@ class QuestionController extends Controller
             if($info->save()){
                 //增加回复提醒
 
-                activity()->performedOn($info)->withProperties($info)->log('问题回复成功');
+                activity('项目日志')->performedOn(Project::find($info->project_id))
+                    ->withProperties($info)->log('回复问题:'.$info->title);
                 return _success('回复成功');
             }else{
                 return _error('回复失败');
@@ -375,7 +390,8 @@ class QuestionController extends Controller
                 $info->received_at = Carbon::now();
                 $info->save();
                 //写入日志
-                activity()->performedOn($info)->withProperties($info)->log('问题接收');
+                activity('项目日志')->performedOn(Project::find($info->project_id))
+                    ->withProperties($info)->log('问题接收:'.$info->title);
             }
             return view('question.default.reply',['question'=>$info]);
         }
@@ -406,7 +422,13 @@ class QuestionController extends Controller
         }
         if($update){
             //记录日志
-            activity()->withProperties($question)->log('问题关闭');
+            if(count($question) == 1){
+                $info = Question::find($question[0]);
+                activity('项目日志')->performedOn(Project::find($info->project_id))
+                    ->withProperties($info)->log('关闭问题:'.$info->title);
+            }else{
+                activity('项目日志')->withProperties($question)->log('关闭问题');
+            }
             return _success();
         }else{
             return _error('操作失败！');

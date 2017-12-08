@@ -26,6 +26,7 @@ class CreateTasksTable extends Migration
             $table->dateTime('leaved_at')->nullable()->comment('离开现场日期');
             $table->text('result')->nullable()->comment('任务完成情况');
             $table->tinyInteger('is_need_plan')->nullable()->comment('是否需要上传计划');
+            $table->integer('project_phase_id')->nullable()->comment('所处阶段');
             $table->timestamps();
             $table->softDeletes();
         });

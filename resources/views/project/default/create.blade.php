@@ -207,7 +207,15 @@
                 <input type="text" name="project_phases[1][finished_at]" class="form-control m-input  m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
+                <div class="col-md-2">
+                    <label class="">状态:</label>
+                    <select class="form-control m-input select2" name="project_phases[1][status]">
+                        {!! project_phases_status_select() !!}
+                    </select>
+                    <span class="m-form__help"></span>
+                </div>
             </div>
+
             <div class="form-group m-form__group row phase-option" id="phase-option-2">
               <div class="col-md-1">
                 <h1>2</h1>
@@ -228,6 +236,13 @@
                 <input type="text" name="project_phases[2][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
+                <div class="col-md-2">
+                    <label class="">状态:</label>
+                    <select class="form-control m-input select2" name="project_phases[2][status]">
+                        {!! project_phases_status_select() !!}
+                    </select>
+                    <span class="m-form__help"></span>
+                </div>
             </div>
             <div class="form-group m-form__group row phase-option" id="phase-option-3">
               <div class="col-md-1">
@@ -249,6 +264,13 @@
                 <input type="text" name="project_phases[3][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
+                <div class="col-md-2">
+                    <label class="">状态:</label>
+                    <select class="form-control m-input select2" name="project_phases[3][status]">
+                        {!! project_phases_status_select() !!}
+                    </select>
+                    <span class="m-form__help"></span>
+                </div>
             </div>
             <div class="form-group m-form__group row phase-option" id="phase-option-4">
               <div class="col-md-1">
@@ -270,6 +292,13 @@
                 <input type="text" name="project_phases[4][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
+                <div class="col-md-2">
+                    <label class="">状态:</label>
+                    <select class="form-control m-input select2" name="project_phases[4][status]">
+                        {!! project_phases_status_select() !!}
+                    </select>
+                    <span class="m-form__help"></span>
+                </div>
             </div>
             <div class="form-group m-form__group row phase-option last-phase-option" id="phase-option-5">
               <div class="col-md-1">
@@ -291,6 +320,13 @@
                 <input type="text" name="project_phases[5][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
+                <div class="col-md-2">
+                    <label class="">状态:</label>
+                    <select class="form-control m-input select2" name="project_phases[5][status]">
+                        {!! project_phases_status_select() !!}
+                    </select>
+                    <span class="m-form__help"></span>
+                </div>
             </div>
       		</div>
           <div class="tab-pane" id="m_tabs_6_4" role="tabpanel">

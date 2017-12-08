@@ -138,3 +138,41 @@
       text-align: right;
   }
 }
+.m-widget2 .m-widget2__item:before{
+      left: 0;
+}
+.m-widget2 .m-widget2__item .m-widget2__checkbox{
+  padding-left: 1rem;
+}
+.sweet-overlay {
+  z-index: 1050;
+}
+.min-height-300{
+  min-height: 300px;
+}
+.min-height-100 {
+  min-height: 100px;
+}
+.min-height-200 {
+  min-height: 200px;
+}
+.min-height-400 {
+  min-height: 400px;
+}
+@media (min-width: 992px){
+  .modal-lgx {
+    max-width: 85%;
+  }
+}
+.m--font-size-12{
+  font-size: 12px;
+}
+.m--font-size-13 {
+  font-size: 13px;
+}
+.m--font-size-14 {
+  font-size: 14px;
+}
+.m--font-size-16 {
+  font-size: 16px;
+}
