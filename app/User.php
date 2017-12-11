@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','tel','department_id','avatar','sex','status'
+        'name', 'email', 'password', 'tel', 'department_id', 'avatar', 'sex', 'status'
     ];
 
     /**
@@ -29,15 +29,35 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function department(){
+    public function department()
+    {
         return $this->belongsTo('App\Department');
     }
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
     }
 
-    public function projects(){
+    public function projects()
+    {
         return $this->belongsToMany('App\Project');
+    }
+
+    /**
+     * 获取某个用户所在公司
+     * @return null
+     */
+    public function company($field = true)
+    {
+        if ($this->department) {
+            if ($this->department->company_id) {
+                return Department::info($this->department->company_id,$field);
+            } else {
+                return Department::info($this->department->id,$field);
+            }
+        } else {
+            return null;
+        }
     }
 }

@@ -581,7 +581,7 @@
     var getTasks = function(){
     }
     $(document).ready(function(){
-        $('.task-look,#task-add,#dynamic-add,.fast-edit,.dynamic-edit,.question-look,#file-add').click(function(){
+        $('.task-look,#task-add,#dynamic-add,.fast-edit,.dynamic-edit,.question-look,#file-add').click(function(event){
             event.preventDefault();
             var url = $(this).attr('href');
             lookTask(url);

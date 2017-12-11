@@ -43,7 +43,7 @@ class ProjectRequest extends FormRequest
                     'device_project.*.number' => 'bail|required',
                     'project_phases.*.name' => 'bail|required',
                     'project_phases.*.started_at' => 'bail|required',
-                    'project_phases.*.finished_at' => 'bail|required|after:project_phases.*.started_at',
+                    'project_phases.*.finished_at' => 'bail|required|after_or_equal:project_phases.*.started_at',
                 ];
             }
             case 'PUT':
@@ -90,7 +90,7 @@ class ProjectRequest extends FormRequest
             'project_phases.*.name.required' => '请输入各建设阶段名称',
             'project_phases.*.started_at.required' => '请输入各建设阶段开始日期',
             'project_phases.*.finished_at.required' => '请输入各建设阶段结束日期',
-            'project_phases.*.finished_at.after' => '各建设阶段结束日期要大于开始日期',
+            'project_phases.*.finished_at.after_or_equal' => '各建设阶段结束日期要不小于开始日期',
         ];
     }
 }

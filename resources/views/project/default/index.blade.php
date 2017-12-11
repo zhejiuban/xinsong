@@ -35,6 +35,22 @@
   				<div class="col-xl-12 order-2 order-xl-1">
   					<div class="form-group m-form__group row align-items-center">
   						<div class="col-md-3">
+                <select class="form-control m-bootstrap-select" id="m_form_status">
+                  <option value="">
+                    所有状态
+                  </option>
+                  <option value="0">
+                    未开始
+                  </option>
+                  <option value="1">
+                    进行中
+                  </option>
+                  <option value="2">
+                    已完成
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3">
   							<div class="m-input-icon m-input-icon--left">
   								<input type="text" class="form-control m-input" placeholder="关键字..." id="m_form_search">
   								<span class="m-input-icon__icon m-input-icon__icon--left">
@@ -45,7 +61,6 @@
   							</div>
   						</div>
               <div class="col-md-3">
-  							 a
   						</div>
   					</div>
   				</div>
@@ -127,27 +142,28 @@
           title: "编号"
         },{
           field: "title",
+          width: 240,
           title: "项目名称",
             template: function (row) {
                 return '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.show")}}',{project:row.id,mid:"{{request('mid')}}" })+'" class="action-show m-portlet__nav-link" title="项目概况">'+row.title+'</a>';
             }
         }, {
           field: "leader",sortable:false,
-          title: "负责人",template:function (row) {
+          title: "新松负责人",template:function (row) {
               if(row.leader_user){
                 return row.leader_user.name;
               }
           }
         }, {
           field: "agent",sortable:false,
-          title: "代理负责人",template:function (row) {
+          title: "现场负责人",template:function (row) {
               if(row.agent_user){
                 return row.agent_user.name;
               }
           }
         }, {
           field: "department_id",
-          title: "所属部门",
+          title: "所属办事处",
           sortable:false,template:function (row) {
               if(row.department){
                 return row.department.name;
@@ -188,6 +204,11 @@
         datatable.setDataSourceQuery(query);
         datatable.load();
       }).val(query.search);
+
+      $('#m_form_status').on('change', function () {
+        datatable.search($(this).val(), 'status');
+      }).val(typeof query.status !== 'undefined' ? query.status : '');
+
     };
 
     return {
@@ -198,6 +219,7 @@
     };
   }();
   jQuery(document).ready(function () {
+    $('#m_form_status').selectpicker();
     DatatableAjax.init();
     $('.m_datatable').on('click', 'a.action-delete', function(event) {
       event.preventDefault();

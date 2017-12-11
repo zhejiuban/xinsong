@@ -304,8 +304,10 @@ var mApp = function() {
                     cursor: 'wait'
                 },
                 onUnblock: function() {
-                    el.css('position', '');
-                    el.css('zoom', '');
+                    if(el != undefined){
+                        el.css('position', '');
+                        el.css('zoom', '');
+                    }
                 }
             };
 

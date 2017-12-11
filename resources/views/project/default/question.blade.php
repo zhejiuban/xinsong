@@ -164,7 +164,7 @@
                 {},true);
         }
         $(document).ready(function(){
-            $('.question-look').click(function(){
+            $('.question-look').click(function(event){
                 event.preventDefault();
                 var url = $(this).attr('href');
                 lookQuestion(url);

@@ -9,7 +9,7 @@
                     <i class="flaticon-info"></i>
                 </span>
                 <h3 class="m-portlet__head-text m--font-primary">
-                    编辑问题
+                    编辑协作
                 </h3>
             </div>
         </div>

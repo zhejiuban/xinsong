@@ -199,7 +199,7 @@
                           placement: {
                               from: "top",
                               align: "center"
-                          },delay:500,
+                          },delay:100,
                           onClose:function() {
                               $('#m_role_modal').modal('hide');
                               // mAppExtend.backUrl(response.url);

@@ -126,7 +126,7 @@
                 {},true);
         }
         $(document).ready(function(){
-            $('#file-add').click(function(){
+            $('#file-add').click(function(event){
                 event.preventDefault();
                 var url = $(this).attr('href');
                 modalFile(url);

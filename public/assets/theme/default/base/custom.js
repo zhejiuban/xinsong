@@ -203,10 +203,10 @@ var mAppExtend = function () {
                 "progressBar": false,
                 "positionClass": "toast-top-center",
                 "preventDuplicates": true,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "2000",
-                "extendedTimeOut": "1000",
+                "showDuration": 300,
+                "hideDuration": 500,
+                "timeOut": 2000,
+                "extendedTimeOut": 1000,
                 "showEasing": "swing",
                 "hideEasing": "linear",
                 "showMethod": "fadeIn",
@@ -387,7 +387,7 @@ var mAppExtend = function () {
             url:'',
             data:{'_method': 'DELETE'},
             callback:null,
-            successTimer:1000,
+            successTimer:500,
             errorTimer:2000
           }, options);
           swal({

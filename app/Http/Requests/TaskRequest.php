@@ -33,7 +33,7 @@ class TaskRequest extends FormRequest
             case 'PATCH': {
                 return [
                     'start_at' => 'bail|required',
-                    'end_at' => 'bail|required|after_or_equal:start_at',
+//                    'end_at' => 'bail|required|after_or_equal:start_at',
                     'leader' => 'bail|required',
                     'content' => 'bail|required',
                     'is_need_plan' => 'bail|required',
@@ -49,7 +49,7 @@ class TaskRequest extends FormRequest
         return [
             'start_at.required'=>'请输入开始时间',
             'end_at.required'=>'请输入截止时间',
-            'end_at.after'=>'截止时间要大于开始时间',
+//            'end_at.after_or_equal'=>'截止时间要大于开始时间',
             'leader.required'=>'请输入任务负责人',
             'content.required'=>'请输入任务内容',
             'is_need_plan.required'=>'请选择是否需要上传计划',

@@ -95,7 +95,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
         						<label>
-        							项目负责人:
+        							新松负责人:
         						</label>
                     <select class="form-control m-input" id="user_select" name="leader">
                       @if($project->leaderUser)
@@ -108,7 +108,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
         						<label class="">
-        							现场/代理负责人:
+        							现场负责人:
         						</label>
                     <select class="form-control m-input" id="user_select2" name="agent">
                       @if($project->agentUser)
@@ -174,9 +174,20 @@
       				</div>
           </div>
       		<div class="tab-pane device-list" id="m_tabs_6_2" role="tabpanel">
+            <div class="form-group m-form__group row">
+              <div class="col-md-12">
+                <button type="button" title="添加" id="add-device-option"  class="btn btn-primary">
+                  <i class="fa fa-plus"></i>
+                </button>
+              </div>
+            </div>
             @if($project->devices->isNotEmpty())
               @foreach ($project->devices as $device)
                 <div class="form-group m-form__group row device-option @if ($loop->last) last-device-option @endif" id="device-option-{{$loop->iteration}}">
+                  <div class="col-md-1">
+                    <h1 class="device-option-sort">{{$loop->iteration}}</h1>
+                    <span class="m-form__help"></span>
+                  </div>
                   <div class="col-md-4">
                     <label class="">设备类型:</label>
                     <select class="form-control m-input select2" name="device_project[{{$loop->iteration}}][device_id]">
@@ -189,18 +200,12 @@
                     <input type="number" name="device_project[{{$loop->iteration}}][number]" value="{{$device->pivot->number}}" class="form-control m-input" placeholder="请输入设备数量">
                     <span class="m-form__help"></span>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                     <label class="">&nbsp;</label>
                     <div class="">
-                      @if ($loop->last)
-                      <button type="button" title="添加" id="add-device-option"  class="btn btn-primary">
-                        <i class="fa fa-plus"></i>
-                      </button>
-                      @else
                       <button type="button" title="删除" id="del-device-option-{{$loop->iteration}}" onclick="delDeviceOption({{$loop->iteration}});" device-id="{{$loop->iteration}}" class="btn btn-danger del-device-option">
                         <i class="fa fa-trash"></i>
                       </button>
-                      @endif
                     </div>
                   </div>
                 </div>
@@ -230,7 +235,7 @@
                     <input type="text" name="project_phases[{{$loop->iteration}}][finished_at]"  value="{{$phase->finished_at}}"  class="form-control m-input  m-date" placeholder="请选择时间">
                     <span class="m-form__help"></span>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-2" style="display:none;">
                     <label class="">状态:</label>
                     <select class="form-control m-input select2" name="project_phases[{{$loop->iteration}}][status]">
                         {!! project_phases_status_select($phase->status) !!}
@@ -321,10 +326,45 @@
   }
   function delDeviceOption(n){
     $('#device-option-'+n).remove();
+    $('.device-option-sort').each(function(i,v){$(v).html(i+1);});
   }
   jQuery(document).ready(function () {
       //异步加载用户选择框
-      var $userSelector = $("#user_select,#user_select2").select2({
+      var $userSelector = $("#user_select").select2({
+          language:'zh-CN',
+          placeholder: "输入姓名、用户名等关键字搜索，选择用户",
+          allowClear: true,
+          width:'100%',
+          ajax: {
+              url: "{{route('users.selector.data',['type'=>'all'])}}",
+              dataType: 'json',
+              delay: 250,
+              data: function(params) {
+                  return {
+                      q: params.term, // search term
+                      page: params.page,
+                      per_page: {{config('common.page.per_page')}}
+                  };
+              },
+              processResults: function(data, params) {
+                  params.page = params.page || 1;
+                  return {
+                      results: data.data,
+                      pagination: {
+                          more: (params.page * data.per_page) < data.total
+                      }
+                  };
+              },
+              cache: true
+          },
+          escapeMarkup: function(markup) {
+              return markup;
+          }, // let our custom formatter work
+          minimumInputLength: 0,
+          templateResult: formatRepo, // omitted for brevity, see the source of this page
+          templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+      });
+      $("#user_select2").select2({
           language:'zh-CN',
           placeholder: "输入姓名、用户名等关键字搜索，选择用户",
           allowClear: true,
@@ -394,6 +434,10 @@
         var next = length + 1;
         var option = '';
         option +='<div class="form-group m-form__group row device-option" id="device-option-'+next+'">';
+          option +='<div class="col-md-1">';
+            option +='<h1 class="device-option-sort"></h1>';
+            option +='<span class="m-form__help"></span>';
+          option +='</div>';
           option +='<div class="col-md-4">';
             option +='<label class="">设备类型:</label>';
             option +='<select class="form-control m-input select2" name="device_project['+next+'][device_id]">{!! device_select() !!}</select>';
@@ -404,7 +448,7 @@
             option +='<input type="number" name="device_project['+next+'][number]" class="form-control m-input" placeholder="请输入设备数量">';
             option +='<span class="m-form__help"></span>';
           option +='</div>';
-          option +='<div class="col-md-4">';
+          option +='<div class="col-md-3">';
             option +='<label class="">&nbsp;</label>';
             option +='<div class="">';
               option +='<button type="button" title="删除" id="del-device-option-'+next+'" onclick="delDeviceOption('+next+');" device-id="'+next+'" class="btn btn-danger del-device-option">';
@@ -413,7 +457,8 @@
             option +='</div>';
           option +='</div>';
         option +='</div>';
-        $('.last-device-option').before(option);
+        $('.device-list').append(option);
+        $('.device-option-sort').each(function(i,v){$(v).html(i+1);});
         $('#device-option-'+next+' .select2').select2({width:'100%'});
       });
       // $('.device-list').on('click', '.del-device-option', function(event) {

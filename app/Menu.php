@@ -155,9 +155,11 @@ class Menu extends Model
     public static function info($id)
     {
         if (is_numeric($id)) {
-            return self::find($id)->toArray();
+            $info = self::find($id);
+        }else{
+            $info = self::where('uniqid', $id)->first();
         }
-        return self::where('uniqid', $id)->first()->toArray();
+        return $info ? $info->toArray() : null;
     }
 
     public function breadcrumb($menu, $is_contain_self = 1)

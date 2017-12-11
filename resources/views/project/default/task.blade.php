@@ -132,7 +132,7 @@
                 {},true);
         }
         $(document).ready(function(){
-            $('.task-look,#task-add,.fast-edit').click(function(){
+            $('.task-look,#task-add,.fast-edit').click(function(event){
                 event.preventDefault();
                 var url = $(this).attr('href');
                 lookTask(url);

@@ -49,6 +49,9 @@ class Project extends Model
     public function questions(){
         return $this->hasMany('App\Question');
     }
+    public function folders(){
+        return $this->hasMany('App\ProjectFolder');
+    }
 
     /**
      * 任务已完成百分比

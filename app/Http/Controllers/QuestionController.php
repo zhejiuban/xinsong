@@ -92,7 +92,7 @@ class QuestionController extends Controller
         if ($result->save()) {
             //记录日志
             activity('项目日志')->performedOn(Project::find($result->project_id))
-                ->withProperties($result->toArray())->log('添加问题:'.$question->title);
+                ->withProperties($result->toArray())->log('添加问题:'.$result->title);
             //接收人消息提醒
 
             return response()->json([

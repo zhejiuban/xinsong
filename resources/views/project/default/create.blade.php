@@ -84,10 +84,10 @@
                 <div class="col-md-6">
                   <div class="form-group">
         						<label class="">
-        							所属部门:
+        							所属办事处:
         						</label>
                     <select class="form-control m-input select2" name="department_id">
-                      {!! department_select() !!}
+                      {!! department_select(get_user_company_id(),2) !!}
                     </select>
         						<span class="m-form__help"></span>
                   </div>
@@ -95,17 +95,27 @@
                 <div class="col-md-6">
                   <div class="form-group">
         						<label>
-        							项目负责人:
+        							新松负责人:
         						</label>
                     <select class="form-control m-input" id="user_select" name="leader">
                     </select>
         						<span class="m-form__help"></span>
                   </div>
       					</div>
+                {{--  <div class="col-md-6">
+                  <div class="form-group">
+        						<label>
+        							办事处负责人:
+        						</label>
+                    <select class="form-control m-input" id="subcompany_leader" name="subcompany_leader">
+                    </select>
+        						<span class="m-form__help"></span>
+                  </div>
+      					</div>  --}}
                 <div class="col-md-6">
                   <div class="form-group">
         						<label class="">
-        							现场/代理负责人:
+        							现场负责人:
         						</label>
                     <select class="form-control m-input" id="user_select2" name="agent">
                     </select>
@@ -163,7 +173,18 @@
       				</div>
           </div>
       		<div class="tab-pane device-list" id="m_tabs_6_2" role="tabpanel">
+            <div class="form-group m-form__group row ">
+              <div class="col-md-12">
+              <button type="button" title="添加" id="add-device-option"  class="btn btn-primary ">
+                <i class="fa fa-plus"></i>
+              </button>
+              </div>
+            </div>
             <div class="form-group m-form__group row device-option last-device-option" id="device-option-1">
+              <div class="col-md-1">
+                <h1 class="device-option-sort">1</h1>
+                <span class="m-form__help"></span>
+              </div>
               <div class="col-md-4">
                 <label class="">设备类型:</label>
                 <select class="form-control m-input select2" name="device_project[1][device_id]">
@@ -176,12 +197,9 @@
                 <input type="number" name="device_project[1][number]" class="form-control m-input" placeholder="请输入设备数量">
                 <span class="m-form__help"></span>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label class="">&nbsp;</label>
                 <div class="">
-                  <button type="button" title="添加" id="add-device-option"  class="btn btn-primary">
-                    <i class="fa fa-plus"></i>
-                  </button>
                 </div>
               </div>
             </div>
@@ -207,7 +225,7 @@
                 <input type="text" name="project_phases[1][finished_at]" class="form-control m-input  m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
-                <div class="col-md-2">
+                <div class="col-md-2 hide" style="display:none;">
                     <label class="">状态:</label>
                     <select class="form-control m-input select2" name="project_phases[1][status]">
                         {!! project_phases_status_select() !!}
@@ -236,7 +254,7 @@
                 <input type="text" name="project_phases[2][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
-                <div class="col-md-2">
+                <div class="col-md-2 hide" style="display:none;">
                     <label class="">状态:</label>
                     <select class="form-control m-input select2" name="project_phases[2][status]">
                         {!! project_phases_status_select() !!}
@@ -264,7 +282,7 @@
                 <input type="text" name="project_phases[3][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
-                <div class="col-md-2">
+                <div class="col-md-2 hide" style="display:none;">
                     <label class="">状态:</label>
                     <select class="form-control m-input select2" name="project_phases[3][status]">
                         {!! project_phases_status_select() !!}
@@ -292,7 +310,7 @@
                 <input type="text" name="project_phases[4][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
-                <div class="col-md-2">
+                <div class="col-md-2 hide" style="display:none;">
                     <label class="">状态:</label>
                     <select class="form-control m-input select2" name="project_phases[4][status]">
                         {!! project_phases_status_select() !!}
@@ -320,7 +338,7 @@
                 <input type="text" name="project_phases[5][finished_at]" class="form-control m-input m-date" placeholder="请选择时间">
                 <span class="m-form__help"></span>
               </div>
-                <div class="col-md-2">
+                <div class="col-md-2 hide" style="display:none;">
                     <label class="">状态:</label>
                     <select class="form-control m-input select2" name="project_phases[5][status]">
                         {!! project_phases_status_select() !!}
@@ -375,8 +393,8 @@
     var markup = "<div class='select2-result-repository clearfix'>" +
         "<div class='select2-result-repository__meta'>" +
         "<div class='select2-result-repository__title'>" + repo.name + "</div>";
-    if (repo.department) {
-        markup += "<div class='select2-result-repository__description'>所在部门：" + repo.department.name + "</div>";
+    if (repo.department || repo.company) {
+        markup += "<div class='select2-result-repository__description'>所在部门：" + (repo.company?repo.company.name:'') +  (repo.department && repo.department.level==3 ? '/'+repo.department.name:'') + "</div>";
     }
     markup += "</div></div>";
     return markup;
@@ -386,12 +404,13 @@
   }
   function delDeviceOption(n){
     $('#device-option-'+n).remove();
+    $('.device-option-sort').each(function(i,v){$(v).html(i+1);});
   }
   jQuery(document).ready(function () {
       //异步加载用户选择框
-      var $userSelector = $("#user_select,#user_select2").select2({
+      var $userSelector = $("#user_select2,#subcompany_leader").select2({
           language:'zh-CN',
-          placeholder: "输入姓名、用户名等关键字搜索，选择用户",
+          placeholder: "输入姓名、用户名等关键字搜索",
           allowClear: true,
           width:'100%',
           ajax: {
@@ -423,6 +442,40 @@
           templateResult: formatRepo, // omitted for brevity, see the source of this page
           templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
       });
+      var $userSelector = $("#user_select").select2({
+          language:'zh-CN',
+          placeholder: "输入姓名、用户名等关键字搜索",
+          allowClear: true,
+          width:'100%',
+          ajax: {
+              url: "{{route('users.selector.data',['type'=>'all'])}}",
+              dataType: 'json',
+              delay: 250,
+              data: function(params) {
+                  return {
+                      q: params.term, // search term
+                      page: params.page,
+                      per_page: {{config('common.page.per_page')}}
+                  };
+              },
+              processResults: function(data, params) {
+                  params.page = params.page || 1;
+                  return {
+                      results: data.data,
+                      pagination: {
+                          more: (params.page * data.per_page) < data.total
+                      }
+                  };
+              },
+              cache: true
+          },
+          escapeMarkup: function(markup) {
+              return markup;
+          }, // let our custom formatter work
+          minimumInputLength: 0,
+          templateResult: formatRepo, // omitted for brevity, see the source of this page
+          templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+      }); 
       $("#user_select3").select2({
           language:'zh-CN',
           placeholder: "输入姓名、电话、邮箱、用户名等关键字搜索，选择参与用户",
@@ -459,6 +512,10 @@
         var next = length + 1;
         var option = '';
         option +='<div class="form-group m-form__group row device-option" id="device-option-'+next+'">';
+          option +='<div class="col-md-1">';
+            option +='<h1 class="device-option-sort"></h1>';
+            option +='<span class="m-form__help"></span>';
+          option +='</div>';
           option +='<div class="col-md-4">';
             option +='<label class="">设备类型:</label>';
             option +='<select class="form-control m-input select2" name="device_project['+next+'][device_id]">{!! device_select() !!}</select>';
@@ -469,7 +526,7 @@
             option +='<input type="number" name="device_project['+next+'][number]" class="form-control m-input" placeholder="请输入设备数量">';
             option +='<span class="m-form__help"></span>';
           option +='</div>';
-          option +='<div class="col-md-4">';
+          option +='<div class="col-md-3">';
             option +='<label class="">&nbsp;</label>';
             option +='<div class="">';
               option +='<button type="button" title="删除" id="del-device-option-'+next+'" onclick="delDeviceOption('+next+');" device-id="'+next+'" class="btn btn-danger del-device-option">';
@@ -478,7 +535,8 @@
             option +='</div>';
           option +='</div>';
         option +='</div>';
-        $('.last-device-option').before(option);
+        $('.device-list').append(option);
+        $('.device-option-sort').each(function(i,v){$(v).html(i+1);});
         $('#device-option-'+next+' .select2').select2({width:'100%'});
       });
       // $('.device-list').on('click', '.del-device-option', function(event) {

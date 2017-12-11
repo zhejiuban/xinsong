@@ -307,10 +307,10 @@ if (!function_exists('department_select')) {
      * @param int $selected
      * @return string
      */
-    function department_select($selected = 0)
+    function department_select($selected = 0,$type=1)
     {
-        $list = \App\Department::getTreeData();
-        $str = '<option value="">请选择部门</option>';
+        $list = \App\Department::getTreeData($type);
+        $str = '<option value="">'.($type==1?'请选择部门':'请选择办事处').'</option>';
         if ($list) {
             foreach ($list as $key => $val) {
                 $str .= '<option value="' . $val['id'] . '" '
@@ -396,8 +396,11 @@ if (!function_exists('get_current_login_user_info')) {
  * @param null $user
  * @return bool
  */
-function check_permission($rule, $user = null)
+function check_permission($rule = null, $user = null)
 {
+    if(!$rule){
+        return false;
+    }
     if (!$user) {
         $user = get_current_login_user_info(true);
     } elseif (is_numeric($user)) {
@@ -541,12 +544,25 @@ function get_user_company_id($user = null)
  * @param $user
  * @return bool
  */
-function check_company_admin($user)
+function check_company_admin($user = null, $role = "分部管理员")
 {
-    if (!is_object($user)) {
+    return check_user_role($user,$role);
+}
+
+/**
+ * 检测用户角色
+ * @param $user
+ * @param null $role
+ * @return bool
+ */
+function check_user_role($user = null, $role = null)
+{
+    if (!$user) {
+        $user = get_current_login_user_info(true);
+    } elseif (is_numeric($user)) {
         $user = \App\User::find($user);
     }
-    if ($user->hasPermissionTo('分部管理员')) {
+    if ( is_administrator_user($user->id) || ($user->hasRole($role) && $role)) {
         return true;
     } else {
         return false;
@@ -845,12 +861,13 @@ function date_start_end($date = null, $type = "start")
  * @param string $num
  * @return string
  */
-function format_project_users($users,$filed="name",$num='all'){
+function format_project_users($users, $filed = "name", $num = 'all')
+{
     $user_arr = [];
-    if($users){
-        foreach ($users as $key=>$user){
-            $user_arr[] =  $user->$filed;
-            if($num != 'all' && $num == ($key+1)){
+    if ($users) {
+        foreach ($users as $key => $user) {
+            $user_arr[] = $user->$filed;
+            if ($num != 'all' && $num == ($key + 1)) {
                 break;
             }
         }
@@ -864,9 +881,10 @@ function format_project_users($users,$filed="name",$num='all'){
  * @param string $type
  * @return string
  */
-function avatar($path,$type='男'){
-    if (!$path){
-        if($type == '男'){
+function avatar($path, $type = '男')
+{
+    if (!$path) {
+        if ($type == '男') {
             $path = 'assets/app/media/img/users/default.jpg';
         }
     }
@@ -879,14 +897,16 @@ function avatar($path,$type='男'){
  * @param string $field
  * @return null
  */
-function get_project_info($id,$field='title'){
+function get_project_info($id, $field = 'title')
+{
     $project = \App\Project::find($id);
-    if($project){
-       return  isset($project->$field) ? $project->$field : null;
-    }else{
+    if ($project) {
+        return isset($project->$field) ? $project->$field : null;
+    } else {
         return null;
     }
 }
+
 /**
  * 获取问题状态名称
  * @param $status

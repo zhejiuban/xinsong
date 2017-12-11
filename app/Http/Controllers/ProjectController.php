@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\File;
 use App\Http\Requests\ProjectRequest;
 use App\Project;
-use App\Task;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -29,22 +27,31 @@ class ProjectController extends Controller
                 ? $request->input('datatable.sort.sort') : 'desc';
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
+            $status = $request->input('datatable.query.status');
+            $search = $request->input('datatable.query.search');
             //管理员获取获取所有项目
             //分部管理员获取分部所有项目
             $project = Project::with([
                 'department', 'leaderUser', 'agentUser'
-            ])->where(
-                'title', 'like',
-                "%{$request->input('datatable.query.search')}%"
-            )->whereOr('no', 'like',
-                "%{$request->input('datatable.query.search')}%")
-                ->orderBy(
-                    $sort_field
-                    , $sort)->paginate(
-                    $prepage
-                    , ['*']
-                    , 'datatable.pagination.page'
-                );
+            ])->when($status, function ($query) use ($status) {
+                return $query->where('status', $status);
+            },function ($query) use ($status) {
+                if($status !== null){
+                    return $query->where('status', $status);
+                }
+            })->when($search, function ($query) use ($search) {
+                return $query->where(
+                    'title', 'like',
+                    "%{$search}%"
+                )->orWhere('no', 'like',
+                    "%{$search}%");
+            })->orderBy(
+                $sort_field
+                , $sort)->paginate(
+                $prepage
+                , ['*']
+                , 'datatable.pagination.page'
+            );
             $meta = [
                 'field' => $sort_field,
                 'sort' => $sort,
@@ -99,7 +106,7 @@ class ProjectController extends Controller
         if ($project->save()) {
             //关联写入项目参与人
             $p_user = (array)$request->project_user;
-            array_push($p_user, $project->leader);
+            array_push($p_user, $project->agent);
             $users = array_unique($p_user);
             $project->users()->attach($users);
             //关联写入设备类型信息
@@ -391,7 +398,7 @@ class ProjectController extends Controller
                 $files = File::find($file);
                 activity('项目日志')->performedOn($project)
                     ->withProperties($files->toArray())
-                    ->log('删除文档:'.$files->old_name);
+                    ->log('删除文档:' . $files->old_name);
                 return _success('操作成功', $files->toArray(), get_redirect_url());
             } else {
                 return _error('操作失败');
