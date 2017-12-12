@@ -1,92 +1,75 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="_ModalLabel">
-    发布任务
-  </h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">
-      &times;
-    </span>
-  </button>
+	<h5 class="modal-title" id="_ModalLabel">
+		发布任务
+	</h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">
+			&times;
+		</span>
+	</button>
 </div>
 <div class="modal-body">
-  <form class="m-form" action="{{ route('tasks.store') }}" method="post" id="task-form">
-      <div class="form-group">
-          <label>
-              建设阶段:
-          </label>
-
-          <div class="">
-              <select class="form-control m-input select2" id="project_phase_id" name="project_phase_id" >
-                  {!!project_phase_select($project_id)!!}
-              </select>
-          </div>
-          <span class="m-form__help"></span>
-      </div>
-      <div class="form-group">
-        <label for="name" class="form-control-label">
-          起止日期:
-        </label>
-        <div class="input-daterange input-group m-date">
-            <input type="text" class="form-control m-input" placeholder="开始日期" name="start_at" />
-            <span class="input-group-addon">
-                <i class="la la-ellipsis-h"></i>
-            </span>
-            <input type="text" class="form-control" placeholder="截止日期" name="end_at" />
-        </div>
-        <span class="m-form__help"></span>
-      </div>
-      <div class="form-group">
-          <label>
-            分派给:
-          </label>
-          <div class="">
-              <select class="form-control m-input select2" id="leader" name="leader">
-                {!!project_user_select($project_id)!!}
-              </select>
-          </div>
-          <span class="m-form__help">可从项目参与人中选择处理人</span>
-      </div>
-      <div class="form-group">
-        <label for="content" class="form-control-label">
-          任务内容:
-        </label>
-        <textarea class="form-control" name="content" id="content" rows="6"></textarea>
-        <span class="m-form__help"></span>
-      </div>
-      <div class="form-group">
-          <label>
-              是否需要上传计划:
-          </label>
-          <div class="m-radio-inline">
-              <label class="m-radio">
-                  <input type="radio" name="is_need_plan" value="1" checked>
-                  是
-                  <span></span>
-              </label>
-              <label class="m-radio">
-                  <input type="radio" name="is_need_plan" value="0" >
-                  否
-                  <span></span>
-              </label>
-          </div>
-          <span class="m-form__help"></span>
-      </div>
-      <input type="hidden" name="project_id" value="{{$project_id}}">
-      {{ csrf_field() }}
-    </form>
+	<form class="m-form" action="{{ route('tasks.store') }}" method="post" id="task-form">
+		<div class="form-group">
+			<label for="name" class="form-control-label">
+				开始日期:
+			</label>
+            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" />
+			<span class="m-form__help"></span>
+		</div>
+		<div class="form-group">
+			<label>
+				分派给:
+			</label>
+			<div class="">
+				<select class="form-control m-input select2" multiple id="leader" name="leader[]">
+					{!!project_user_select($project_id)!!}
+				</select>
+			</div>
+			<span class="m-form__help">可从项目参与人中选择处理人</span>
+		</div>
+		<div class="form-group">
+			<label for="content" class="form-control-label">
+				任务内容:
+			</label>
+			<textarea class="form-control" name="content" id="content" rows="6"></textarea>
+			<span class="m-form__help"></span>
+		</div>
+		<div class="form-group">
+			<label>
+				是否需要上传计划:
+			</label>
+			<div class="m-radio-inline">
+				<label class="m-radio">
+					<input type="radio" name="is_need_plan" value="1" checked> 是
+					<span></span>
+				</label>
+				<label class="m-radio">
+					<input type="radio" name="is_need_plan" value="0"> 否
+					<span></span>
+				</label>
+			</div>
+			<span class="m-form__help"></span>
+		</div>
+		<input type="hidden" name="project_id" value="{{$project_id}}"> {{ csrf_field() }}
+	</form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" data-dismiss="modal"  >
-    关闭
-  </button>
-  <button type="button" class="btn btn-primary" id="submit-button">
-    提交
-  </button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">
+		关闭
+	</button>
+	<button type="button" class="btn btn-primary" id="submit-button">
+		提交
+	</button>
 </div>
 <script type="text/javascript">
-  jQuery(document).ready(function () {
-    mAppExtend.datePickerInstance(); 
-    mAppExtend.select2Instance();
+	jQuery(document).ready(function () {
+    mAppExtend.datePickerInstance();
+	$('#leader').select2({
+		language:'zh-CN',
+		width: '100%',
+        placeholder:'请选择接收人'
+	});
     var form = $( "#task-form" );
     var submitButton = $("#submit-button");
     form.validate({
@@ -159,4 +142,5 @@
       form.submit();
     });
   });
+
 </script>

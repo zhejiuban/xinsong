@@ -41,6 +41,7 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
 
     Route::resource('projects', 'ProjectController');
     Route::resource('devices', 'DeviceController');
+    Route::match(['get', 'put'],'phases/{phase}','ProjectController@phaseUpdate')->name('project.phases.update');
 });
 
 Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {

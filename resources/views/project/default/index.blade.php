@@ -145,7 +145,7 @@
           width: 240,
           title: "项目名称",
             template: function (row) {
-                return '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.show")}}',{project:row.id,mid:"{{request('mid')}}" })+'" class="action-show m-portlet__nav-link" title="项目概况">'+row.title+'</a>';
+                return '<a href="'+mAppExtend.laravelRoute('{{route_uri("project.tasks")}}',{project:row.id,mid:"{{request('mid')}}" })+'" class="action-show m-portlet__nav-link" title="项目概况">'+row.title+'</a>';
             }
         }, {
           field: "leader",sortable:false,

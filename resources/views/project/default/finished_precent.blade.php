@@ -7,5 +7,14 @@ $(document).ready(function(){
             'url':url
         });
     });
+    $('.phase_status').click(function (event) {
+        event.preventDefault();
+        var url = $(this).attr('href');
+        $('#_phaseModal').modal('show');
+        mAppExtend.ajaxGetHtml(
+            '#_phaseModal .modal-content',
+            url,
+            {}, true);
+    });
 });
 </script>

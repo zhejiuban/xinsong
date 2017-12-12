@@ -307,10 +307,10 @@ if (!function_exists('department_select')) {
      * @param int $selected
      * @return string
      */
-    function department_select($selected = 0,$type=1)
+    function department_select($selected = 0, $type = 1)
     {
         $list = \App\Department::getTreeData($type);
-        $str = '<option value="">'.($type==1?'请选择部门':'请选择办事处').'</option>';
+        $str = '<option value="">' . ($type == 1 ? '请选择部门' : '请选择办事处') . '</option>';
         if ($list) {
             foreach ($list as $key => $val) {
                 $str .= '<option value="' . $val['id'] . '" '
@@ -398,7 +398,7 @@ if (!function_exists('get_current_login_user_info')) {
  */
 function check_permission($rule = null, $user = null)
 {
-    if(!$rule){
+    if (!$rule) {
         return false;
     }
     if (!$user) {
@@ -546,7 +546,7 @@ function get_user_company_id($user = null)
  */
 function check_company_admin($user = null, $role = "分部管理员")
 {
-    return check_user_role($user,$role);
+    return check_user_role($user, $role);
 }
 
 /**
@@ -562,7 +562,7 @@ function check_user_role($user = null, $role = null)
     } elseif (is_numeric($user)) {
         $user = \App\User::find($user);
     }
-    if ( is_administrator_user($user->id) || ($user->hasRole($role) && $role)) {
+    if (is_administrator_user($user->id) || ($user->hasRole($role) && $role)) {
         return true;
     } else {
         return false;
@@ -735,12 +735,16 @@ function _success($message = '操作成功', $data = null, $url = '')
  * @param string $selected
  * @return string
  */
-function project_user_select($project, $selected = '')
+function project_user_select($project, $selected = '', $type = 1)
 {
     if (is_numeric($project)) {
         $project = \App\Project::find($project);
     }
-    $str = '<option value="">请选择接收人</option>';
+    if (1 == $type) {
+        $str = '<option value="">请选择接收人</option>';
+    } else {
+        $str = '';
+    }
     if ($project) {
         if ($project->users->isNotEmpty()) {
             foreach ($project->users as $key => $user) {
@@ -918,25 +922,32 @@ function question_status($status, $field = 'title')
     return isset($data[$status][$field]) ? $data[$status][$field] : null;
 }
 
-function check_project_owner($project,$power){
-    if(!is_object($project)){
+function check_project_owner($project, $power)
+{
+    if (!is_object($project)) {
         $project = \App\Project::find(intval($project));
     }
-    if($power == 'look'){
-        if(check_user_role(null,'总部管理员')){ //总部管理员
+    if ($power == 'look') {
+        if (check_user_role(null, '总部管理员')) { //总部管理员
             return true;
         }
-        if(check_company_admin() && get_user_company_id() == $project->department_id){//分部管理员
+        if (check_company_admin() && get_user_company_id() == $project->department_id) {//分部管理员
             return true;
         }
-        if($project->users()->where('user_id',get_current_login_user_info())->first()){ //项目参与人
+        if ($project->companyUser && $project->companyUser->id == get_current_login_user_info()) {//项目办事处负责人
             return true;
         }
-    }elseif($power == 'edit'){
-        if(check_user_role(null,'总部管理员')){ //总部管理员
+        if ($project->users()->where('user_id', get_current_login_user_info())->first()) { //项目参与人
             return true;
         }
-        if(check_company_admin() && get_user_company_id() == $project->department_id){//分部管理员
+    } elseif ($power == 'edit') {
+        if (check_user_role(null, '总部管理员')) { //总部管理员
+            return true;
+        }
+        if (check_company_admin() && get_user_company_id() == $project->department_id) {//分部管理员
+            return true;
+        }
+        if ($project->companyUser && $project->companyUser->id == get_current_login_user_info()) {//项目办事处负责人
             return true;
         }
     }

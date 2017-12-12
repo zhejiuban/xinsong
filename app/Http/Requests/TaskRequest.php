@@ -48,9 +48,9 @@ class TaskRequest extends FormRequest
     {
         return [
             'start_at.required'=>'请输入开始时间',
-            'end_at.required'=>'请输入截止时间',
+//            'end_at.required'=>'请输入截止时间',
 //            'end_at.after_or_equal'=>'截止时间要大于开始时间',
-            'leader.required'=>'请输入任务负责人',
+            'leader.required'=>'请输入任务接收人',
             'content.required'=>'请输入任务内容',
             'is_need_plan.required'=>'请选择是否需要上传计划',
         ];

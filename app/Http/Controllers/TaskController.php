@@ -7,6 +7,7 @@ use App\Project;
 use App\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -30,14 +31,32 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request)
     {
-        $request->offsetSet('user_id', get_current_login_user_info());
-        $request->offsetSet('status', 0);
-        $task = Task::create($request->input());
-        if ($task) {
-            activity('项目日志')->performedOn(Project::find($task->project_id))
-                ->withProperties($task->toArray())
+        $project = Project::find($request->project_id);
+        //检测项目权限
+        if(!check_project_owner($project,'edit')){
+            return _404('无权操作');
+        }
+        $data = [];
+        if($request->leader){
+            $user = get_current_login_user_info();
+            foreach($request->leader as $leader){
+                $insert['user_id'] = $user;
+                $insert['project_id'] = $request->project_id;
+                $insert['leader'] = $leader;
+                $insert['content'] = $request->input('content');
+                $insert['status'] = 0;
+                $insert['is_need_plan'] = $request->is_need_plan;
+                $insert['start_at'] = $request->start_at;
+                $insert['created_at'] = Carbon::now();
+                $insert['updated_at'] = Carbon::now();
+                $data[] = $insert;
+            }
+        }
+        if (!empty($data) && DB::table('tasks')->insert($data)) {
+            activity('项目日志')->performedOn(Project::find($request->project_id))
+                ->withProperties($data)
                 ->log('发布任务');
-            return _success('发布成功', $task->toArray(), get_redirect_url());
+            return _success('发布成功', $data, get_redirect_url());
         } else {
             return _error('操作失败');
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\File;
 use App\Http\Requests\ProjectRequest;
 use App\Project;
+use App\ProjectPhase;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -30,13 +31,13 @@ class ProjectController extends Controller
             $status = $request->input('datatable.query.status');
             $search = $request->input('datatable.query.search');
             //管理员或总部管理员获取所有项目
-            if(check_user_role(null,'总部管理员')){
+            if (check_user_role(null, '总部管理员')) {
                 $project = Project::with([
                     'department', 'leaderUser', 'agentUser'
                 ])->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
-                },function ($query) use ($status) {
-                    if($status !== null){
+                }, function ($query) use ($status) {
+                    if ($status !== null) {
                         return $query->where('status', $status);
                     }
                 })->when($search, function ($query) use ($search) {
@@ -52,14 +53,14 @@ class ProjectController extends Controller
                     , ['*']
                     , 'datatable.pagination.page'
                 );
-            }elseif(check_company_admin()){
+            } elseif (check_company_admin()) {
                 //分部管理员获取分部所有项目
                 $project = Project::with([
                     'department', 'leaderUser', 'agentUser'
                 ])->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
-                },function ($query) use ($status) {
-                    if($status !== null){
+                }, function ($query) use ($status) {
+                    if ($status !== null) {
                         return $query->where('status', $status);
                     }
                 })->when($search, function ($query) use ($search) {
@@ -68,7 +69,7 @@ class ProjectController extends Controller
                         "%{$search}%"
                     )->orWhere('no', 'like',
                         "%{$search}%");
-                })->where('department_id',get_user_company_id())->orderBy(
+                })->where('department_id', get_user_company_id())->orderBy(
                     $sort_field
                     , $sort)->paginate(
                     $prepage
@@ -123,6 +124,7 @@ class ProjectController extends Controller
         $project->department_id = $request->department_id;
         $project->leader = $request->leader;
         $project->agent = $request->agent;
+        $project->subcompany_leader = $request->subcompany_leader;
         $project->remark = $request->remark;
         $project->customers = $request->customers;
         $project->customers_tel = $request->customers_tel;
@@ -169,6 +171,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
+        dd('查看项目基本信息');
         if (!check_permission('project/projects/show')) {
             return _404('无权操作！');
         }
@@ -177,7 +180,7 @@ class ProjectController extends Controller
             return _404();
         }
         //检测项目权限
-        if(!check_project_owner($project,'look')){
+        if (!check_project_owner($project, 'look')) {
             return _404('无权操作');
         }
         set_redirect_url();
@@ -202,7 +205,7 @@ class ProjectController extends Controller
             return _404();
         }
         //检测项目权限
-        if(!check_project_owner($project,'edit')){
+        if (!check_project_owner($project, 'edit')) {
             return _404('无权操作');
         }
         return view('project.default.edit', compact('project'));
@@ -223,7 +226,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
         if ($project) {
             //检测项目权限
-            if(!check_project_owner($project,'edit')){
+            if (!check_project_owner($project, 'edit')) {
                 return _404('无权操作');
             }
 
@@ -308,7 +311,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         //检测项目权限
-        if(!check_project_owner($project,'edit')){
+        if (!check_project_owner($project, 'edit')) {
             return _404('无权操作');
         }
         if ($project->delete($id)) {
@@ -323,9 +326,7 @@ class ProjectController extends Controller
             return _error();
         }
     }
-
-
-    public function startedAndFinished(Request $request, $id)
+    /*public function startedAndFinished(Request $request, $id)
     {
         if (!check_permission('project/projects/start_or_finish')) {
             return _404('无权操作！');
@@ -348,7 +349,7 @@ class ProjectController extends Controller
         } else {
             return _error();
         }
-    }
+    }*/
 
     //获取某个项目的所有任务
     public function tasks(Request $request, $id)
@@ -445,6 +446,39 @@ class ProjectController extends Controller
                 return _success('操作成功', $files->toArray(), get_redirect_url());
             } else {
                 return _error('操作失败');
+            }
+        } else {
+            return _404();
+        }
+    }
+
+    //阶段状态修改
+    public function phaseUpdate(Request $request, $id)
+    {
+        if (!check_permission('project/phases/edit')) {
+            return _404('无权操作！');
+        }
+        $phase = ProjectPhase::find($id);
+        $project = $phase->project;
+        //检测项目权限
+        if (!check_project_owner($project, 'edit')) {
+            return _404('无权操作');
+        }
+        if ($phase) {
+            if ($request->isMethod('put')) {
+                $phase->started_at = $request->started_at;
+                $phase->finished_at = $request->finished_at;
+                $phase->status = $request->status;
+                if($phase->save()){
+                    activity('项目日志')->performedOn($project)
+                        ->withProperties($phase)
+                        ->log('编辑项目状态');
+                    return _success('操作成功',$phase->toArray(),get_redirect_url());
+                }else{
+                    return _error('操作失败');
+                }
+            } else {
+                return view('project.phase.edit', compact('phase'));
             }
         } else {
             return _404();

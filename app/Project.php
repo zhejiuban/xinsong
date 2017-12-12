@@ -29,9 +29,13 @@ class Project extends Model
     public function department(){
         return $this->belongsTo('App\Department');
     }
-    //项目负责人
+    //新松项目负责人
     public function leaderUser(){
         return $this->belongsTo('App\User','leader');
+    }
+    //分部负责人
+    public function companyUser(){
+        return $this->belongsTo('App\User','subcompany_leader');
     }
     //现场代理负责人
     public function agentUser(){

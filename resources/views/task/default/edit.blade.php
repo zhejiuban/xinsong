@@ -11,28 +11,10 @@
 <div class="modal-body">
   <form class="m-form" action="{{ route('tasks.update',['task'=>$task->id]) }}" method="post" id="task-form">
       <div class="form-group">
-          <label>
-              建设阶段:
-          </label>
-
-          <div class="">
-              <select class="form-control m-input select2" id="project_phase_id" name="project_phase_id" >
-                  {!!project_phase_select($task->project_id,$task->project_phase_id)!!}
-              </select>
-          </div>
-          <span class="m-form__help"></span>
-      </div>
-      <div class="form-group">
         <label for="name" class="form-control-label">
           起止日期:
         </label>
-        <div class="input-daterange input-group m-date">
-            <input type="text" class="form-control m-input" placeholder="开始日期" name="start_at" value="{{$task->start_at}}"/>
-            <span class="input-group-addon">
-                <i class="la la-ellipsis-h"></i>
-            </span>
-            <input type="text" class="form-control" placeholder="截止日期" name="end_at" value="{{$task->end_at}}"/>
-        </div>
+        <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" value="{{$task->start_at}}"/>
         <span class="m-form__help"></span>
       </div>
       <div class="form-group">
@@ -86,7 +68,7 @@
 </div>
 <script type="text/javascript">
   jQuery(document).ready(function () {
-    mAppExtend.datePickerInstance(); 
+    mAppExtend.datePickerInstance();
     mAppExtend.select2Instance();
     var form = $( "#task-form" );
     var submitButton = $("#submit-button");
