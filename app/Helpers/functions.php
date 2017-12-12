@@ -917,3 +917,28 @@ function question_status($status, $field = 'title')
     $data = config('common.question_status');
     return isset($data[$status][$field]) ? $data[$status][$field] : null;
 }
+
+function check_project_owner($project,$power){
+    if(!is_object($project)){
+        $project = \App\Project::find(intval($project));
+    }
+    if($power == 'look'){
+        if(check_user_role(null,'总部管理员')){ //总部管理员
+            return true;
+        }
+        if(check_company_admin() && get_user_company_id() == $project->department_id){//分部管理员
+            return true;
+        }
+        if($project->users()->where('user_id',get_current_login_user_info())->first()){ //项目参与人
+            return true;
+        }
+    }elseif($power == 'edit'){
+        if(check_user_role(null,'总部管理员')){ //总部管理员
+            return true;
+        }
+        if(check_company_admin() && get_user_company_id() == $project->department_id){//分部管理员
+            return true;
+        }
+    }
+    return false;
+}

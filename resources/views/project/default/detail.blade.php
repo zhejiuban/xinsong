@@ -44,10 +44,10 @@
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
                                 <h3 class="m-widget1__title">
-                                    动态
+                                    日志
                                 </h3>
                                 <span class="m-widget1__desc">
-                                    今日动态数：+{{ $project->dynamics()->whereBetween('created_at',[date_start_end(),date_start_end(null,'end')])->count() }}
+                                    今日日志：+{{ $project->dynamics()->whereBetween('created_at',[date_start_end(),date_start_end(null,'end')])->count() }}
                                 </span>
                             </div>
                             <div class="col m--align-right">
@@ -88,11 +88,11 @@
                                 </div>
                                 <div class="m-widget19__info">
                                     <span class="m-widget19__username">
-                                        负责人：{{$project->leaderUser->name}}
+                                        现场负责人：{{$project->agentUser->name}}
                                     </span>
                                     <br>
                                     <span class="m-widget19__time">
-                                        {{$project->leaderUser->department?$project->leaderUser->department->name:null}}
+                                        {{$project->agentUser->department?$project->agentUser->department->name:null}}
                                     </span>
                                 </div>
                             </div>
@@ -106,29 +106,15 @@
                             </div>
                         </div>
                         <div class="m-widget19__action">
+                            @if(check_project_owner($project,'edit'))
                             <a href="{{ route('projects.edit',['project'=>$project->id,'mid'=>request('mid')]) }}" class="btn btn-default m-btn m-btn--icon m-btn--icon-only"
                             data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="编辑项目" title="编辑项目">
                                 <i class="la la-edit"></i>
                             </a>
-                            @if($project->status == 0 || $project->status == 2)
-                            <a href="{{ route('project.start_or_finish',['project'=>$project->id,'status'=>1,'mid'=>request('mid')]) }}" id="project-start" class="btn btn-success m-btn m-btn--icon m-btn--icon-only"
-                            data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="启动项目" title="启动项目">
-                                <i class="la la-play-circle"></i>
-                            </a>
-                            @endif
-
-                            <!--  <a href="#" title="暂停" class="btn btn-warning m-btn m-btn--icon m-btn--icon-only">
-                                <i class="la la-pause"></i>
-                            </a>-->
-                            @if($project->status == 1)
-                            <a href="{{ route('project.start_or_finish',['project'=>$project->id,'status'=>2,'mid'=>request('mid')]) }}" id="project-finish" class="btn btn-primary m-btn m-btn--icon m-btn--icon-only"
-                            data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="设置已完成" title="设置已完成">
-                                <i class="la la-power-off"></i>
-                            </a>
-                            @endif
                             <a href="{{route('projects.destroy',['project'=>$project->id,'calendar'=>1,'mid'=>request('mid')])}}" id="project-delete" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only " data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="删除项目" title="删除项目">
                                 <i class="la la-trash"></i>
                             </a> 
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -139,18 +125,27 @@
                 <div class="m-widget14">
                     <div class="m-widget14__header">
                         <h3 class="m-widget14__title">
-                            完成情况
+                            项目状态
                         </h3>
                         <span class="m-widget14__desc">
                         </span>
                     </div>
                     
-                    <div class="row  align-items-center">
-                        <div class="col">
-                            <div id="m_chart_profit_share" class="m-widget14__chart" style="height: 160px">
-                                <div class="m-widget14__stat">
-                                    {{ $project->finishPrecent() }}%
+                    <div class="row">
+                        <div class="m-list-timeline col">
+                            <div class="m-list-timeline__items">
+                                @foreach($project->phases as $phase)
+                                <div class="m-list-timeline__item">
+                                    <span class="m-list-timeline__badge m-list-timeline__badge--{{project_phases_status($phase->status,'color')}}"></span>
+                                    <span class="m-list-timeline__text">
+                                        <a href="" class="" data-container="body" data-html=true data-toggle="m-tooltip" data-placement="top" data-original-title="周期：{{$phase->started_at}} ~ {{$phase->finished_at}}">{{$phase->name}}</a>
+                                        <span class="m-badge m-badge--{{project_phases_status($phase->status,'color')}} m-badge--wide">
+                                            {{project_phases_status($phase->status,'title')}}
+                                        </span> 
+                                    </span>
+
                                 </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>

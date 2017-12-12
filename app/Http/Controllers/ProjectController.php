@@ -29,29 +29,54 @@ class ProjectController extends Controller
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
             $status = $request->input('datatable.query.status');
             $search = $request->input('datatable.query.search');
-            //管理员获取获取所有项目
-            //分部管理员获取分部所有项目
-            $project = Project::with([
-                'department', 'leaderUser', 'agentUser'
-            ])->when($status, function ($query) use ($status) {
-                return $query->where('status', $status);
-            },function ($query) use ($status) {
-                if($status !== null){
+            //管理员或总部管理员获取所有项目
+            if(check_user_role(null,'总部管理员')){
+                $project = Project::with([
+                    'department', 'leaderUser', 'agentUser'
+                ])->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
-                }
-            })->when($search, function ($query) use ($search) {
-                return $query->where(
-                    'title', 'like',
-                    "%{$search}%"
-                )->orWhere('no', 'like',
-                    "%{$search}%");
-            })->orderBy(
-                $sort_field
-                , $sort)->paginate(
-                $prepage
-                , ['*']
-                , 'datatable.pagination.page'
-            );
+                },function ($query) use ($status) {
+                    if($status !== null){
+                        return $query->where('status', $status);
+                    }
+                })->when($search, function ($query) use ($search) {
+                    return $query->where(
+                        'title', 'like',
+                        "%{$search}%"
+                    )->orWhere('no', 'like',
+                        "%{$search}%");
+                })->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
+                );
+            }elseif(check_company_admin()){
+                //分部管理员获取分部所有项目
+                $project = Project::with([
+                    'department', 'leaderUser', 'agentUser'
+                ])->when($status, function ($query) use ($status) {
+                    return $query->where('status', $status);
+                },function ($query) use ($status) {
+                    if($status !== null){
+                        return $query->where('status', $status);
+                    }
+                })->when($search, function ($query) use ($search) {
+                    return $query->where(
+                        'title', 'like',
+                        "%{$search}%"
+                    )->orWhere('no', 'like',
+                        "%{$search}%");
+                })->where('department_id',get_user_company_id())->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
+                );
+            }
+
             $meta = [
                 'field' => $sort_field,
                 'sort' => $sort,
@@ -144,9 +169,16 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
+        if (!check_permission('project/projects/show')) {
+            return _404('无权操作！');
+        }
         $project = Project::find($id);
         if (!$project) {
             return _404();
+        }
+        //检测项目权限
+        if(!check_project_owner($project,'look')){
+            return _404('无权操作');
         }
         set_redirect_url();
         return view('project.default.show', compact('project'));
@@ -166,9 +198,12 @@ class ProjectController extends Controller
         $project = Project::with([
             'devices', 'phases', 'users', 'files', 'department', 'leaderUser', 'agentUser'
         ])->find($id);
-//        dump($project);
         if (!$project) {
             return _404();
+        }
+        //检测项目权限
+        if(!check_project_owner($project,'edit')){
+            return _404('无权操作');
         }
         return view('project.default.edit', compact('project'));
     }
@@ -187,6 +222,11 @@ class ProjectController extends Controller
         }
         $project = Project::find($id);
         if ($project) {
+            //检测项目权限
+            if(!check_project_owner($project,'edit')){
+                return _404('无权操作');
+            }
+
             $project->title = $request->title;
             $project->no = $request->no;
             $project->department_id = $request->department_id;
@@ -256,7 +296,6 @@ class ProjectController extends Controller
         } else {
             return _error();
         }
-
     }
 
     /**
@@ -268,6 +307,10 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $project = Project::find($id);
+        //检测项目权限
+        if(!check_project_owner($project,'edit')){
+            return _404('无权操作');
+        }
         if ($project->delete($id)) {
             activity('项目日志')->performedOn($project)
                 ->withProperties($project)

@@ -315,8 +315,8 @@
     var markup = "<div class='select2-result-repository clearfix'>" +
         "<div class='select2-result-repository__meta'>" +
         "<div class='select2-result-repository__title'>" + repo.name + "</div>";
-    if (repo.department) {
-        markup += "<div class='select2-result-repository__description'>所在部门：" + repo.department.name + "</div>";
+    if (repo.department || repo.company) {
+        markup += "<div class='select2-result-repository__description'>所在部门：" + (repo.company?repo.company.name:'') +  (repo.department && repo.department.level==3 ? '/'+repo.department.name:'') + "</div>";
     }
     markup += "</div></div>";
     return markup;
