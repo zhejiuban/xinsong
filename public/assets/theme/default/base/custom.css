@@ -179,3 +179,9 @@
 body .m-nowrap{
   word-wrap:break-word;
 }
+.m-section-none{
+    margin:0;
+}
+.m-line-height-25{
+    line-height: 25px;
+}

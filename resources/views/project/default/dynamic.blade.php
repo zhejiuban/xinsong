@@ -19,7 +19,7 @@
                             </li>
                             <li class="nav-item m-tabs__item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-center" data-dropdown-toggle="hover" aria-expanded="true">
                                 <a href="{{ route('project.dynamics',['project'=>$project->id,'mid'=>request('mid')]) }}" class="active nav-link m-tabs__link  m-dropdown__toggle dropdown-toggle">
-                                    动态
+                                    日志
                                 </a>
                                 <div class="m-dropdown__wrapper">
                                     <span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
@@ -27,11 +27,29 @@
                                         <div class="m-dropdown__body">
                                             <div class="m-dropdown__content">
                                                 <ul class="m-nav">
+                                                    @if($project->checkUserTask() && !$project->checkDayLog())
                                                     <li class="m-nav__item">
                                                         <a href="{{ route('dynamics.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link dynamic-add">
                                                             <i class="m-nav__link-icon flaticon-add"></i>
                                                             <span class="m-nav__link-text">
-                                                                发布动态
+                                                                上传日志
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    @endif
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-list"></i>
+                                                            <span class="m-nav__link-text">
+                                                                所有日志
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-user"></i>
+                                                            <span class="m-nav__link-text">
+                                                                只看自己的
                                                             </span>
                                                         </a>
                                                     </li>
@@ -66,7 +84,15 @@
                         </ul>
                     </div>
                 </div>
-                <div class="m-portlet__body min-height-100">
+                <div class="m-portlet__body min-height-300">
+                    @if($project->checkUserTask() && !$project->checkDayLog())
+                        <div class="alert alert-warning alert-dismissible fade show   m-alert m-alert--square m-alert--air"
+                             role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                            <strong>温馨提醒：</strong>
+                            该项目今日您未上传日志
+                        </div>
+                    @endif
                     <div class="m-widget3">
                         @foreach($dynamics as $dynamic)
                             <div class="m-widget3__item" id="dynamic-{{$dynamic->id}}">
@@ -81,17 +107,18 @@
                                         <br>
                                         <span class="m-widget3__time">
                                             {{$dynamic->created_at->diffForHumans()}}
-                                            <a href="{{ route('dynamics.edit',['dynamic'=>$dynamic->id]) }}" class="dynamic-edit">编辑</a> 
-                                            <a href="{{ route('dynamics.destroy',['dynamic'=>$dynamic->id]) }}" class="dynamic-del m--font-danger">删除</a>
+                                            @if(check_project_owner($dynamic->project,'edit') || $dynamic->user->id == get_current_login_user_info())
+                                            <a href="{{ route('dynamics.edit',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}" class="dynamic-edit">编辑</a>
+                                            @endif
+                                            @if(check_project_owner($dynamic->project,'edit'))
+                                            <a href="{{ route('dynamics.destroy',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}" class="dynamic-del m--font-danger">删除</a>
+                                            @endif
                                         </span>
                                     </div>
                                 </div>
                                 <div class="m-widget3__body">
                                     <p class="m-widget3__text">
                                         {{$dynamic->content}}
-                                        <span class="m--font-primary m--font-size-12">
-                                            (现场人员：{{$dynamic->onsite_user}})
-                                        </span>
                                     </p>
                                 </div>
                             </div>

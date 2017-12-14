@@ -950,6 +950,49 @@ function check_project_owner($project, $power)
         if ($project->companyUser && $project->companyUser->id == get_current_login_user_info()) {//项目办事处负责人
             return true;
         }
+    }elseif ($power == 'del'){
+        if (check_user_role(null, '总部管理员')) { //总部管理员
+            return true;
+        }
+        if (check_company_admin() && get_user_company_id() == $project->department_id) {//分部管理员
+            return true;
+        }
     }
     return false;
+}
+
+/**
+ * 检测某个项目的分部负责人或现场负责人
+ * @param $project
+ * @param int $type 1分部，2现场
+ * @param null $user
+ * @return bool
+ */
+function check_project_leader($project, $type = 1, $user = null)
+{
+    if (!$user) {
+        $user = get_current_login_user_info(true);
+    }
+    if (is_numeric($project)) {
+        $project = \App\Project::find($project);
+    }
+    if ($type == 1) {
+        if ($user->id == $project->subcompany_leader) {
+            return true;
+        } else {
+            return false;
+        }
+    } elseif ($type == 2) {
+        if ($user->id == $project->agent) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+function project_status($status, $field = 'title')
+{
+    $data = config('common.project_status');
+    return isset($data[$status][$field]) ? $data[$status][$field] : null;
 }

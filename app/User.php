@@ -44,6 +44,9 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Project');
     }
 
+    public function leaderTasks(){
+        return $this->hasMany('App\Task','leader');
+    }
     /**
      * 获取某个用户所在公司
      * @return null

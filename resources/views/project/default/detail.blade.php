@@ -4,6 +4,49 @@
     <div class="m-portlet__body  m-portlet__body--no-padding">
         <div class="row m-row--no-padding m-row--col-separator-xl">
             <div class="col-xl-4">
+                <!--begin:: Widgets/Daily Sales-->
+                <div class="m-widget1">
+                    <div class="m-widget19">
+                        <div class="m-widget19__content">
+                            <h5 class="m-widget19__title" style="padding:1.1rem 0;">
+                                <a href="{{ route('projects.show',['project'=>$project->id,'mid'=>request('mid')]) }}">
+                                    {{$project->title}}
+                                </a>
+                            </h5>
+                            <div class="m-widget19__body">
+                                {{str_limit($project->remark,150,'...')}}
+                            </div>
+                            <span class="m-widget19__username">
+                                    办事处负责人：{{$project->companyUser ? $project->companyUser->name : null}}
+                                </span>
+                            <br>
+                            <span class="m-widget19__username">
+                                    现场负责人：{{$project->agentUser?$project->agentUser->name:null}}
+                                </span>
+                        </div>
+                        <div class="m-widget19__action">
+                            @if(check_project_owner($project,'edit'))
+                                <a href="{{ route('projects.edit',['project'=>$project->id,'mid'=>request('mid')]) }}"
+                                   class="btn btn-default m-btn m-btn--icon m-btn--icon-only"
+                                   data-container="body" data-toggle="m-tooltip" data-placement="top"
+                                   data-original-title="编辑项目" title="编辑项目">
+                                    <i class="la la-edit"></i>
+                                </a>
+                            @endif
+                            @if(check_project_owner($project,'del'))
+                                <a href="{{route('projects.destroy',['project'=>$project->id,'calendar'=>1,'mid'=>request('mid')])}}"
+                                   id="project-delete" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only "
+                                   data-container="body" data-toggle="m-tooltip" data-placement="top"
+                                   data-original-title="删除项目" title="删除项目">
+                                    <i class="la la-trash"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <!--end:: Widgets/Daily Sales-->
+            </div>
+            <div class="col-xl-4">
                 <!--begin:: Widgets/Stats2-1 -->
                 <div class="m-widget1">
                     <div class="m-widget1__item">
@@ -76,47 +119,6 @@
                     </div>
                 </div>
                 <!--end:: Widgets/Stats2-1 -->
-            </div>
-            <div class="col-xl-4">
-                <!--begin:: Widgets/Daily Sales-->
-                <div class="m-widget1">
-                    <div class="m-widget19">
-                        <div class="m-widget19__content">
-                            <h5 class="m-widget19__title" style="padding:1.1rem 0;">
-                                <a href="{{ route('projects.show',['project'=>$project->id,'mid'=>request('mid')]) }}">
-                                    {{$project->title}}
-                                </a>
-                            </h5>
-                            <div class="m-widget19__body">
-                                {{str_limit($project->remark,150,'...')}}
-                            </div>
-                            <span class="m-widget19__username">
-                                    办事处负责人：{{$project->companyUser ? $project->companyUser->name : null}}
-                                </span>
-                            <br>
-                            <span class="m-widget19__username">
-                                    现场负责人：{{$project->agentUser?$project->agentUser->name:null}}
-                                </span>
-                        </div>
-                        <div class="m-widget19__action">
-                            @if(check_project_owner($project,'edit'))
-                                <a href="{{ route('projects.edit',['project'=>$project->id,'mid'=>request('mid')]) }}"
-                                   class="btn btn-default m-btn m-btn--icon m-btn--icon-only"
-                                   data-container="body" data-toggle="m-tooltip" data-placement="top"
-                                   data-original-title="编辑项目" title="编辑项目">
-                                    <i class="la la-edit"></i>
-                                </a>
-                                <a href="{{route('projects.destroy',['project'=>$project->id,'calendar'=>1,'mid'=>request('mid')])}}"
-                                   id="project-delete" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only "
-                                   data-container="body" data-toggle="m-tooltip" data-placement="top"
-                                   data-original-title="删除项目" title="删除项目">
-                                    <i class="la la-trash"></i>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <!--end:: Widgets/Daily Sales-->
             </div>
             <div class="col-xl-4">
                 <!--begin:: Widgets/Profit Share-->

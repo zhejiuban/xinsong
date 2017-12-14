@@ -85,9 +85,11 @@
                     },
                     success: function(response, status, xhr, $form) {
                         if(response.status == 'success'){
-                            mAppExtend.notification(response.message,'success');
-                            $('#_editModal').modal('hide');
-                            lookTask("{{ route('tasks.show',['task'=>$task->id]) }}",'handleUpdate');
+                            mAppExtend.notification(response.message,'success','toastr',function() {
+                                mAppExtend.backUrl(response.url);
+                            });
+                            //$('#_editModal').modal('hide');
+                            //lookTask("{{ route('tasks.show',['task'=>$task->id]) }}",'handleUpdate');
                         }else{
                             mAppExtend.notification(response.message,'error');
                         }

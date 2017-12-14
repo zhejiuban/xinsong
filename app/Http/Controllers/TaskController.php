@@ -39,7 +39,7 @@ class TaskController extends Controller
         $data = [];
         if($request->leader){
             $user = get_current_login_user_info();
-            foreach($request->leader as $leader){
+            foreach(array_unique($request->leader) as $leader){
                 $insert['user_id'] = $user;
                 $insert['project_id'] = $request->project_id;
                 $insert['leader'] = $leader;
@@ -134,8 +134,13 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
+        $project = Project::find($task->project_id);
+        //判断任务删除权限
+        if (!check_project_owner($project, 'edit')) {
+            return _404('无权操作');
+        }
         if ($task->delete($id)) {
-            activity('项目日志')->performedOn(Project::find($task->project_id))
+            activity('项目日志')->performedOn($project)
                 ->withProperties($task->toArray())
                 ->log('删除任务');
             return _success('操作成功', $task->toArray(), get_redirect_url());
@@ -163,6 +168,7 @@ class TaskController extends Controller
                 $task->builded_at = $request->builded_at;
                 $task->leaved_at = $request->leaved_at;
                 $task->result = $request->result;
+                $task->finished_at = Carbon::now();
                 $task->status = 1;
                 if ($task->save()) {
                     activity('项目日志')->performedOn(Project::find($task->project_id))
@@ -179,5 +185,31 @@ class TaskController extends Controller
         } else {
             return _error();
         }
+    }
+
+    public function personal(Request $request){
+        $user = get_current_login_user_info(true);
+        $type = $request->input('type');
+        $status = $request->input('status');
+        $search = $request->input('search');
+        $list = $user->leaderTasks()->when($type, function ($query) use ($user) {
+            return $query->where('subcompany_leader', $user->id);
+        })->when($status, function ($query) use ($status) {
+            return $query->where('status', $status);
+        }, function ($query) use ($status) {
+            if ($status !== null) {
+                return $query->where('status', $status);
+            }
+        })->when($search, function ($query) use ($search) {
+            return $query->where(
+                'title', 'like',
+                "%{$search}%"
+            )->orWhere('no', 'like',
+                "%{$search}%")
+                ->orWhere('customers', 'like',
+                    "%{$search}%");
+        })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+        set_redirect_url();
+        return view('task.default.personal', compact('list'));
     }
 }

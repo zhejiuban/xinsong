@@ -12,7 +12,7 @@
   <form class="m-form" action="{{ route('tasks.update',['task'=>$task->id]) }}" method="post" id="task-form">
       <div class="form-group">
         <label for="name" class="form-control-label">
-          起止日期:
+            开始日期:
         </label>
         <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" value="{{$task->start_at}}"/>
         <span class="m-form__help"></span>

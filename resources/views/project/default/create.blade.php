@@ -619,6 +619,8 @@
                         required: true
                     }, leader: {
                         required: true
+                    }, subcompany_leader: {
+                        required: true
                     }, agent: {
                         required: true
                     }, department_id: {

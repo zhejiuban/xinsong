@@ -24,26 +24,46 @@
                                         <div class="m-dropdown__body">
                                             <div class="m-dropdown__content">
                                                 <ul class="m-nav">
-                                                    <li class="m-nav__item">
-                                                        <a href="{{ route('tasks.create',['project_id'=>$project->id]) }}"
-                                                           id="task-add" class="m-nav__link">
-                                                            <i class="m-nav__link-icon flaticon-add"></i>
-                                                            <span class="m-nav__link-text">
+                                                    @if(check_project_owner($project,'edit') || check_project_leader($project))
+                                                        <li class="m-nav__item">
+                                                            <a href="{{ route('tasks.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
+                                                               id="task-add" class="m-nav__link">
+                                                                <i class="m-nav__link-icon flaticon-add"></i>
+                                                                <span class="m-nav__link-text">
                                                                 发布任务
+                                                            </span>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
+                                                           class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-list"></i>
+                                                            <span class="m-nav__link-text">
+                                                            所有任务
+                                                        </span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}"
+                                                           class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-user"></i>
+                                                            <span class="m-nav__link-text">
+                                                                只看我的任务
                                                             </span>
                                                         </a>
                                                     </li>
                                                     <li class="m-nav__separator m-nav__separator--fit"></li>
                                                     <li class="m-nav__item">
-                                                        <a href="#"
+                                                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'date'=>'day','mid'=>request('mid')]) }}"
                                                            class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
                                                             日
                                                         </a>
-                                                        <a href="#"
+                                                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'date'=>'week','mid'=>request('mid')]) }}"
                                                            class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
                                                             周
                                                         </a>
-                                                        <a href="#"
+                                                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'date'=>'month','mid'=>request('mid')]) }}"
                                                            class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
                                                             月
                                                         </a>
@@ -75,31 +95,48 @@
                         </ul>
                     </div>
                 </div>
-                <div class="m-portlet__body min-height-100">
+                <div class="m-portlet__body min-height-300">
                     <div class="m-widget2">
                         @foreach($tasks as $task)
                             <div id="task-{{ $task->id }}"
                                  class="m-widget2__item m-widget2__item--{{tasks_status($task->status,'color')}}">
                                 <div class="m-widget2__checkbox">
+                                    {{--<label class="m-checkbox m-checkbox--solid m-checkbox--single m-checkbox--brand">--}}
+                                        {{--<input type="checkbox">--}}
+                                        {{--<span></span>--}}
+                                    {{--</label>--}}
                                 </div>
                                 <div class="m-widget2__desc">
                                 <span class="m-widget2__text">
-                                    <a href="{{ route('tasks.show',['task'=>$task->id,'mid' => request('mid')]) }}"
-                                       class="task-look">{{$task->content}}</a>
-                                    <span class="m--font-size-12">({{$task->start_at}} ~ {{$task->end_at}})</span>
+
+                                    @if($task->status)
+                                        <s><a href="{{ route('tasks.show',['task'=>$task->id,'mid' => request('mid')]) }}"
+                                              class="task-look">{{$task->content}}</a></s>
+                                    @else
+                                        <a href="{{ route('tasks.show',['task'=>$task->id,'mid' => request('mid')]) }}"
+                                           class="task-look">{{$task->content}}</a>
+                                    @endif
+                                    <span class="m--font-size-12">(开始时间：{{$task->start_at}} @if($task->status) 完成时间：{{$task->finished_at}} @endif )</span>
                                 </span>
                                     <br>
                                     <span class="m-widget2__user-name">
-                                    负责人：{{$task->leaderUser->name}}
+                                    接收人：{{$task->leaderUser->name}} 接收时间：{{$task->received_at}}
+                                        @if(check_project_owner($project,'edit'))
+                                        @if(!$task->status)
                                         <a href="{{ route('tasks.edit',['task'=>$task->id])}}" class="fast-edit">编辑</a>
-                                    <a href="{{ route('tasks.destroy',['task'=>$task->id])}}"
-                                       class="fast-del m--font-danger">删除</a>
+                                        @endif
+                                        <a href="{{ route('tasks.destroy',['task'=>$task->id])}}"
+                                           class="fast-del m--font-danger">删除</a>
+                                        @endif
                                 </span>
                                 </div>
                             </div>
                         @endforeach
                     </div>
-                    {{ $tasks->appends(['mid' => request('mid')])->fragment('lists')->links('vendor.pagination.bootstrap-4') }}
+                    {{ $tasks->appends([
+                        'mid' => request('mid'),
+                        'only'=>request('only')
+                        ])->fragment('lists')->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
             <!--end:: Widgets/Tasks -->

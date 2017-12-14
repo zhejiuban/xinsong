@@ -39,9 +39,15 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::get('projects/{project}/files','ProjectController@files')->name('project.files');
     Route::delete('projects/{project}/files/{file}','ProjectController@filesDestroy')->name('project.files.destroy');
 
+    //个人项目
+    Route::get('personal','ProjectController@personal')->name('project.personal');
+    //个人的任务
+    Route::get('task/personal','TaskController@personal')->name('task.personal');
+
     Route::resource('projects', 'ProjectController');
     Route::resource('devices', 'DeviceController');
     Route::match(['get', 'put'],'phases/{phase}','ProjectController@phaseUpdate')->name('project.phases.update');
+
 });
 
 Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
@@ -71,6 +77,7 @@ Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'task', 'middleware' => 'auth'], function () {
     Route::match(['get', 'post'],'finisk/{task}','TaskController@finish')->name('tasks.finish');
+
     Route::resource('tasks', 'TaskController');
 });
 Route::group(['prefix' => 'dynamic', 'middleware' => 'auth'], function () {

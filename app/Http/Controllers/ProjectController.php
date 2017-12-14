@@ -33,7 +33,7 @@ class ProjectController extends Controller
             //管理员或总部管理员获取所有项目
             if (check_user_role(null, '总部管理员')) {
                 $project = Project::with([
-                    'department', 'leaderUser', 'agentUser'
+                    'department', 'leaderUser', 'agentUser', 'companyUser'
                 ])->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
                 }, function ($query) use ($status) {
@@ -56,7 +56,7 @@ class ProjectController extends Controller
             } elseif (check_company_admin()) {
                 //分部管理员获取分部所有项目
                 $project = Project::with([
-                    'department', 'leaderUser', 'agentUser'
+                    'department', 'leaderUser', 'agentUser', 'companyUser'
                 ])->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
                 }, function ($query) use ($status) {
@@ -133,7 +133,8 @@ class ProjectController extends Controller
         if ($project->save()) {
             //关联写入项目参与人
             $p_user = (array)$request->project_user;
-            array_push($p_user, $project->agent);
+            array_push($p_user, $project->agent); //追加现场负责人
+            array_push($p_user, $project->subcompany_leader); //追加项目负责人
             $users = array_unique($p_user);
             $project->users()->attach($users);
             //关联写入设备类型信息
@@ -199,7 +200,8 @@ class ProjectController extends Controller
             return _404('无权操作！');
         }
         $project = Project::with([
-            'devices', 'phases', 'users', 'files', 'department', 'leaderUser', 'agentUser'
+            'devices', 'phases', 'users', 'files', 'department',
+            'leaderUser', 'agentUser', 'companyUser'
         ])->find($id);
         if (!$project) {
             return _404();
@@ -235,6 +237,7 @@ class ProjectController extends Controller
             $project->department_id = $request->department_id;
             $project->leader = $request->leader;
             $project->agent = $request->agent;
+            $project->subcompany_leader = $request->subcompany_leader;
             $project->remark = $request->remark;
             $project->customers = $request->customers;
             $project->customers_tel = $request->customers_tel;
@@ -242,7 +245,8 @@ class ProjectController extends Controller
             if ($project->save()) {
                 //关联写入项目参与人
                 $p_user = (array)$request->project_user;
-                array_push($p_user, $project->leader);
+                array_push($p_user, $project->agent); //追加现场负责人
+                array_push($p_user, $project->subcompany_leader); //追加项目负责人
                 $users = array_unique($p_user);
                 $project->users()->sync($users);
                 //关联写入设备类型信息
@@ -309,9 +313,12 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
+        if (!check_permission('project/projects/destroy')) {
+            return _404('无权操作！');
+        }
         $project = Project::find($id);
         //检测项目权限
-        if (!check_project_owner($project, 'edit')) {
+        if (!check_project_owner($project, 'del')) {
             return _404('无权操作');
         }
         if ($project->delete($id)) {
@@ -355,7 +362,14 @@ class ProjectController extends Controller
     public function tasks(Request $request, $id)
     {
         if ($project = Project::find($id)) {
-            $tasks = $project->tasks()->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
+            $only = $request->input('only');
+            $tasks = $project->tasks()->when(
+                $only,function ($query) {
+                   return $query->where('leader',get_current_login_user_info());
+            })->orderBy('status','asc')->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
             set_redirect_url();
             return view('project.default.task', compact(['project', 'tasks']));
         } else {
@@ -367,7 +381,14 @@ class ProjectController extends Controller
     public function dynamics(Request $request, $id)
     {
         if ($project = Project::find($id)) {
-            $dynamics = $project->dynamics()->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
+            $only = $request->input('only');
+            $dynamics = $project->dynamics()->when(
+                $only,function ($query) {
+                return $query->where('user_id',get_current_login_user_info());
+            })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
             set_redirect_url();
             return view('project.default.dynamic', compact(['project', 'dynamics']));
         } else {
@@ -469,12 +490,14 @@ class ProjectController extends Controller
                 $phase->started_at = $request->started_at;
                 $phase->finished_at = $request->finished_at;
                 $phase->status = $request->status;
-                if($phase->save()){
+                if ($phase->save()) {
+                    //更新项目本身的状态，如果所有阶段都已完成，设置项目为已完成阶段，如全为未开始设置项目为未开始状态，否则为进行中项目
+                    $project->updateStatus();
                     activity('项目日志')->performedOn($project)
                         ->withProperties($phase)
                         ->log('编辑项目状态');
-                    return _success('操作成功',$phase->toArray(),get_redirect_url());
-                }else{
+                    return _success('操作成功', $phase->toArray(), get_redirect_url());
+                } else {
                     return _error('操作失败');
                 }
             } else {
@@ -483,5 +506,33 @@ class ProjectController extends Controller
         } else {
             return _404();
         }
+    }
+
+    //个人参与的项目
+    public function personal(Request $request)
+    {
+        $user = get_current_login_user_info(true);
+        $type = $request->input('type');
+        $status = $request->input('status');
+        $search = $request->input('search');
+        $list = $user->projects()->when($type, function ($query) use ($user) {
+            return $query->where('subcompany_leader', $user->id);
+        })->when($status, function ($query) use ($status) {
+            return $query->where('status', $status);
+        }, function ($query) use ($status) {
+            if ($status !== null) {
+                return $query->where('status', $status);
+            }
+        })->when($search, function ($query) use ($search) {
+            return $query->where(
+                'title', 'like',
+                "%{$search}%"
+            )->orWhere('no', 'like',
+                "%{$search}%")
+                ->orWhere('customers', 'like',
+                    "%{$search}%");
+        })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+        set_redirect_url();
+        return view('project.default.personal', compact('list'));
     }
 }

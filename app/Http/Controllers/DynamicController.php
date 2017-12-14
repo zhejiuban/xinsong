@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Dynamic;
 use App\Http\Requests\DynamicRequest;
 use App\Project;
+use App\ProjectPhase;
 use Illuminate\Http\Request;
 
 class DynamicController extends Controller
@@ -27,7 +28,8 @@ class DynamicController extends Controller
     public function create()
     {
         $project_id = request('project_id');
-        return view('dynamic.default.create', compact('project_id'));
+        $project = Project::find($project_id);
+        return view('dynamic.default.create', compact(['project_id','project']));
     }
 
     /**
@@ -38,14 +40,25 @@ class DynamicController extends Controller
      */
     public function store(DynamicRequest $request)
     {
+        $project = Project::find($request->project_id);
         $request->offsetSet('user_id', get_current_login_user_info());
         $request->offsetSet('status', 0);
         $dynamic = Dynamic::create($request->input());
         if ($dynamic) {
-            activity('项目日志')->performedOn(Project::find($dynamic->project_id))
+            //判断是否改变状态
+            $phase_id = $request->phase_id;
+            $phase_status = $request->phase_status;
+            if($phase_status !== null){
+                ProjectPhase::where('id',$phase_id)->where('status','<',2)->update(['status'=>intval($phase_status) + 1]);
+                //如果是完成某个阶段，自动启动下一个阶段
+
+                //更新项目状态
+                $project->updateStatus();
+            }
+            activity('项目日志')->performedOn($project)
                 ->withProperties($dynamic->toArray())
-                ->log('发布动态');
-            return _success('发布成功', $dynamic->toArray(), get_redirect_url());
+                ->log('上传日志');
+            return _success('上传成功', $dynamic->toArray(), get_redirect_url());
         } else {
             return _error('操作失败');
         }
@@ -71,8 +84,13 @@ class DynamicController extends Controller
     public function edit($id)
     {
         $dynamic = Dynamic::find($id);
+        $project  = $dynamic->project;
+        if(!check_project_owner($project,'edit')
+            && $dynamic->user->id != get_current_login_user_info()){
+            return _404('无权操作');
+        }
         if ($dynamic) {
-            return view('dynamic.default.edit', compact('dynamic'));
+            return view('dynamic.default.edit', compact(['dynamic','project']));
         } else {
             return _404();
         }
@@ -88,10 +106,23 @@ class DynamicController extends Controller
     public function update(DynamicRequest $request, $id)
     {
         $dynamic = Dynamic::find($id);
+        $project = $dynamic->project;
+        if(!check_project_owner($project,'edit')
+            && $dynamic->user->id != get_current_login_user_info()){
+            return _404('无权操作');
+        }
         if ($dynamic) {
             $dynamic->content = $request->input('content');
-            $dynamic->onsite_user = $request->onsite_user;
+//            $dynamic->onsite_user = $request->onsite_user;
             if ($dynamic->save()) {
+                //判断是否改变状态
+                $phase_id = $request->phase_id;
+                $phase_status = $request->phase_status;
+                if($phase_status !== null){
+                    ProjectPhase::where('id',$phase_id)->where('status','<',2)->update(['status'=>intval($phase_status) + 1]);
+                    //更新项目状态
+                    $project->updateStatus();
+                }
                 activity('项目日志')->performedOn(Project::find($dynamic->project_id))
                     ->withProperties($dynamic->toArray())
                     ->log('编辑动态');
@@ -113,6 +144,9 @@ class DynamicController extends Controller
     public function destroy($id)
     {
         $dynamic = Dynamic::find($id);
+        if(!check_project_owner($dynamic->project,'edit')){
+            return _404('无权操作');
+        }
         if ($dynamic->delete($id)) {
             activity('项目日志')->performedOn(Project::find($dynamic->project_id))
                 ->withProperties($dynamic->toArray())

@@ -27,14 +27,14 @@
                     {{ $task->project ? $task->project->title : null }}
                 </div>
             </div>
-            <label class="col-lg-2 col-form-label">
-                所属阶段:
-            </label>
-            <div class="col-lg-9">
-                <div class="form-static-text">
-                    {{ $task->phase ? $task->phase->name : null }}
-                </div>
-            </div>
+            {{--<label class="col-lg-2 col-form-label">--}}
+                {{--所属阶段:--}}
+            {{--</label>--}}
+            {{--<div class="col-lg-9">--}}
+                {{--<div class="form-static-text">--}}
+                    {{--{{ $task->phase ? $task->phase->name : null }}--}}
+                {{--</div>--}}
+            {{--</div>--}}
             <label class="col-lg-2 col-form-label">
             创建人:
             </label>
@@ -60,17 +60,17 @@
                 </div>
             </div>
             <label class="col-lg-2 col-form-label">
-            截止日期:
+            完成日期:
             </label>
             <div class="col-lg-3">
                 <div class="form-static-text">
-                    {{ $task->end_at}}
+                    {{ $task->finished_at}}
                 </div>
             </div>
         </div>
         <div class="form-group m-form__group row">
             <label class="col-lg-2 col-form-label">
-                负责人:
+                接收人:
             </label>
             <div class="col-lg-4">
                 <div class="form-static-text">
@@ -113,7 +113,7 @@
     </form>
 </div>
 <div class="modal-footer">
-  @if(!$task->status)
+  @if(!$task->status && (check_project_owner($task->project,'edit') || $task->leaderUser->id == get_current_login_user_info()))
   <button type="button" class="btn btn-primary"  href="{{ route('tasks.finish',['task'=>$task->id]) }}" id="finish-task">
     完成此任务
   </button>
@@ -123,12 +123,16 @@
     相关计划
   </button>
   @endif
+  @if(check_project_owner($task->project,'edit'))
+  @if(!$task->status)
   <button type="button" class="btn btn-primary" href="{{ route('tasks.edit',['task'=>$task->id]) }}" id="edit-task">
     编辑
   </button>
+  @endif
   <button type="button" class="btn btn-danger" href="{{ route('tasks.destroy',['task'=>$task->id]) }}" id="del-task" >
     删除
   </button>
+  @endif
   <button type="button" class="btn btn-secondary" data-dismiss="modal"  >
     关闭
   </button>

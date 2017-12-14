@@ -35,22 +35,22 @@
   				<div class="col-xl-12 order-2 order-xl-1">
   					<div class="form-group m-form__group row align-items-center">
   						<div class="col-md-3">
-                <select class="form-control m-bootstrap-select" id="m_form_status">
-                  <option value="">
-                    所有状态
-                  </option>
-                  <option value="0">
-                    未开始
-                  </option>
-                  <option value="1">
-                    进行中
-                  </option>
-                  <option value="2">
-                    已完成
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-3">
+                            <select class="form-control m-bootstrap-select" id="m_form_status">
+                                <option value="">
+                                    所有状态
+                                </option>
+                                <option value="0">
+                                    未开始
+                                </option>
+                                <option value="1">
+                                    进行中
+                                </option>
+                                <option value="2">
+                                    已完成
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
   							<div class="m-input-icon m-input-icon--left">
   								<input type="text" class="form-control m-input" placeholder="关键字..." id="m_form_search">
   								<span class="m-input-icon__icon m-input-icon__icon--left">
@@ -60,7 +60,7 @@
   								</span>
   							</div>
   						</div>
-              <div class="col-md-3">
+                        <div class="col-md-3">
   						</div>
   					</div>
   				</div>
@@ -155,6 +155,13 @@
               }
           }
         }, {
+            field: "subcompany_leader",sortable:false,
+            title: "办事处负责人",template:function (row) {
+                if(row.company_user){
+                    return row.company_user.name;
+                }
+            }
+        },{
           field: "agent",sortable:false,
           title: "现场负责人",template:function (row) {
               if(row.agent_user){

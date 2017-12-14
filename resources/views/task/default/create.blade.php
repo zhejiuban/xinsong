@@ -41,11 +41,11 @@
 			</label>
 			<div class="m-radio-inline">
 				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="1" checked> 是
+					<input type="radio" name="is_need_plan" value="1" > 是
 					<span></span>
 				</label>
 				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="0"> 否
+					<input type="radio" name="is_need_plan" value="0" checked> 否
 					<span></span>
 				</label>
 			</div>

@@ -20,9 +20,9 @@ return [
         1 => ['title' => '可用', 'class' => ' m-badge--success'],
     ],
     'project_status' => [
-        0 => ['title' => '未开始', 'class' => ' m-badge--danger'],
-        1 => ['title' => '进行中', 'class' => ' m-badge--primary'],
-        2 => ['title' => '已完成', 'class' => ' m-badge--success'],
+        0 => ['title' => '未开始', 'class' => ' m-badge--danger','color'=>'danger'],
+        1 => ['title' => '进行中', 'class' => ' m-badge--primary','color'=>'primary'],
+        2 => ['title' => '已完成', 'class' => ' m-badge--success','color'=>'success'],
     ],
     'project_phases_status' => [
         0 => ['title' => '未开始', 'class' => ' m-badge--danger','color'=>'danger'],
