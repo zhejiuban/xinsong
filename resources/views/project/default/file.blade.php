@@ -38,23 +38,46 @@
                                             <div class="m-dropdown__content">
                                                 <ul class="m-nav">
                                                     <li class="m-nav__item">
-                                                        <a href="{{ route('project.files.create',['project'=>$project->id,'mid'=>request('mid')]) }}" id="file-add" class="m-nav__link">
+                                                        <a href="{{ route('project.files.create',['project'=>$project->id,'folder_id'=>request('folder_id'),'mid'=>request('mid')]) }}" id="file-add" class="m-nav__link">
                                                             <i class="m-nav__link-icon flaticon-add"></i>
                                                             <span class="m-nav__link-text">
                                                                 上传文档
                                                             </span>
                                                         </a>
                                                     </li>
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.files',['project'=>$project->id,'folder_id'=>request('folder_id'),'mid'=>request('mid')]) }}"
+                                                           class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-list"></i>
+                                                            <span class="m-nav__link-text">
+                                                                所有文档
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.folders.create',['project'=>$project->id,'folder_id'=>request('folder_id'),'mid'=>request('mid')]) }}" id="folder-add" class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-add"></i>
+                                                            <span class="m-nav__link-text">
+                                                                新建分类
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.files',['project'=>$project->id,'only'=>1,'folder_id'=>request('folder_id'),'mid'=>request('mid')]) }}"
+                                                            class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-list"></i>
+                                                            <span class="m-nav__link-text">
+                                                                只看我的
+                                                            </span>
+                                                        </a>
+                                                    </li>
                                                     <li class="m-nav__separator m-nav__separator--fit"></li>
                                                     <li class="m-nav__item">
-                                                        <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
-                                                            日
-                                                        </a>
-                                                        <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
-                                                            周
-                                                        </a>
-                                                        <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
-                                                            月
+                                                        <a href="{{ route('project.files',['project'=>$project->id,'folder_id'=>project_folders_info(request('folder_id'),'parent_id'),'mid'=>request('mid')]) }}" class="m-nav__link">
+                                                            <i class="m-nav__link-icon la la-reply"></i>
+                                                            <span class="m-nav__link-text">
+                                                                返回上层目录
+                                                            </span>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -71,12 +94,38 @@
                         </ul>
                     </div>
                 </div>
-                <div class="m-portlet__body min-height-100">
+                <div class="m-portlet__body min-height-300">
                     <div class="m-widget4">
+                        @foreach($folders as $folder)
+                            <div class="m-widget4__item" id="folder-{{$folder->id}}">
+                                <div class="m-widget4__info m--padding-left-0">
+                                    <span class="m-widget4__text">
+                                        <i class="la la-folder-o"></i>
+                                        <a href="{{route('project.files',['project'=>$project->id,'folder_id'=>$folder->id,'mid'=>request('mid')])}}"
+                                           title="{{$folder->name}}" >
+                                            {{$folder->name}}
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="m-widget4__ext">
+                                    <a href="{{ route('project.folders.update',['project'=>$project->id,'folder'=>$folder->id,'mid'=>request('mid')]) }}"
+                                       title="编辑" target="_blank" class="m-widget4__icon folder-edit">
+                                        <i class="la la-edit"></i>
+                                    </a>
+                                </div>
+                                <div class="m-widget4__ext">
+                                    <a href="{{ route('project.folders.destroy',['project'=>$project->id,'folder'=>$folder->id,'mid'=>request('mid')]) }}"
+                                       title="删除" class="m-widget4__icon folder-del">
+                                        <i class="la la-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
                         @foreach($files as $file)
                             <div class="m-widget4__item" id="file-{{$file->id}}">
                                 <div class="m-widget4__info m--padding-left-0">
                                     <span class="m-widget4__text">
+                                        <i class="la la-file-text"></i>
                                         <a href="{{ route('file.download',['file'=>$file->uniqid]) }}" title="下载" target="_blank" >{{$file->old_name}}</a>
                                          (上传人：{{$file->user->name}} 时间：{{$file->created_at->diffForHumans()}})
                                     </span>
@@ -87,14 +136,19 @@
                                     </a>
                                 </div>
                                 <div class="m-widget4__ext">
-                                    <a href="{{ route('project.files.destroy',['project'=>$project->id,'file'=>$file->id]) }}" title="删除" class="m-widget4__icon file-del">
+                                    <a href="{{ route('project.files.destroy',['project'=>$project->id,'file'=>$file->id,'mid'=>request('mid')]) }}" title="删除" class="m-widget4__icon file-del">
                                         <i class="la la-trash"></i>
+                                    </a>
+                                </div>
+                                <div class="m-widget4__ext">
+                                    <a href="{{ route('project.files.move',['project'=>$project->id,'file'=>$file->id,'mid'=>request('mid')]) }}"
+                                       title="移动" class="m-widget4__icon file-move">
+                                        <i class="la la-chevron-circle-right"></i>
                                     </a>
                                 </div>
                             </div>
                         @endforeach
                     </div>
-                    {{ $files->appends(['mid' => request('mid')])->fragment('lists')->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
             <!--end:: Widgets/Tasks -->
@@ -130,7 +184,7 @@
                 {},true);
         }
         $(document).ready(function(){
-            $('#file-add').click(function(event){
+            $('#file-add,#folder-add,.folder-edit,.file-move').click(function(event){
                 event.preventDefault();
                 var url = $(this).attr('href');
                 modalFile(url);
@@ -143,6 +197,18 @@
                     callback:function(response, status, xhr){
                         if(response.data.id){
                             $("#file-"+response.data.id).fadeOut('slow');
+                        }
+                    }
+                });
+            });
+            $('.folder-del').click(function(event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                mAppExtend.deleteData({
+                    'url':url,
+                    callback:function(response, status, xhr){
+                        if(response.data.id){
+                            $("#folder-"+response.data.id).fadeOut('slow');
                         }
                     }
                 });

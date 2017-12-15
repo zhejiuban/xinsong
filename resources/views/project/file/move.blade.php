@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title" id="_ModalLabel">
-    上传文档
+    移动文档
   </h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">
@@ -9,17 +9,17 @@
   </button>
 </div>
 <div class="modal-body">
-  <form class="m-form" action="{{ route('project.files.create',['project'=>$project->id]) }}" method="post" id="file-form">
+  <form class="m-form" action="{{ route('project.files.move',['project'=>$project->id,'file'=>$file->id]) }}" method="post" id="file-form">
       <div class="form-group">
-        <div id="file-upload-instance" class="clearfix multi-image-upload">
-            <div id="file-upload-instance-picker" class="pull-left m-b-sm p-xxs b-r-sm tooltips uploader-picker" data-container="body" data-html="true" data-trigger="focus" data-toggle="m-tooltip"
-                data-placement="top" data-original-title="单个文件大小{{format_bytes(config('filesystems.disks.file.validate.size')*1024)}}以内,允许上传类型：{{arr2str(config('filesystems.disks.file.validate.ext'))}}">
-                <p class="m-b-sm"><i class="fa fa-plus-circle m--font-primary fa-2x fa-fw"></i></p>
-                选择文件
-            </div>
-        </div>
+          <label for="project_folder_id" class="col-form-label">
+              目标分类：
+          </label>
+          <select name="project_folder_id" id="project_folder_id" class="form-control select2">
+              {!! project_folder_select($project,$file->pivot->project_folder_id,2) !!}
+          </select>
       </div>
       {{ csrf_field() }}
+      {{method_field('put')}}
     </form>
 </div>
 <div class="modal-footer">
@@ -32,26 +32,7 @@
 </div>
 <script type="text/javascript">
   jQuery(document).ready(function () {
-    //多文件上传实例
-    mAppExtend.fileUpload({
-        uploader:'fileUploadInstance',
-        picker:'file-upload-instance',
-        swf: '{{ asset("assets/js/plugins/webuploader/Uploader.swf") }}',
-        server: '{{ route("file.upload") }}',
-        formData: {
-            '_token':'{{ csrf_token() }}'
-        },
-        fileNumLimit:10,
-        showTooltip:false,
-        isAutoInsertInput:true,//上传成功是否自动创建input存储区域
-        storageInputName:'file_project',//上传成功后input存储区域的name
-        uploadComplete:function(file, uploader){},
-        uploadError:function(file, uploader){},
-        uploadSuccess:function(file,response, uploader){
-        },
-        fileCannel:function(fileId, uploader){},
-        fileDelete:function(fileId, uploader){}
-    });
+    mAppExtend.select2Instance('#project_folder_id');
     var form = $( "#file-form" );
     var submitButton = $("#submit-button");
     form.validate({

@@ -76,7 +76,7 @@
                 </div>
             </div>
             <label class="col-lg-2 col-form-label">
-                客户对接人地址:
+                客户地址:
             </label>
             <div class="col-lg-9">
                 <div class="form-static-text">

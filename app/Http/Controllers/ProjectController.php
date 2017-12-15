@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\File;
 use App\Http\Requests\ProjectRequest;
 use App\Project;
+use App\ProjectFolder;
 use App\ProjectPhase;
 use App\User;
 use Illuminate\Http\Request;
@@ -42,7 +43,7 @@ class ProjectController extends Controller
                         return $query->where('status', $status);
                     }
                 })->when($search, function ($query) use ($search) {
-                    return $query->where(function ($query) use ($search){
+                    return $query->where(function ($query) use ($search) {
                         $query->where(
                             'title', 'like',
                             "%{$search}%"
@@ -67,7 +68,7 @@ class ProjectController extends Controller
                         return $query->where('status', $status);
                     }
                 })->when($search, function ($query) use ($search) {
-                    return $query->where(function ($query) use ($search){
+                    return $query->where(function ($query) use ($search) {
                         $query->where(
                             'title', 'like',
                             "%{$search}%"
@@ -177,9 +178,9 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        if (!check_permission('project/projects/show')) {
-            return _404('无权操作！');
-        }
+//        if (!check_permission('project/projects/show')) {
+//            return _404('无权操作！');
+//        }
         $project = Project::find($id);
         if (!$project) {
             return _404();
@@ -370,9 +371,9 @@ class ProjectController extends Controller
             }
             $only = $request->input('only');
             $tasks = $project->tasks()->when(
-                $only,function ($query) {
-                   return $query->where('leader',get_current_login_user_info());
-            })->orderBy('status','asc')->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+                $only, function ($query) {
+                return $query->where('leader', get_current_login_user_info());
+            })->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
             set_redirect_url();
             return view('project.default.task', compact(['project', 'tasks']));
         } else {
@@ -389,8 +390,8 @@ class ProjectController extends Controller
             }
             $only = $request->input('only');
             $dynamics = $project->dynamics()->when(
-                $only,function ($query) {
-                return $query->where('user_id',get_current_login_user_info());
+                $only, function ($query) {
+                return $query->where('user_id', get_current_login_user_info());
             })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
             set_redirect_url();
             return view('project.default.dynamic', compact(['project', 'dynamics']));
@@ -403,7 +404,11 @@ class ProjectController extends Controller
     public function questions(Request $request, $id)
     {
         if ($project = Project::find($id)) {
-            $questions = $project->questions()->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+            $only = $request->input('only');
+            $questions = $project->questions()->when(
+                $only, function ($query) {
+                return $query->where('user_id', get_current_login_user_info());
+            })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
             set_redirect_url();
             return view('project.default.question', compact(['project', 'questions']));
         } else {
@@ -411,22 +416,6 @@ class ProjectController extends Controller
         }
     }
 
-    /**
-     * 获取项目所有文档
-     * @param Request $request
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
-     */
-    public function files(Request $request, $id)
-    {
-        if ($project = Project::find($id)) {
-            $files = $project->files()->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
-            set_redirect_url();
-            return view('project.default.file', compact(['project', 'files']));
-        } else {
-            return _404();
-        }
-    }
 
     public function users(Request $request, $id)
     {
@@ -438,6 +427,7 @@ class ProjectController extends Controller
             return _404();
         }
     }
+
     public function usersCreate(Request $request, $id)
     {
         $project = Project::find($id);
@@ -454,9 +444,9 @@ class ProjectController extends Controller
                 ]);
                 $user = $request->input('project_user');
                 $haved_user = collect($project->users)->pluck('id')->all();
-                if($haved_user){
-                    foreach ($user as $key=>$val){
-                        if(in_array($val,$haved_user)){
+                if ($haved_user) {
+                    foreach ($user as $key => $val) {
+                        if (in_array($val, $haved_user)) {
                             unset($user[$key]);
                         }
                     }
@@ -476,6 +466,7 @@ class ProjectController extends Controller
             return _404();
         }
     }
+
     public function usersDestroy($id, $user)
     {
         $project = Project::find($id);
@@ -496,6 +487,44 @@ class ProjectController extends Controller
             return _404();
         }
     }
+
+    /**
+     * 获取项目所有文档
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
+    public function files(Request $request, $id)
+    {
+        if ($project = Project::find($id)) {
+            $folder = $request->folder_id;
+            $only = $request->only;
+            $folders = $project->folders()->where(function ($query) use ($folder) {
+                if ($folder) {
+                    return $query->where('parent_id', $folder);
+                } else {
+                    return $query->where('parent_id', 0)->orWhereNull('parent_id');
+                }
+            })->when($only, function ($query) {
+                return $query->where('user_id', get_current_login_user_info());
+            })->get();
+            $files = $project->files()
+                ->where(function ($query) use ($folder) {
+                    if ($folder) {
+                        return $query->where('project_folder_id', $folder);
+                    } else {
+                        return $query->whereNull('project_folder_id')->orWhere('project_folder_id', 0);
+                    }
+                })->when($only, function ($query) {
+                    return $query->where('user_id', get_current_login_user_info());
+                })->orderBy('id', 'desc')->get();
+            set_redirect_url();
+            return view('project.default.file', compact(['project', 'folders', 'files']));
+        } else {
+            return _404();
+        }
+    }
+
     /**
      * 项目文档上传
      */
@@ -510,7 +539,8 @@ class ProjectController extends Controller
                     'file_project.required' => '请选择上传文件'
                 ]);
                 $file = $request->input('file_project');
-                if ($project->files()->attach($file) !== false) {
+                $folder = $request->input('project_folder_id');
+                if ($project->files()->attach($file, ['project_folder_id' => $folder]) !== false) {
                     activity('项目日志')->performedOn($project)
                         ->withProperties($file)
                         ->log('上传文档');
@@ -519,7 +549,7 @@ class ProjectController extends Controller
                     return _error('操作失败');
                 }
             } else {
-                return view('project.default.file_create', compact('project'));
+                return view('project.file.create', compact('project'));
             }
         } else {
             return _404();
@@ -536,6 +566,110 @@ class ProjectController extends Controller
                     ->withProperties($files->toArray())
                     ->log('删除文档:' . $files->old_name);
                 return _success('操作成功', $files->toArray(), get_redirect_url());
+            } else {
+                return _error('操作失败');
+            }
+        } else {
+            return _404();
+        }
+    }
+
+    public function filesMove(Request $request, $id, $file)
+    {
+        $project = Project::find($id);
+        $file = $project->files()->find($file);
+        if ($project && $file) {
+            if ($request->isMethod('put')) {
+                if($project->files()->updateExistingPivot($file->id,[
+                    'project_folder_id'=>$request->project_folder_id
+                ]) !== false){
+                    activity('项目日志')->performedOn($project)
+                        ->withProperties($file)
+                        ->log('移动文档:' . $file->old_name);
+                    return _success('操作成功', $file->toArray(), get_redirect_url());
+                }else{
+                    return _error('操作失败');
+                }
+            } else {
+                return view('project.file.move', compact(['project','file']));
+            }
+        } else {
+            return _404();
+        }
+    }
+
+    public function foldersCreate(Request $request, $id)
+    {
+        $project = Project::find($id);
+        if ($project) {
+            if ($request->isMethod('post')) {
+                $this->validate($request, [
+                    'name' => 'required',
+                    'parent_id' => 'required',
+                ], [
+                    'name.required' => '请输入分类名称',
+                    'parent_id.required' => '请选择上级分类',
+                ]);
+                $request->offsetSet('user_id',get_current_login_user_info());
+                if ($folder = $project->folders()->create($request->input())) {
+                    activity('项目日志')->performedOn($project)
+                        ->withProperties($folder->toArray())
+                        ->log('新建文档分类:' . $folder->name);
+                    return _success('操作成功', $folder->toArray(), get_redirect_url());
+                } else {
+                    return _error('操作失败');
+                }
+            } else {
+                return view('project.folder.create', compact('project'));
+            }
+        } else {
+            return _404();
+        }
+    }
+
+    public function foldersUpdate(Request $request, $id, $folder)
+    {
+        $project = Project::find($id);
+        $folder = $project->folders()->find($folder);
+        if ($project && $folder) {
+            if ($request->isMethod('put')) {
+                $orgin = $folder;
+                $folder->name = $request->name;
+                $folder->parent_id = $request->parent_id;
+                if($folder->save()){
+                    activity('项目日志')->performedOn($project)
+                        ->withProperties($folder)
+                        ->log('变更文档分类'.$orgin->name.'为' . $folder->name);
+                    return _success('操作成功', $folder->toArray(), get_redirect_url());
+                }else{
+                    return _error('操作失败');
+                }
+            } else {
+                return view('project.folder.edit', compact(['project','folder']));
+            }
+        } else {
+            return _404();
+        }
+    }
+
+    public function foldersDestroy($id, $folder)
+    {
+        $project = Project::find($id);
+        if ($project) {
+            $folders = ProjectFolder::find($folder);
+            //判断有没有子分类
+            if (ProjectFolder::where('parent_id', $folder)->first()
+                || $project->files()->where('project_folder_id',$folders->id)->first()){
+                return _error('无法删除，请先删除子分类和文档');
+            }
+            if ($project->folders()->where('id',$folder)->delete()) {
+                //移动至该分类下所有文档到未分类
+                /*$project->files()->where('project_folder_id', $folder)
+                    ->update(['project_folder_id' => null]);*/
+                activity('项目日志')->performedOn($project)
+                    ->withProperties($folders)
+                    ->log('删除文档分类:' . $folders->name);
+                return _success('操作成功', $folders->toArray(), get_redirect_url());
             } else {
                 return _error('操作失败');
             }

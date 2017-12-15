@@ -137,7 +137,7 @@
                         </div>
                         @endforeach
                     </div>
-                    {{ $questions->appends(['mid' => request('mid')])->fragment('lists')->links('vendor.pagination.bootstrap-4') }}
+                    {{ $questions->appends(['mid' => request('mid'),'only' => request('only')])->fragment('lists')->links('vendor.pagination.bootstrap-4') }}
                 </div>
             </div>
             <!--end:: Widgets/Tasks -->

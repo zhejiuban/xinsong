@@ -33,7 +33,7 @@ class Project extends Model
     //项目相关文件
     public function files()
     {
-        return $this->belongsToMany('App\File');
+        return $this->belongsToMany('App\File')->withPivot('project_folder_id');
     }
 
     //所属部门

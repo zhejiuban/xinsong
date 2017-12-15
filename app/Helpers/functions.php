@@ -927,7 +927,7 @@ function check_project_owner($project, $power)
     if (!is_object($project)) {
         $project = \App\Project::find(intval($project));
     }
-    if(!$project){
+    if (!$project) {
         return false;
     }
     if ($power == 'look') {
@@ -953,7 +953,7 @@ function check_project_owner($project, $power)
         if ($project->companyUser && $project->companyUser->id == get_current_login_user_info()) {//项目办事处负责人
             return true;
         }
-    }elseif ($power == 'del'){
+    } elseif ($power == 'del') {
         if (check_user_role(null, '总部管理员')) { //总部管理员
             return true;
         }
@@ -1007,8 +1007,9 @@ function project_status($status, $field = 'title')
     return isset($data[$status][$field]) ? $data[$status][$field] : null;
 }
 
-function get_company_user($company=null,$field=true){
-    if(!$company){
+function get_company_user($company = null, $field = true)
+{
+    if (!$company) {
         $company = get_user_company_id();
     }
     //获取分部所有部门信息
@@ -1019,12 +1020,50 @@ function get_company_user($company=null,$field=true){
     } else {
         $list = \App\User::where('department_id', $company)->get();
     }
-    if($list){
-        if($field !== true){
+    if ($list) {
+        if ($field !== true) {
             return collect($list)->pluck($field)->all();
-        }else{
+        } else {
             return $list;
         }
     }
     return null;
+}
+
+function project_folder_select($project, $selected = 0, $type = 1)
+{
+    if (is_numeric($project)) {
+        $project = \App\Project::find($project);
+    }
+    $str = '<option value="0">顶级分类</option>';
+    if ($type == 2) {
+        $str = '<option value="0">未分类</option>';
+    }
+    if ($project->folders) {
+        foreach (formatTreeData($project->folders->toArray()) as $key => $val) {
+            if ($selected == $val['id']) {
+                $str .= '<option value="' . $val['id'] . '" selected="selected">' . $val['space'] . $val['name'] . '</option>';
+            } else {
+                $str .= '<option value="' . $val['id'] . '" >' . $val['space'] . $val['name'] . '</option>';
+            }
+        }
+    }
+    return $str;
+}
+
+/**
+ * 获取某个项目文档分类信息
+ * @param $folder
+ * @param bool $field
+ * @return null
+ */
+function project_folders_info($folder, $field = true)
+{
+    if (is_numeric($folder)) {
+        $folder = \App\ProjectFolder::find($folder);
+    }
+    if ($field === true) {
+        return $folder;
+    }
+    return isset($folder->$field) ? $folder->$field : null;
 }
