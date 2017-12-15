@@ -262,9 +262,9 @@
               },content:{
                   required: true
               }
-              // ,project_id:{
-              //     required: true
-              // }
+              ,project_id:{
+                  required: true
+              }
           },
           //display error alert on form submit
           invalidHandler: function(event, validator) {

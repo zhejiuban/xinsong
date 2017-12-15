@@ -14,20 +14,27 @@
                                 </a>
                             </h5>
                             <div class="m-widget19__body">
-                                {{str_limit($project->remark,150,'...')}}
+                                {{str_limit($project->remark,60,'...')}}
                             </div>
-                            <span class="m-widget19__username">
-                                    办事处负责人：{{$project->companyUser ? $project->companyUser->name : null}}
-                                </span>
                             <br>
                             <span class="m-widget19__username">
-                                    现场负责人：{{$project->agentUser?$project->agentUser->name:null}}
-                                </span>
+                                办事处负责人：{{$project->companyUser ? $project->companyUser->name : null}}
+                            </span>
+                            <br>
+                            <span class="m-widget19__username">
+                                现场负责人：{{$project->agentUser?$project->agentUser->name:null}}
+                                @if(check_project_owner($project, 'edit'))
+                                <a href="{{route('project.agent_leader.update',['project'=>$project->id])}}" title="更改现场负责人"
+                                   id="agent-leader-change" class="btn btn-outline-metal m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                    <i class="la la-edit"></i>
+                                </a>
+                                @endif
+                            </span>
                             <div class="m-widget1__item">
-                            <h3 class="m-widget1__title">
-                                参与人：
-                            </h3>
-                            <span class="m-widget1__desc">
+                                <h3 class="m-widget1__title">
+                                    参与人：
+                                </h3>
+                                <span class="m-widget1__desc">
                                 {{format_project_users($project->users,'name')}}
                                 </span>
                             </div>

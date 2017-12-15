@@ -11,11 +11,11 @@
                             <span class="m-menu__link-text">
                                 控制面板
                             </span>
-                            <span class="m-menu__link-badge">
-                                <span class="m-badge m-badge--danger">
-                                    2
-                                </span>
-                            </span>
+                            {{--<span class="m-menu__link-badge">--}}
+                                {{--<span class="m-badge m-badge--danger">--}}
+                                    {{--2--}}
+                                {{--</span>--}}
+                            {{--</span>--}}
                         </span>
                     </span>
                 </a>

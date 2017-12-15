@@ -110,14 +110,20 @@
                                         <br>
                                         <span class="m-widget3__time">
                                             {{$dynamic->created_at->diffForHumans()}}
-                                            @if(check_project_owner($dynamic->project,'edit') || $dynamic->user->id == get_current_login_user_info())
-                                            <a href="{{ route('dynamics.edit',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}" class="dynamic-edit">编辑</a>
-                                            @endif
-                                            @if(check_project_owner($dynamic->project,'edit'))
-                                            <a href="{{ route('dynamics.destroy',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}" class="dynamic-del m--font-danger">删除</a>
-                                            @endif
                                         </span>
                                     </div>
+                                    <span class="m-widget3__status" style="float: none;">
+                                        @if(check_project_owner($dynamic->project,'edit') || $dynamic->user->id == get_current_login_user_info())
+                                        <a href="{{ route('dynamics.edit',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}"
+                                           class="dynamic-edit btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill"><i class="la la-edit"></i></a>
+                                        @endif
+                                    </span>
+                                    <span class="m-widget3__status" style="float: none;padding-left:10px;">
+                                    @if(check_project_owner($dynamic->project,'edit'))
+                                        <a href="{{ route('dynamics.destroy',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}"
+                                           class="dynamic-del btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill"><i class="la la-trash"></i></a>
+                                    @endif
+                                    </span>
                                 </div>
                                 <div class="m-widget3__body">
                                     <p class="m-widget3__text">

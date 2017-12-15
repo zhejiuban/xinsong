@@ -70,8 +70,8 @@
                             <div id="m_header_topbar" class="m-topbar  m-stack m-stack--ver m-stack--general">
                                 <div class="m-stack__item m-topbar__nav-wrapper">
                                     <ul class="m-topbar__nav m-nav m-nav--inline">
-                                        <li class="m-nav__item m-dropdown m-dropdown--large m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width m-dropdown--skin-light    m-list-search m-list-search--skin-light" data-dropdown-toggle="click" data-dropdown-persistent="true" id="m_quicksearch" data-search-type="dropdown">
-                                            <a href="#" class="m-nav__link m-dropdown__toggle">
+                                        {{--<li class="m-nav__item m-dropdown m-dropdown--large m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width m-dropdown--skin-light    m-list-search m-list-search--skin-light" data-dropdown-toggle="click" data-dropdown-persistent="true" id="m_quicksearch" data-search-type="dropdown">
+                                            <a href="javascript:;" class="m-nav__link m-dropdown__toggle">
                                                 <span class="m-nav__link-icon">
                                                     <i class="flaticon-search-1"></i>
                                                 </span>
@@ -98,9 +98,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </li>
+                                        </li>--}}
                                         <li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right  m-dropdown--mobile-full-width" data-dropdown-toggle="click" data-dropdown-persistent="true">
-                                            <a href="#" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_icon">
+                                            <a href="javascript:;" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_icon">
                                                 <span class="m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger"></span>
                                                 <span class="m-nav__link-icon">
                                                     <i class="flaticon-music-2"></i>
@@ -308,66 +308,66 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <li class="m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light"  data-dropdown-toggle="click">
-                                            <a href="#" class="m-nav__link m-dropdown__toggle">
-                                                <span class="m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide"></span>
-                                                <span class="m-nav__link-icon">
-                                                    <i class="flaticon-share"></i>
-                                                </span>
-                                            </a>
-                                            <div class="m-dropdown__wrapper">
-                                                <span class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>
-                                                <div class="m-dropdown__inner">
-                                                    <div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/quick_actions_bg.jpg') }}); background-size: cover;">
-                                                        <span class="m-dropdown__header-title">
-                                                            快捷菜单
-                                                        </span>
-                                                        <!--<span class="m-dropdown__header-subtitle">
-                                                            Shortcuts
-                                                        </span>-->
-                                                    </div>
-                                                    <div class="m-dropdown__body m-dropdown__body--paddingless">
-                                                        <div class="m-dropdown__content">
-                                                            <div class="m-scrollable" data-scrollable="false" data-max-height="380" data-mobile-max-height="200">
-                                                                <div class="m-nav-grid m-nav-grid--skin-light">
-                                                                    <div class="m-nav-grid__row">
-                                                                        <a href="{{url('project/projects/create?mid=bd128edbfd250c9c5eff5396329011cd')}}" class="m-nav-grid__item">
-                                                                            <i class="m-nav-grid__icon flaticon-file"></i>
-                                                                            <span class="m-nav-grid__text">
-                                                                                创建项目
-                                                                            </span>
-                                                                        </a>
-                                                                        <a href="#" class="m-nav-grid__item">
-                                                                            <i class="m-nav-grid__icon flaticon-time"></i>
-                                                                            <span class="m-nav-grid__text">
-                                                                                创建任务
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                    <div class="m-nav-grid__row">
-                                                                        <a href="#" class="m-nav-grid__item">
-                                                                            <i class="m-nav-grid__icon flaticon-folder"></i>
-                                                                            <span class="m-nav-grid__text">
-                                                                                创建计划
-                                                                            </span>
-                                                                        </a>
-                                                                        <a href="#" class="m-nav-grid__item">
-                                                                            <i class="m-nav-grid__icon flaticon-clipboard"></i>
-                                                                            <span class="m-nav-grid__text">
-                                                                                创建动态
-                                                                            </span>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
+                                        {{--<li class="m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light"  data-dropdown-toggle="click">--}}
+                                            {{--<a href="#" class="m-nav__link m-dropdown__toggle">--}}
+                                                {{--<span class="m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide"></span>--}}
+                                                {{--<span class="m-nav__link-icon">--}}
+                                                    {{--<i class="flaticon-share"></i>--}}
+                                                {{--</span>--}}
+                                            {{--</a>--}}
+                                            {{--<div class="m-dropdown__wrapper">--}}
+                                                {{--<span class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>--}}
+                                                {{--<div class="m-dropdown__inner">--}}
+                                                    {{--<div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/quick_actions_bg.jpg') }}); background-size: cover;">--}}
+                                                        {{--<span class="m-dropdown__header-title">--}}
+                                                            {{--快捷菜单--}}
+                                                        {{--</span>--}}
+                                                        {{--<!--<span class="m-dropdown__header-subtitle">--}}
+                                                            {{--Shortcuts--}}
+                                                        {{--</span>-->--}}
+                                                    {{--</div>--}}
+                                                    {{--<div class="m-dropdown__body m-dropdown__body--paddingless">--}}
+                                                        {{--<div class="m-dropdown__content">--}}
+                                                            {{--<div class="m-scrollable" data-scrollable="false" data-max-height="380" data-mobile-max-height="200">--}}
+                                                                {{--<div class="m-nav-grid m-nav-grid--skin-light">--}}
+                                                                    {{--<div class="m-nav-grid__row">--}}
+                                                                        {{--<a href="{{url('project/projects/create?mid=bd128edbfd250c9c5eff5396329011cd')}}" class="m-nav-grid__item">--}}
+                                                                            {{--<i class="m-nav-grid__icon flaticon-file"></i>--}}
+                                                                            {{--<span class="m-nav-grid__text">--}}
+                                                                                {{--创建项目--}}
+                                                                            {{--</span>--}}
+                                                                        {{--</a>--}}
+                                                                        {{--<a href="#" class="m-nav-grid__item">--}}
+                                                                            {{--<i class="m-nav-grid__icon flaticon-time"></i>--}}
+                                                                            {{--<span class="m-nav-grid__text">--}}
+                                                                                {{--创建任务--}}
+                                                                            {{--</span>--}}
+                                                                        {{--</a>--}}
+                                                                    {{--</div>--}}
+                                                                    {{--<div class="m-nav-grid__row">--}}
+                                                                        {{--<a href="#" class="m-nav-grid__item">--}}
+                                                                            {{--<i class="m-nav-grid__icon flaticon-folder"></i>--}}
+                                                                            {{--<span class="m-nav-grid__text">--}}
+                                                                                {{--创建计划--}}
+                                                                            {{--</span>--}}
+                                                                        {{--</a>--}}
+                                                                        {{--<a href="#" class="m-nav-grid__item">--}}
+                                                                            {{--<i class="m-nav-grid__icon flaticon-clipboard"></i>--}}
+                                                                            {{--<span class="m-nav-grid__text">--}}
+                                                                                {{--创建动态--}}
+                                                                            {{--</span>--}}
+                                                                        {{--</a>--}}
+                                                                    {{--</div>--}}
+                                                                {{--</div>--}}
+                                                            {{--</div>--}}
+                                                        {{--</div>--}}
+                                                    {{--</div>--}}
+                                                {{--</div>--}}
+                                            {{--</div>--}}
+                                        {{--</li>--}}
                                         <li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light" data-dropdown-toggle="click">
                                             <?php $login_user = get_current_login_user_info(true); ?>
-                                            <a href="#" class="m-nav__link m-dropdown__toggle">
+                                            <a href="javascript:;" class="m-nav__link m-dropdown__toggle">
                                                 <span class="m-topbar__userpic">
                                                     <img src="{{ avatar($login_user->avatar) }}" class="m--img-rounded m--marginless m--img-centered" alt=""/>
                                                 </span>
@@ -438,7 +438,7 @@
 
                                                                 <li class="m-nav__item">
                                                                     <a href="#" class="m-nav__link">
-                                                                        <i class="m-nav__link-icon flaticon-lifebuoy"></i>
+                                                                        <i class="m-nav__link-icon flaticon-exclamation-1"></i>
                                                                         <span class="m-nav__link-text">
                                                                             帮助文档
                                                                         </span>

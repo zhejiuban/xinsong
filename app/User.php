@@ -54,6 +54,18 @@ class User extends Authenticatable
         return $this->hasMany('App\Dynamic');
     }
 
+    public function files(){
+        return $this->hasMany('App\File');
+    }
+
+    public function questions(){
+        return $this->hasMany('App\Question');
+    }
+
+    public function receiveQuestions(){
+        return $this->hasMany('App\Question','receive_user_id');
+    }
+
     /**
      * 获取某个用户所在公司
      * @return null

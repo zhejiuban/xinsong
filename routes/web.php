@@ -38,6 +38,7 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::match(['get', 'post'], 'projects/{project}/users/create', 'ProjectController@usersCreate')->name('project.users.create');
     Route::delete('projects/{project}/users/{user}', 'ProjectController@usersDestroy')->name('project.users.destroy');
     Route::get('projects/{project}/users', 'ProjectController@users')->name('project.users');
+    Route::match(['get','put'],'projects/{project}/agent_leader', 'ProjectController@changeAgentLeader')->name('project.agent_leader.update');
 
     Route::match(['get', 'post'], 'projects/{project}/files/create', 'ProjectController@filesCreate')
         ->name('project.files.create');

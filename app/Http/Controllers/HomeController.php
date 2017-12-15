@@ -23,6 +23,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        if(check_user_role(null,'总部管理员')){
+            return view('home');
+        }elseif(check_company_admin()){
+            return view('home');
+        }else{
+            return view('home');
+        }
     }
 }

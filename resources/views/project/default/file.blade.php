@@ -113,12 +113,14 @@
                                         <i class="la la-edit"></i>
                                     </a>
                                 </div>
+                                @if(check_project_owner($project, 'edit'))
                                 <div class="m-widget4__ext">
                                     <a href="{{ route('project.folders.destroy',['project'=>$project->id,'folder'=>$folder->id,'mid'=>request('mid')]) }}"
                                        title="删除" class="m-widget4__icon folder-del">
                                         <i class="la la-trash"></i>
                                     </a>
                                 </div>
+                                @endif
                             </div>
                         @endforeach
                         @foreach($files as $file)
@@ -135,11 +137,13 @@
                                         <i class="la la-download"></i>
                                     </a>
                                 </div>
+                                @if(check_project_owner($project, 'edit'))
                                 <div class="m-widget4__ext">
                                     <a href="{{ route('project.files.destroy',['project'=>$project->id,'file'=>$file->id,'mid'=>request('mid')]) }}" title="删除" class="m-widget4__icon file-del">
                                         <i class="la la-trash"></i>
                                     </a>
                                 </div>
+                                @endif
                                 <div class="m-widget4__ext">
                                     <a href="{{ route('project.files.move',['project'=>$project->id,'file'=>$file->id,'mid'=>request('mid')]) }}"
                                        title="移动" class="m-widget4__icon file-move">

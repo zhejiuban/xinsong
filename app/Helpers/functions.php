@@ -720,7 +720,7 @@ function _success($message = '操作成功', $data = null, $url = '')
             return view('layouts._success', compact('message'));
         } else {
             return response()->json([
-                'message' => $message, 'data' => $data,
+                'message' => $message, 'data' => is_object($data) ? $data->toArray() : $data,
                 'status' => 'success', 'url' => $url
             ]);
         }

@@ -497,6 +497,9 @@ class ProjectController extends Controller
     public function files(Request $request, $id)
     {
         if ($project = Project::find($id)) {
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
             $folder = $request->folder_id;
             $only = $request->only;
             $folders = $project->folders()->where(function ($query) use ($folder) {
@@ -532,6 +535,9 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
+            if (!check_project_owner($project, 'edit')) {
+                return _404('无权操作');
+            }
             if ($request->isMethod('post')) {
                 $this->validate($request, [
                     'file_project' => 'required'
@@ -560,6 +566,9 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
+            if (!check_project_owner($project, 'edit')) {
+                return _404('无权操作');
+            }
             if ($project->files()->detach($file) !== false) {
                 $files = File::find($file);
                 activity('项目日志')->performedOn($project)
@@ -579,19 +588,22 @@ class ProjectController extends Controller
         $project = Project::find($id);
         $file = $project->files()->find($file);
         if ($project && $file) {
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
             if ($request->isMethod('put')) {
-                if($project->files()->updateExistingPivot($file->id,[
-                    'project_folder_id'=>$request->project_folder_id
-                ]) !== false){
+                if ($project->files()->updateExistingPivot($file->id, [
+                        'project_folder_id' => $request->project_folder_id
+                    ]) !== false) {
                     activity('项目日志')->performedOn($project)
                         ->withProperties($file)
                         ->log('移动文档:' . $file->old_name);
                     return _success('操作成功', $file->toArray(), get_redirect_url());
-                }else{
+                } else {
                     return _error('操作失败');
                 }
             } else {
-                return view('project.file.move', compact(['project','file']));
+                return view('project.file.move', compact(['project', 'file']));
             }
         } else {
             return _404();
@@ -602,6 +614,9 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
             if ($request->isMethod('post')) {
                 $this->validate($request, [
                     'name' => 'required',
@@ -610,7 +625,7 @@ class ProjectController extends Controller
                     'name.required' => '请输入分类名称',
                     'parent_id.required' => '请选择上级分类',
                 ]);
-                $request->offsetSet('user_id',get_current_login_user_info());
+                $request->offsetSet('user_id', get_current_login_user_info());
                 if ($folder = $project->folders()->create($request->input())) {
                     activity('项目日志')->performedOn($project)
                         ->withProperties($folder->toArray())
@@ -632,20 +647,23 @@ class ProjectController extends Controller
         $project = Project::find($id);
         $folder = $project->folders()->find($folder);
         if ($project && $folder) {
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
             if ($request->isMethod('put')) {
                 $orgin = $folder;
                 $folder->name = $request->name;
                 $folder->parent_id = $request->parent_id;
-                if($folder->save()){
+                if ($folder->save()) {
                     activity('项目日志')->performedOn($project)
                         ->withProperties($folder)
-                        ->log('变更文档分类'.$orgin->name.'为' . $folder->name);
+                        ->log('变更文档分类' . $orgin->name . '为' . $folder->name);
                     return _success('操作成功', $folder->toArray(), get_redirect_url());
-                }else{
+                } else {
                     return _error('操作失败');
                 }
             } else {
-                return view('project.folder.edit', compact(['project','folder']));
+                return view('project.folder.edit', compact(['project', 'folder']));
             }
         } else {
             return _404();
@@ -656,13 +674,16 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
+            if (!check_project_owner($project, 'edit')) {
+                return _404('无权操作');
+            }
             $folders = ProjectFolder::find($folder);
             //判断有没有子分类
             if (ProjectFolder::where('parent_id', $folder)->first()
-                || $project->files()->where('project_folder_id',$folders->id)->first()){
+                || $project->files()->where('project_folder_id', $folders->id)->first()) {
                 return _error('无法删除，请先删除子分类和文档');
             }
-            if ($project->folders()->where('id',$folder)->delete()) {
+            if ($project->folders()->where('id', $folder)->delete()) {
                 //移动至该分类下所有文档到未分类
                 /*$project->files()->where('project_folder_id', $folder)
                     ->update(['project_folder_id' => null]);*/
@@ -739,5 +760,42 @@ class ProjectController extends Controller
         })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
         set_redirect_url();
         return view('project.default.personal', compact('list'));
+    }
+
+    //更改现场负责人
+    public function changeAgentLeader(Request $request, $id)
+    {
+        $project = Project::find($id);
+        if (!$project) {
+            return _404();
+        }
+        //检测项目权限
+        if (!check_project_owner($project, 'edit')) {
+            return _404('无权操作');
+        }
+        if ($request->isMethod('put')) {
+            $user = $request->agent;
+            if($user){
+                $project->agent = $user;
+                if($project->save()){
+                    //如参与人中不存在同步至参与人
+                    if(!$project->users()->where('user_id',$user)->first()){
+                        $project->users()->attach($user);
+                    }
+                    activity('项目日志')->performedOn($project)
+                        ->withProperties($project)
+                        ->log('变更现场负责人为：'.$project->agentUser->name);
+                    return _success('操作成功',$project,get_redirect_url());
+                }else{
+                    return _error('操作失败');
+                }
+            }else{
+               return _404('操作失败');
+            }
+        } else {
+            return view(
+                'project.default.change_agent_leader'
+                , compact('project'));
+        }
     }
 }

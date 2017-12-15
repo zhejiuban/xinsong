@@ -34,7 +34,7 @@ class QuestionRequest extends FormRequest
                 return [
                     'title' => 'bail|required',
                     'question_category_id' => 'bail|required',
-//                    'project_id' => 'bail|required',
+                    'project_id' => 'bail|required',
                     'receive_user_id' => 'bail|required',
                     'content' => 'bail|required',
                 ];
@@ -49,6 +49,7 @@ class QuestionRequest extends FormRequest
         return [
             'title.required' => '请输入问题标题',
             'question_category_id.required' => '请选择所属版块',
+            'project_id.required' => '请选择所属项目',
             'receive_user_id.required' => '请输入回复人',
             'content.required' => '请输入问题详情',
         ];
