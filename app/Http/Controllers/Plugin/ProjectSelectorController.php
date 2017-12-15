@@ -13,7 +13,7 @@ class ProjectSelectorController extends Controller
      */
     public function index()
     {
-        echo 1;
+        echo true;
     }
 
     /**
@@ -22,10 +22,29 @@ class ProjectSelectorController extends Controller
     public function data(Request $request)
     {
         $search = $request->input('q');
-        $list = Project::when($search, function ($query) use ($search) {
-            return $query->where('title', 'like', "%$search%")
-                ->orWhere('no', 'like', "%$search%");
-        })->where('status','=',1)->paginate(config('common.page.per_page'));
+        if (check_user_role(null, '总部管理员')) {
+            $list = Project::when($search, function ($query) use ($search) {
+                return $query->where(function ($query) use($search){
+                    $query->where('title', 'like', "%$search%")
+                        ->orWhere('no', 'like', "%$search%");
+                });
+            })->where('status', '=', 1)->paginate(config('common.page.per_page'));
+        } elseif (check_company_admin()) {
+            $list = Project::when($search, function ($query) use ($search) {
+                return $query->where(function ($query) use($search){
+                    $query->where('title', 'like', "%$search%")
+                        ->orWhere('no', 'like', "%$search%");
+                });
+            })->where('status', '=', 1)
+                ->where('department_id', get_user_company_id())
+                ->paginate(config('common.page.per_page'));
+        }else{
+            $user = get_current_login_user_info(true);
+            $list = $user->projects()->when($search, function ($query) use ($search) {
+                return $query->where('title', 'like', "%$search%")
+                    ->orWhere('no', 'like', "%$search%");
+            })->where('status', '=', 1)->paginate(config('common.page.per_page'));
+        }
         return $list;
     }
 }

@@ -19,7 +19,7 @@
                             </li>
                             <li class="nav-item m-tabs__item">
                                 <a href="{{ route('project.dynamics',['project'=>$project->id,'mid'=>request('mid')]) }}" class="nav-link m-tabs__link" >
-                                    动态
+                                    日志
                                 </a>
                             </li>
                             <li class="nav-item m-tabs__item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-center" data-dropdown-toggle="hover" aria-expanded="true">
@@ -40,15 +40,31 @@
                                                             </span>
                                                         </a>
                                                     </li>
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.questions',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-list"></i>
+                                                            <span class="m-nav__link-text">
+                                                                查看所有的
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="m-nav__item">
+                                                        <a href="{{ route('project.questions',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="m-nav__link">
+                                                            <i class="m-nav__link-icon flaticon-user"></i>
+                                                            <span class="m-nav__link-text">
+                                                                只看我的
+                                                            </span>
+                                                        </a>
+                                                    </li>
                                                     <li class="m-nav__separator m-nav__separator--fit"></li>
                                                     <li class="m-nav__item">
-                                                        <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
+                                                        <a href="{{ route('project.questions',['project_id'=>$project->id,'date'=>'day','mid'=>request('mid')]) }}" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
                                                             日
                                                         </a>
-                                                        <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
+                                                        <a href="{{ route('project.questions',['project_id'=>$project->id,'date'=>'week','mid'=>request('mid')]) }}" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
                                                             周
                                                         </a>
-                                                        <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
+                                                        <a href="{{ route('project.questions',['project_id'=>$project->id,'date'=>'month','mid'=>request('mid')]) }}" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
                                                             月
                                                         </a>
                                                     </li>
@@ -63,21 +79,21 @@
                                     文档
                                 </a>
                             </li>
+                            <li class="nav-item m-tabs__item">
+                                <a href="{{ route('project.users',['project'=>$project->id,'mid'=>request('mid')]) }}" class="nav-link m-tabs__link ">
+                                    参与人
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
-                <div class="m-portlet__body min-height-100">
+                <div class="m-portlet__body min-height-300">
                     <div class="m-widget5">
                         @foreach($questions as $question)
                         <div id="question-{{$question->id}}" class="m-widget5__item">
-                            @if($question->file)
-                                <a class="m-widget5__pic" href="{{asset($question->file[0]->path)}}" data-lightbox="roadtrip">
-                                    <img class="m-widget7__img" src="{{asset($question->file[0]->path)}}" alt="">
-                                </a>
-                            @endif
-                            <div class="m-widget5__content">
+                            <div class="m-widget5__content m--padding-left-none" style="padding-left: 0;">
                                 <h4 class="m-widget5__title">
-                                    {{$question->title}} 
+                                    {{$question->title}}
                                 </h4>
                                 <span class="m-widget5__desc">
                                     {{str_limit($question->content,150,'...')}}
@@ -96,8 +112,10 @@
                                         {{$question->created_at->diffForHumans()}}
                                     </span>
                                     <span class="m-widget5__info-action">
+                                        @if(check_project_owner($project,'edit') || (!$question->status && $question->user_id == get_current_login_user_info()))
                                         <a href="{{ route('questions.edit',['question'=>$question->id,'mid'=>request('mid')])}}">编辑</a>
                                         <a href="{{ route('questions.destroy',['question'=>$question->id,'id'=>$question->id]) }}" class="m--font-danger question-del">删除</a>
+                                        @endif
                                         <a href="{{ route('questions.show',['question'=>$question->id]) }}" class="question-look">预览</a>
                                     </span>
                                 </div>

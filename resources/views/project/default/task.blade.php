@@ -92,6 +92,12 @@
                                     文档
                                 </a>
                             </li>
+                            <li class="nav-item m-tabs__item">
+                                <a href="{{ route('project.users',['project'=>$project->id,'mid'=>request('mid')]) }}"
+                                   class="nav-link m-tabs__link ">
+                                    参与人
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -164,7 +170,6 @@
          aria-hidden="true">
         <div class="modal-dialog modal-lgx" role="document">
             <div class="modal-content">
-                aa
             </div>
         </div>
     </div>

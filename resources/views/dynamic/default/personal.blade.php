@@ -1,28 +1,13 @@
 @extends('layouts.app')
 @section('content')
     <div class="m-portlet">
-        <form method="get" action="{{route('task.personal',['mid'=>request('mid')])}}"
+        <form method="get" action="{{route('dynamic.personal',['mid'=>request('mid')])}}"
               class="m-form m-form--fit m-form--group-seperator-dashed m-form-group-padding-bottom-10">
             <div class="m-portlet__body ">
                 <div class=" m-form__group row">
                     <div class="col-lg-4">
                         <div class="form-group">
                         <select name="project_id" class="form-control" id="project_id">
-                        </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                        <select name="status" class="form-control m-bootstrap-select" id="status">
-                            <option value="">
-                                所有状态
-                            </option>
-                            <option value="0">
-                                进行中
-                            </option>
-                            <option value="1">
-                                已完成
-                            </option>
                         </select>
                         </div>
                     </div>
@@ -41,38 +26,17 @@
     @foreach($list as $task)
         <div class="m-portlet">
             <div class="m-portlet__body">
-
                 <div class="m-widget">
                     <div class="m-widget-body">
                         <div class="m-section m-section-none">
-                            <h3 class="m-section__heading">
-                                <span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">
-                                    {{tasks_status($task->status)}}
-                                </span>
-                                @if($task->status)
-                                    <s><a class="look-task m-line-height-25"  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a></s>
-                                @else
-                                    <a class="look-task m-line-height-25" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a>
-                                @endif
+                            <h3 class="m-section__heading m-line-height-25">
+                                {{$task->content}}
                             </h3>
-                            <span class="m-section__sub">
-                                所属项目：{{$task->project->title}} <br>
-                                开始时间：{{$task->start_at}}
-                                {{$task->finished_at ?'，完成时间：'.$task->finished_at : null}}
+                            <span class="m-section__sub m-section__sub-margin-bottom-none">
+                                所属项目：{{$task->project ? $task->project->title : null}} <br>
+                                上传日期：{{$task->created_at}}
                             </span>
                         </div>
-                    </div>
-                    <div class="m-widget__action m--margin-top-20">
-                        <a href=""
-                           class="btn m-btn--pill  btn-sm btn-secondary ">
-                            <i class="fa fa-edit"></i> 计划管理
-                        </a>
-                        @if(!$task->status)
-                        <a href="{{ route('tasks.finish',['task'=>$task->id,'mid'=>request('mid')])}}"
-                           class="btn m-btn--pill  btn-sm  btn-accent finish-task">
-                            <i class="fa fa-check"></i> 完成任务
-                        </a>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -81,7 +45,6 @@
     {{ $list->appends([
         'mid' => request('mid'),
         'project_id' => request('project_id'),
-        'status' => request('status') !== null ? 0 : '',
     ])->links('vendor.pagination.bootstrap-4') }}
     <!--begin::Modal-->
     <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true">
@@ -129,12 +92,6 @@
                 {}, true);
         }
         $(document).ready(function () {
-            $('#status').selectpicker();
-            $('.finish-task,.look-task').click(function(event) {
-                event.preventDefault();
-                var url = $(this).attr('href');
-                ActionModal(url);
-            });
             var $projectSelector = $("#project_id").select2({
                 language:'zh-CN',
                 placeholder: "输入项目编号、名称等关键字搜索，选择项目",

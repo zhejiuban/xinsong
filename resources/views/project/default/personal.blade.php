@@ -2,10 +2,11 @@
 @section('content')
     <div class="m-portlet">
         <form method="get" action="{{route('project.personal',['mid'=>request('mid')])}}"
-              class="m-form m-form--fit m-form--group-seperator-dashed">
+              class="m-form m-form--fit m-form--group-seperator-dashed m-form-group-padding-bottom-10">
             <div class="m-portlet__body ">
-                <div class="form-group m-form__group row">
+                <div class="row m-form__group">
                     <div class="col-lg-3">
+                        <div class="form-group ">
                         <select name="status" class="form-control m-bootstrap-select" id="status">
                             <option value="">
                                 所有状态
@@ -20,8 +21,10 @@
                                 已完成
                             </option>
                         </select>
+                        </div>
                     </div>
                     <div class="col-lg-3">
+                        <div class="form-group ">
                         <select name="type" class="form-control m-bootstrap-select" id="type">
                             <option value="0">
                                 我参与的项目
@@ -30,15 +33,20 @@
                                 我负责的项目
                             </option>
                         </select>
+                        </div>
                     </div>
                     <div class="col-lg-3">
+                        <div class="form-group ">
                         <input type="text" name="search" class="form-control m-input" placeholder="关键字如编号、名称、客户联系人">
+                        </div>
                     </div>
                     <div class="col-lg-3">
+                        <div class="form-group ">
                         <input type="hidden" name="mid" value="{{request('mid')}}">
                         <button type="submit" class="btn btn-brand  m-btn--pill">
                             查询
                         </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,23 +83,43 @@
                                 <strong>温馨提醒：</strong>
                                 该项目今日您未上传日志
                             </div>
-                            <a href="{{ route('dynamics.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
-                               class="btn m-btn--pill  btn-sm  btn-accent dynamic-add">
-                                <i class="fa fa-edit"></i> 填写日志
-                            </a>
                         @endif
-                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="btn m-btn--pill  btn-sm  btn-secondary">
-                            <i class="fa fa-eye"></i> 查看所有日志</a>
+                        <a href="{{ route('dynamics.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
+                           class="btn m-btn--pill  btn-sm  btn-secondary dynamic-add">
+                            <i class="fa fa-edit"></i> 填写日志
+                        </a>
+
                         @if(check_project_leader($project))
                             <a href="{{ route('tasks.create',['project_id'=>$project->id]) }}"
-                               class="btn m-btn--pill btn-sm btn-accent task-add">
+                               class="btn m-btn--pill btn-sm btn-secondary task-add">
                                 <i class="fa fa-plus"></i> 发布任务
                             </a>
                         @endif
-                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="btn m-btn--pill  btn-sm  btn-secondary">
-                            <i class="fa fa-list"></i> 查看所有任务
-                            {{--<span class="m-badge m-badge--metal">{{$project->tasks()->count()}}</span>--}}
-                        </a>
+                        <div class="btn-group" >
+                            <button type="button" class="btn btn-secondary btn-sm m-btn--pill dropdown-toggle" data-toggle="dropdown" data-dropdown-toggle="hover" aria-expanded="true" aria-haspopup="true" >
+                                更多
+                            </button>
+                            <div class="dropdown-menu" x-placement="top-start">
+                                <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                    <i class="flaticon-share"></i>
+                                        所有任务
+                                </a>
+                                <a href="{{ route('project.tasks',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                    <i class="flaticon-user"></i>
+                                        只看我的任务 <span class="m-badge m-badge--brand">{{$project->tasks()->where('leader',get_current_login_user_info())->count()}}</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                    <i class="flaticon-list"></i>
+                                        所有日志
+                                </a>
+                                <a href="{{ route('project.dynamics',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                    <i class="flaticon-user"></i>
+                                    只看我的日志 <span class="m-badge m-badge--brand">{{$project->dynamics()->where('user_id',get_current_login_user_info())->count()}}</span>
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

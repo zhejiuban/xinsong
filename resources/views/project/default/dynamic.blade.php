@@ -27,7 +27,6 @@
                                         <div class="m-dropdown__body">
                                             <div class="m-dropdown__content">
                                                 <ul class="m-nav">
-                                                    @if($project->checkUserTask() && !$project->checkDayLog())
                                                     <li class="m-nav__item">
                                                         <a href="{{ route('dynamics.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link dynamic-add">
                                                             <i class="m-nav__link-icon flaticon-add"></i>
@@ -36,7 +35,6 @@
                                                             </span>
                                                         </a>
                                                     </li>
-                                                    @endif
                                                     <li class="m-nav__item">
                                                         <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link">
                                                             <i class="m-nav__link-icon flaticon-list"></i>
@@ -79,6 +77,11 @@
                             <li class="nav-item m-tabs__item">
                                 <a href="{{ route('project.files',['project'=>$project->id,'mid'=>request('mid')]) }}" class="nav-link m-tabs__link ">
                                     文档
+                                </a>
+                            </li>
+                            <li class="nav-item m-tabs__item">
+                                <a href="{{ route('project.users',['project'=>$project->id,'mid'=>request('mid')]) }}" class="nav-link m-tabs__link ">
+                                    参与人
                                 </a>
                             </li>
                         </ul>

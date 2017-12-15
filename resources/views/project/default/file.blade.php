@@ -19,7 +19,7 @@
                             </li>
                             <li class="nav-item m-tabs__item">
                                 <a href="{{ route('project.dynamics',['project'=>$project->id,'mid'=>request('mid')]) }}" class="nav-link m-tabs__link" >
-                                    动态
+                                    日志
                                 </a>
                             </li>
                             <li class="nav-item m-tabs__item">
@@ -63,7 +63,11 @@
                                     </div>
                                 </div>
                             </li>
-
+                            <li class="nav-item m-tabs__item">
+                                <a href="{{ route('project.users',['project'=>$project->id,'mid'=>request('mid')]) }}" class="nav-link m-tabs__link ">
+                                    参与人
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

@@ -927,6 +927,9 @@ function check_project_owner($project, $power)
     if (!is_object($project)) {
         $project = \App\Project::find(intval($project));
     }
+    if(!$project){
+        return false;
+    }
     if ($power == 'look') {
         if (check_user_role(null, '总部管理员')) { //总部管理员
             return true;
@@ -991,8 +994,37 @@ function check_project_leader($project, $type = 1, $user = null)
     }
     return false;
 }
+
+/**
+ * 项目状态
+ * @param $status
+ * @param string $field
+ * @return null
+ */
 function project_status($status, $field = 'title')
 {
     $data = config('common.project_status');
     return isset($data[$status][$field]) ? $data[$status][$field] : null;
+}
+
+function get_company_user($company=null,$field=true){
+    if(!$company){
+        $company = get_user_company_id();
+    }
+    //获取分部所有部门信息
+    $dep = get_company_deparent($company);
+    if ($dep && count($dep)) {
+        $list = \App\User::where('department_id', $company)
+            ->orWhereIn('department_id', $dep)->get();
+    } else {
+        $list = \App\User::where('department_id', $company)->get();
+    }
+    if($list){
+        if($field !== true){
+            return collect($list)->pluck($field)->all();
+        }else{
+            return $list;
+        }
+    }
+    return null;
 }

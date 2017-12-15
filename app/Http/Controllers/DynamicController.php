@@ -156,4 +156,19 @@ class DynamicController extends Controller
             return _error();
         }
     }
+
+    /**
+     * 个人日志
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function personal(Request $request){
+        $user = get_current_login_user_info(true);
+        $project_id = $request->input('project_id');
+        $list = $user->dynamics()->when($project_id, function ($query) use ($project_id) {
+            return $query->where('project_id', $project_id);
+        })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+        set_redirect_url();
+        return view('dynamic.default.personal', compact('list'));
+    }
 }

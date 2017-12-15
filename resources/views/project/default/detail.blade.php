@@ -9,7 +9,7 @@
                     <div class="m-widget19">
                         <div class="m-widget19__content">
                             <h5 class="m-widget19__title" style="padding:1.1rem 0;">
-                                <a href="{{ route('projects.show',['project'=>$project->id,'mid'=>request('mid')]) }}">
+                                <a class="look-project" href="{{ route('projects.show',['project'=>$project->id,'mid'=>request('mid')]) }}">
                                     {{$project->title}}
                                 </a>
                             </h5>
@@ -23,17 +23,23 @@
                             <span class="m-widget19__username">
                                     现场负责人：{{$project->agentUser?$project->agentUser->name:null}}
                                 </span>
+                            <div class="m-widget1__item">
+                            <h3 class="m-widget1__title">
+                                参与人：
+                            </h3>
+                            <span class="m-widget1__desc">
+                                {{format_project_users($project->users,'name')}}
+                                </span>
+                            </div>
                         </div>
                         <div class="m-widget19__action">
-                            @if(check_project_owner($project,'edit'))
+                            @if(check_project_owner($project,'del'))
                                 <a href="{{ route('projects.edit',['project'=>$project->id,'mid'=>request('mid')]) }}"
                                    class="btn btn-default m-btn m-btn--icon m-btn--icon-only"
                                    data-container="body" data-toggle="m-tooltip" data-placement="top"
                                    data-original-title="编辑项目" title="编辑项目">
                                     <i class="la la-edit"></i>
                                 </a>
-                            @endif
-                            @if(check_project_owner($project,'del'))
                                 <a href="{{route('projects.destroy',['project'=>$project->id,'calendar'=>1,'mid'=>request('mid')])}}"
                                    id="project-delete" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only "
                                    data-container="body" data-toggle="m-tooltip" data-placement="top"
@@ -49,23 +55,7 @@
             <div class="col-xl-4">
                 <!--begin:: Widgets/Stats2-1 -->
                 <div class="m-widget1">
-                    <div class="m-widget1__item">
-                        <div class="row m-row--no-padding align-items-center">
-                            <div class="col">
-                                <h3 class="m-widget1__title">
-                                    参与人：
-                                </h3>
-                                <span class="m-widget1__desc">
-                                {{format_project_users($project->users,'name',2)}}...
-                                </span>
-                            </div>
-                            <div class="col m--align-right">
-                                <span class="m-widget1__number m--font-danger">
-                                    {{$project->users()->count()}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="m-widget1__item">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
@@ -117,6 +107,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="m-widget1__item">
+                        <div class="row m-row--no-padding align-items-center">
+                            <div class="col">
+                                <h3 class="m-widget1__title">
+                                    文档
+                                </h3>
+                                <span class="m-widget1__desc">
+                                    今日文档数：+{{ $project->files()->whereBetween('created_at',[date_start_end(),date_start_end(null,'end')])->count() }}
+                                </span>
+                            </div>
+                            <div class="col m--align-right">
+                                <span class="m-widget1__number m--font-success">
+                                    {{$project->files()->count()}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!--end:: Widgets/Stats2-1 -->
             </div>
@@ -161,6 +168,14 @@
 <!--begin::Modal-->
 <div class="modal fade" id="_phaseModal" tabindex="-1" role="dialog" aria-labelledby="_PhaseModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
+<!--begin::Modal-->
+<div class="modal fade" id="_lookProjectModal" tabindex="-1" role="dialog" aria-labelledby="_ProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
         </div>
     </div>

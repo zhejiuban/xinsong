@@ -16,5 +16,14 @@ $(document).ready(function(){
             url,
             {}, true);
     });
+    $(".look-project").click(function (event) {
+        event.preventDefault();
+        var url = $(this).attr('href');
+        $('#_lookProjectModal').modal('show');
+        mAppExtend.ajaxGetHtml(
+            '#_lookProjectModal .modal-content',
+            url,
+            {}, true);
+    });
 });
 </script>

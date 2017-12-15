@@ -35,6 +35,10 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::get('projects/{project}/tasks','ProjectController@tasks')->name('project.tasks');
     Route::get('projects/{project}/dynamics','ProjectController@dynamics')->name('project.dynamics');
     Route::get('projects/{project}/questions','ProjectController@questions')->name('project.questions');
+    Route::match(['get', 'post'],'projects/{project}/users/create','ProjectController@usersCreate')->name('project.users.create');
+    Route::delete('projects/{project}/users/{user}','ProjectController@usersDestroy')->name('project.users.destroy');
+    Route::get('projects/{project}/users','ProjectController@users')->name('project.users');
+
     Route::match(['get', 'post'],'projects/{project}/files/create','ProjectController@filesCreate')->name('project.files.create');
     Route::get('projects/{project}/files','ProjectController@files')->name('project.files');
     Route::delete('projects/{project}/files/{file}','ProjectController@filesDestroy')->name('project.files.destroy');
@@ -43,6 +47,8 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::get('personal','ProjectController@personal')->name('project.personal');
     //个人的任务
     Route::get('task/personal','TaskController@personal')->name('task.personal');
+    //个人的日志
+    Route::get('dynamic/personal','DynamicController@personal')->name('dynamic.personal');
 
     Route::resource('projects', 'ProjectController');
     Route::resource('devices', 'DeviceController');

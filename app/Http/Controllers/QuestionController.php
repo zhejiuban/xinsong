@@ -27,18 +27,36 @@ class QuestionController extends Controller
                 ? $request->input('datatable.sort.sort') : 'desc';
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
-            $role = Question::with([
-                'category', 'project', 'user', 'receiveUser'
-            ])->where(
-                'title', 'like',
-                "%{$request->input('datatable.query.search')}%"
-            )->orderBy(
-                $sort_field
-                , $sort)->paginate(
-                $prepage
-                , ['*']
-                , 'datatable.pagination.page'
-            );
+            if (check_user_role(null, '总部管理员')) {
+                $role = Question::with([
+                    'category', 'project', 'user', 'receiveUser'
+                ])->where(
+                    'title', 'like',
+                    "%{$request->input('datatable.query.search')}%"
+                )->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
+                );
+            } elseif (check_company_admin()) {
+                $user = get_company_user(null, 'id');
+                $role = Question::with([
+                    'category', 'project', 'user', 'receiveUser'
+                ])->where(
+                    'title', 'like',
+                    "%{$request->input('datatable.query.search')}%"
+                )->whereIn(
+                    'user_id', $user
+                )->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
+                );
+            }
             $meta = [
                 'field' => $sort_field,
                 'sort' => $sort,
@@ -92,7 +110,7 @@ class QuestionController extends Controller
         if ($result->save()) {
             //记录日志
             activity('项目日志')->performedOn(Project::find($result->project_id))
-                ->withProperties($result->toArray())->log('添加问题:'.$result->title);
+                ->withProperties($result->toArray())->log('添加问题:' . $result->title);
             //接收人消息提醒
 
             return response()->json([
@@ -123,29 +141,22 @@ class QuestionController extends Controller
             return _404('无权操作！');
         }
         $user_id = get_current_login_user_info();
-        if (is_administrator()) {
-            $question = Question::with([
-                'user', 'category', 'receiveUser', 'project'
-            ])->find($id);
-        } else {
-            $question = Question::with([
-                'user', 'category', 'receiveUser', 'project'
-            ])->where('user_id', $user_id)
-                ->orWhere('receive_user_id', $user_id)->find($id);
-        }
+        $question = Question::with([
+            'user', 'category', 'receiveUser', 'project'
+        ])->find($id);
+
         if ($question) {
-            if(!$question->status && $question->receive_user_id == $user_id){
+            if (!$question->status && $question->receive_user_id == $user_id) {
                 //设置接收时间
                 $question->status = 1;//已接收，待处理
                 $question->received_at = Carbon::now();
                 $question->click = intval($question->click) + 1;
                 $question->save();
                 //写入日志
-                activity('项目日志')->performedOn(Project::find($question->project_id))
-                    ->withProperties($question)->log('问题接收:'.$question->title);
-            }else{
-                $question->increment('click',1);
-//                dd($question);
+                activity('项目日志')->performedOn($question->project)
+                    ->withProperties($question)->log('问题接收:' . $question->title);
+            } else {
+                $question->increment('click', 1);
             }
             return view('question.default.show', compact('question'));
         } else {
@@ -162,21 +173,15 @@ class QuestionController extends Controller
     public function edit($id)
     {
         $question = Question::with([
-            'category','receiveUser','project'
+            'category', 'receiveUser', 'project'
         ])->find($id);
-        if($question){
-            //判断信息是否可编辑
-            if(!is_administrator()){
-                if($question->status > 0){
-                    return _404('您访问的数据无法修改');
-                }
-                //判断是否是个人上报问题
-                if($question->user_id != get_current_login_user_info()){
-                    return _error('无权修改');
-                }
+        if ($question) {
+            if (!check_project_owner($question->project, 'edit')
+                && $question->user_id != get_current_login_user_info()) {
+                return _error('无权操作');
             }
-            return view('question.default.edit',compact('question'));
-        }else{
+            return view('question.default.edit', compact('question'));
+        } else {
             return _404();
         }
     }
@@ -191,16 +196,11 @@ class QuestionController extends Controller
     public function update(QuestionRequest $request, $id)
     {
         $question = Question::find($id);
-        if($question){
+        if ($question) {
             //判断信息是否可编辑
-            if(!is_administrator()){
-                if($question->status > 0){
-                    return _404('您访问的数据无法修改');
-                }
-                //判断是否是个人上报问题
-                if($question->user_id != get_current_login_user_info()){
-                    return _error('无权修改');
-                }
+            if (!check_project_owner($question->project, 'edit')
+                && $question->user_id != get_current_login_user_info()) {
+                return _error('无权操作');
             }
             //修改数据
             $question->title = $request->title;
@@ -212,14 +212,14 @@ class QuestionController extends Controller
             if ($question->save()) {
                 //记录日志
                 activity('项目日志')->performedOn(Project::find($question->project_id))
-                    ->withProperties($question->toArray())->log('更新问题:'.$question->title);
+                    ->withProperties($question->toArray())->log('更新问题:' . $question->title);
                 //接收人消息提醒
 
-                return _success('编辑成功',$question->toArray(),get_redirect_url());
+                return _success('编辑成功', $question->toArray(), get_redirect_url());
             } else {
                 return _error('编辑失败');
             }
-        }else{
+        } else {
             return _404();
         }
     }
@@ -235,28 +235,38 @@ class QuestionController extends Controller
         if (!check_permission('question/questions/destroy')) {
             return _404('无权操作！');
         }
-        if(!$id){
+        if (!$id) {
             $id = request('id');
         }
-        $id = (array) $id;
-        if(count($id) < 1 || !current($id)){
+        $id = (array)$id;
+        if (count($id) < 1 || !current($id)) {
             return _404('请选择要操作的数据');
         }
         //删除操作
-        if(is_administrator()){
-            $res = Question::whereIn('id',$id)->delete();
-        }else{
-            $res = Question::whereIn('id',$id)->where(
-                'user_id',get_current_login_user_info()
-            )->where('status',0)->delete();
+        if (check_user_role(null, '总部管理员')) {
+            $res = Question::whereIn('id', $id)->delete();
+        } elseif (check_company_admin()) {
+            //获取分部所有用户
+            $user = get_company_user(null, 'id');
+            if ($user) {
+                $res = Question::whereIn('id', $id)->whereIn(
+                    'user_id', $user
+                )->delete();
+            } else {
+                return _404('删除失败');
+            }
+        } else {
+            $res = Question::whereIn('id', $id)->where(
+                'user_id', get_current_login_user_info()
+            )->where('status', 0)->delete();
         }
-        if($res){
+        if ($res) {
             activity('项目日志')->withProperties($id)->log('删除问题');
             return response()->json([
                 'message' => '删除成功', 'data' => $id,
                 'status' => 'success', 'url' => null
             ]);
-        }else{
+        } else {
             return _error('删除失败');
         }
     }
@@ -322,7 +332,7 @@ class QuestionController extends Controller
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
             $role = Question::with([
-                'category', 'project', 'receiveUser','user'
+                'category', 'project', 'receiveUser', 'user'
             ])->where(
                 'title', 'like',
                 "%{$request->input('datatable.query.search')}%"
@@ -348,6 +358,7 @@ class QuestionController extends Controller
         set_redirect_url();
         return view('question.default.pending');
     }
+
     //问题回复设置
     public function reply(Request $request)
     {
@@ -355,82 +366,81 @@ class QuestionController extends Controller
         if (!check_permission('question/reply')) {
             return _404('无权操作！');
         }
+        $info = Question::find($request->question);
         //获取问题详情
-        if(is_administrator()){
-            $info = Question::find($request->question);
-        }else{
-            $info = Question::where(
-                'receive_user_id',get_current_login_user_info()
-            )->where('status','<',3)->find($request->question);
-        }
         if(!$info){
-            return _404();
+            return _404('无权操作！');
         }
-        if ($request->isMethod('post')){
+        if(!check_project_owner($info->project, 'del')
+            && $info->receive_user_id != get_current_login_user_info()){
+            return _404('无权操作！');
+        }
+        if ($request->isMethod('post')) {
             //检测回复内容
-            $this->validate($request,[
-                'reply_content'=>'required'
-            ],['reply_content.required'=>'请填写回复内容']);
+            $this->validate($request, [
+                'reply_content' => 'required'
+            ], ['reply_content.required' => '请填写回复内容']);
             $info->reply_content = $request->reply_content;
             $info->replied_at = Carbon::now();
             $info->status = 2; //设置已回复
-            if($info->save()){
+            if ($info->save()) {
                 //增加回复提醒
 
                 activity('项目日志')->performedOn(Project::find($info->project_id))
-                    ->withProperties($info)->log('回复问题:'.$info->title);
+                    ->withProperties($info)->log('回复问题:' . $info->title);
                 return _success('回复成功');
-            }else{
+            } else {
                 return _error('回复失败');
             }
-        }else{
-            if(!$info->status){
+        } else {
+            if (!$info->status) {
                 //设置接收时间
                 $info->status = 1;//已接收，待处理
                 $info->received_at = Carbon::now();
                 $info->save();
                 //写入日志
                 activity('项目日志')->performedOn(Project::find($info->project_id))
-                    ->withProperties($info)->log('问题接收:'.$info->title);
+                    ->withProperties($info)->log('问题接收:' . $info->title);
             }
-            return view('question.default.reply',['question'=>$info]);
+            return view('question.default.reply', ['question' => $info]);
         }
     }
 
     //关闭设置
-    public function finished(Request $request){
+    public function finished(Request $request)
+    {
         //检测权限
         if (!check_permission('question/finished')) {
             return _404('无权操作！');
         }
-        $question = (array) $request->question;
-        if(!count($question) || !current($question)){
+        $question = (array)$request->question;
+        if (!count($question) || !current($question)) {
             return _error('请选择要操作的数据');
         }
-        if(is_administrator()){
-            $update = Question::whereIn('id',$question)->update([
-                'status'=>3,'finished_at'=>Carbon::now()
+        if (check_user_role(null,'总部管理员')) {
+            $update = Question::whereIn('id', $question)->update([
+                'status' => 3, 'finished_at' => Carbon::now()
             ]);
-        }else{
-            $update = Question::whereIn('id',$question)->where(
-                'user_id',get_current_login_user_info()
+        } else {
+            $update = Question::whereIn('id', $question)->where(
+                'user_id', get_current_login_user_info()
             )->where(
-                'status','=',2
+                'status', '=', 2
             )->update([
-                'status'=>3,'finished_at'=>Carbon::now()
+                'status' => 3, 'finished_at' => Carbon::now()
             ]);
         }
-        if($update){
+        if ($update) {
             //记录日志
-            if(count($question) == 1){
+            if (count($question) == 1) {
                 $info = Question::find($question[0]);
                 activity('项目日志')->performedOn(Project::find($info->project_id))
-                    ->withProperties($info)->log('关闭问题:'.$info->title);
-            }else{
+                    ->withProperties($info)->log('关闭问题:' . $info->title);
+            } else {
                 activity('项目日志')->withProperties($question)->log('关闭问题');
             }
             return _success();
-        }else{
+        } else {
             return _error('操作失败！');
         }
     }

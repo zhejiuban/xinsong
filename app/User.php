@@ -44,9 +44,16 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Project');
     }
 
-    public function leaderTasks(){
-        return $this->hasMany('App\Task','leader');
+    public function leaderTasks()
+    {
+        return $this->hasMany('App\Task', 'leader');
     }
+
+    public function dynamics()
+    {
+        return $this->hasMany('App\Dynamic');
+    }
+
     /**
      * 获取某个用户所在公司
      * @return null
@@ -55,9 +62,9 @@ class User extends Authenticatable
     {
         if ($this->department) {
             if ($this->department->company_id) {
-                return Department::info($this->department->company_id,$field);
+                return Department::info($this->department->company_id, $field);
             } else {
-                return Department::info($this->department->id,$field);
+                return Department::info($this->department->id, $field);
             }
         } else {
             return null;

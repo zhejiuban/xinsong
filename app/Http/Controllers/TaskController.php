@@ -189,25 +189,16 @@ class TaskController extends Controller
 
     public function personal(Request $request){
         $user = get_current_login_user_info(true);
-        $type = $request->input('type');
+        $project_id = $request->input('project_id');
         $status = $request->input('status');
-        $search = $request->input('search');
-        $list = $user->leaderTasks()->when($type, function ($query) use ($user) {
-            return $query->where('subcompany_leader', $user->id);
+        $list = $user->leaderTasks()->when($project_id, function ($query) use ($project_id) {
+            return $query->where('project_id', $project_id);
         })->when($status, function ($query) use ($status) {
             return $query->where('status', $status);
         }, function ($query) use ($status) {
             if ($status !== null) {
                 return $query->where('status', $status);
             }
-        })->when($search, function ($query) use ($search) {
-            return $query->where(
-                'title', 'like',
-                "%{$search}%"
-            )->orWhere('no', 'like',
-                "%{$search}%")
-                ->orWhere('customers', 'like',
-                    "%{$search}%");
         })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
         set_redirect_url();
         return view('task.default.personal', compact('list'));

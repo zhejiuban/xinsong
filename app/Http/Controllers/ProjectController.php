@@ -6,6 +6,7 @@ use App\File;
 use App\Http\Requests\ProjectRequest;
 use App\Project;
 use App\ProjectPhase;
+use App\User;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -41,11 +42,13 @@ class ProjectController extends Controller
                         return $query->where('status', $status);
                     }
                 })->when($search, function ($query) use ($search) {
-                    return $query->where(
-                        'title', 'like',
-                        "%{$search}%"
-                    )->orWhere('no', 'like',
-                        "%{$search}%");
+                    return $query->where(function ($query) use ($search){
+                        $query->where(
+                            'title', 'like',
+                            "%{$search}%"
+                        )->orWhere('no', 'like',
+                            "%{$search}%");
+                    });
                 })->orderBy(
                     $sort_field
                     , $sort)->paginate(
@@ -64,11 +67,13 @@ class ProjectController extends Controller
                         return $query->where('status', $status);
                     }
                 })->when($search, function ($query) use ($search) {
-                    return $query->where(
-                        'title', 'like',
-                        "%{$search}%"
-                    )->orWhere('no', 'like',
-                        "%{$search}%");
+                    return $query->where(function ($query) use ($search){
+                        $query->where(
+                            'title', 'like',
+                            "%{$search}%"
+                        )->orWhere('no', 'like',
+                            "%{$search}%");
+                    });
                 })->where('department_id', get_user_company_id())->orderBy(
                     $sort_field
                     , $sort)->paginate(
@@ -172,7 +177,6 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        dd('查看项目基本信息');
         if (!check_permission('project/projects/show')) {
             return _404('无权操作！');
         }
@@ -184,7 +188,6 @@ class ProjectController extends Controller
         if (!check_project_owner($project, 'look')) {
             return _404('无权操作');
         }
-        set_redirect_url();
         return view('project.default.show', compact('project'));
     }
 
@@ -425,6 +428,74 @@ class ProjectController extends Controller
         }
     }
 
+    public function users(Request $request, $id)
+    {
+        if ($project = Project::find($id)) {
+            $users = $project->users()->paginate(config('common.page.per_page'));
+            set_redirect_url();
+            return view('project.default.user', compact(['project', 'users']));
+        } else {
+            return _404();
+        }
+    }
+    public function usersCreate(Request $request, $id)
+    {
+        $project = Project::find($id);
+        if ($project) {
+            //检测权限
+            if (!check_project_owner($project, 'edit')) {
+                return _404('无权操作');
+            }
+            if ($request->isMethod('post')) {
+                $this->validate($request, [
+                    'project_user' => 'required'
+                ], [
+                    'project_user.required' => '请选择要加入的人员'
+                ]);
+                $user = $request->input('project_user');
+                $haved_user = collect($project->users)->pluck('id')->all();
+                if($haved_user){
+                    foreach ($user as $key=>$val){
+                        if(in_array($val,$haved_user)){
+                            unset($user[$key]);
+                        }
+                    }
+                }
+                if ($project->users()->attach($user) !== false) {
+                    activity('项目日志')->performedOn($project)
+                        ->withProperties($user)
+                        ->log('增加参与人');
+                    return _success('操作成功', $request->project_user, get_redirect_url());
+                } else {
+                    return _error('操作失败');
+                }
+            } else {
+                return view('project.default.user_create', compact('project'));
+            }
+        } else {
+            return _404();
+        }
+    }
+    public function usersDestroy($id, $user)
+    {
+        $project = Project::find($id);
+        if ($project) {
+            if (!check_project_owner($project, 'edit')) {
+                return _404('无权操作');
+            }
+            if ($project->users()->detach($user) !== false) {
+                $users = User::find($user);
+                activity('项目日志')->performedOn($project)
+                    ->withProperties($users)
+                    ->log('删除成员:' . $users->name);
+                return _success('操作成功', $users->toArray(), get_redirect_url());
+            } else {
+                return _error('操作失败');
+            }
+        } else {
+            return _404();
+        }
+    }
     /**
      * 项目文档上传
      */
