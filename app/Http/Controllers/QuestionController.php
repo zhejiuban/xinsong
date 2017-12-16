@@ -368,7 +368,7 @@ class QuestionController extends Controller
         }
         $info = Question::find($request->question);
         //获取问题详情
-        if(!$info){
+        if(!$info || $info->status >= 2){
             return _404('无权操作！');
         }
         if(!check_project_owner($info->project, 'del')

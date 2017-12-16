@@ -21,7 +21,7 @@
             @if($phase = $project->phases()->where('status','<',2)->orderBy('id','asc')->first())
                 <div class="form-group">
                     <label class="form-control-label">
-                        {{$phase->name}}:<span class="required">*</span>
+                        项目状态-{{$phase->name}}:<span class="required">*</span>
                     </label>
                     <div>
                         @if($phase->status)
@@ -39,6 +39,47 @@
             @endif
             <div class="m-separator m-separator--dashed "></div>
         @endif
+
+        @if($task)
+            <div class="form-group">
+                <label class="form-control-label">
+                    任务内容：
+                </label>
+                <div class="m--margin-bottom-15">
+                    {{$task->content}}
+                </div>
+                <div>
+                    <input data-switch="true" type="checkbox" data-on-text="已完成"
+                           data-handle-width="60" data-off-text="进行中" data-on-color="success"
+                           data-off-color="brand" name="task_status"  id="task_status" value="1">
+                </div>
+                <span class="m-form__help"></span>
+
+            </div>
+            <div class="form-group task-finish-detail" style="display: none">
+                <label for="name" class="form-control-label">
+                    去、离现场日期:<span class="required">*</span>
+                </label>
+                <div class="input-daterange input-group ">
+                    <input type="text" class="form-control m-input m-datetime" placeholder="去现场日期" name="task_builded_at" value=""/>
+                    <span class="input-group-addon">
+                    <i class="la la-ellipsis-h"></i>
+                    </span>
+                    <input type="text" class="form-control m-datetime" placeholder="离开现场日期" name="task_leaved_at" value=""/>
+                </div>
+                <span class="m-form__help"></span>
+            </div>
+            <div class="form-group task-finish-detail "  style="display: none">
+                <label for="content" class="form-control-label">
+                    任务完成情况:<span class="required">*</span>
+                </label>
+                <textarea class="form-control" name="task_result" id="task_result" rows="6"></textarea>
+                <span class="m-form__help"></span>
+            </div>
+            <input type="hidden" name="task_id" value="{{$task->id}}">
+            <div class="m-separator m-separator--dashed "></div>
+        @endif
+
         <div class="form-group">
             <label for="content" class="form-control-label">
                 日志内容:<span class="required">*</span>
@@ -60,9 +101,16 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function () {
-        mAppExtend.datePickerInstance();
+        mAppExtend.dateTimePickerInstance();
         mAppExtend.select2Instance();
         $('[data-switch=true]').bootstrapSwitch();
+        $('#task_status').on('switchChange.bootstrapSwitch', function(event, state) {
+            if(state){
+                $('.task-finish-detail').show();
+            }else{
+                $('.task-finish-detail').hide();
+            }
+        });
         var form = $("#dynamic-form");
         var submitButton = $("#submit-button");
         form.validate({

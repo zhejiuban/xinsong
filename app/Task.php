@@ -35,6 +35,9 @@ class Task extends Model
     public function getEndAtAttribute($value){
         return Carbon::parse($value)->toDateString();
     }
+    public function dynamics(){
+        return $this->hasMany('App\Dynamic');
+    }
     /**
      * 接收任务
      * @param $task

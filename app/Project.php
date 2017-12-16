@@ -153,4 +153,31 @@ class Project extends Model
             'status','=',0
         )->first();
     }
+
+    public function checkUserTaskDayDynamic($user=null){
+        if (!$user) {
+            $user = get_current_login_user_info();
+        }
+        return$this->tasks()->where('status',0)->whereDate(
+            'start_at', '<=', Carbon::now()->toDateString()
+        )->where('leader', $user)->whereDoesntHave('dynamics',function ($query){
+            return $query->whereBetween('created_at', [
+                date_start_end(), date_start_end(null, 'end')
+            ]);
+        })->first();
+    }
+
+    /**
+     * 获取当日未上传日志的任务
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|static[]
+     */
+    public function getUnAddUserTaskDynamic(){
+        return$this->tasks()->where('status',0)->whereDate(
+            'start_at', '<=', Carbon::now()->toDateString()
+        )->whereDoesntHave('dynamics',function ($query){
+            return $query->whereBetween('created_at', [
+                date_start_end(), date_start_end(null, 'end')
+            ]);
+        })->get();
+    }
 }

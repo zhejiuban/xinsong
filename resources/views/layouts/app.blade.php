@@ -497,7 +497,7 @@
                                 {{ date('Y') }} &copy; 这就办
                             </span>
                         </div>
-                        <div class="m-stack__item m-stack__item--right m-stack__item--middle m-stack__item--first">
+                        {{--<div class="m-stack__item m-stack__item--right m-stack__item--middle m-stack__item--first">
                             <ul class="m-footer__nav m-nav m-nav--inline m--pull-right">
                                 <li class="m-nav__item m-nav__item">
                                     <a href="#" class="m-nav__link" data-toggle="m-tooltip" title="Support Center" data-placement="left">
@@ -505,7 +505,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </div>
+                        </div>--}}
                     </div>
                 </div>
             </footer>

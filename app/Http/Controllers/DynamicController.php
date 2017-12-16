@@ -6,6 +6,8 @@ use App\Dynamic;
 use App\Http\Requests\DynamicRequest;
 use App\Project;
 use App\ProjectPhase;
+use App\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DynamicController extends Controller
@@ -28,8 +30,13 @@ class DynamicController extends Controller
     public function create()
     {
         $project_id = request('project_id');
+        $task_id = request('task_id');
         $project = Project::find($project_id);
-        return view('dynamic.default.create', compact(['project_id','project']));
+        if (!$project || !check_project_owner($project, 'look')) {
+            return _404('无权操作');
+        }
+        $task = Task::find($task_id);
+        return view('dynamic.default.create', compact(['project_id','project','task']));
     }
 
     /**
@@ -41,8 +48,24 @@ class DynamicController extends Controller
     public function store(DynamicRequest $request)
     {
         $project = Project::find($request->project_id);
+        if (!$project || !check_project_owner($project, 'look')) {
+            return _404('无权操作');
+        }
         $request->offsetSet('user_id', get_current_login_user_info());
         $request->offsetSet('status', 0);
+        if($request->task_status){ //如果设置完成任务
+            //验证任务的信息
+            $this->validate($request, [
+                'task_builded_at' => 'bail|required',
+                'task_leaved_at' => 'bail|required|after_or_equal:builded_at',
+                'task_result' => 'bail|required'
+            ], [
+                'task_builded_at.required' => '请输入去现场时间',
+                'task_leaved_at.required' => '请输入离开现场时间',
+                'task_leaved_at.after' => '截止时间要大于开始时间',
+                'task_result.required' => '请输入完成情况',
+            ]);
+        }
         $dynamic = Dynamic::create($request->input());
         if ($dynamic) {
             //判断是否改变状态
@@ -51,9 +74,20 @@ class DynamicController extends Controller
             if($phase_status !== null){
                 ProjectPhase::where('id',$phase_id)->where('status','<',2)->update(['status'=>intval($phase_status) + 1]);
                 //如果是完成某个阶段，自动启动下一个阶段
-
                 //更新项目状态
                 $project->updateStatus();
+            }
+            if($request->task_status){
+                $task = Task::find($request->task_id);
+                $task->builded_at = $request->task_builded_at;
+                $task->leaved_at = $request->task_leaved_at;
+                $task->result = $request->task_result;
+                $task->finished_at = Carbon::now();
+                $task->status = 1;
+                $task->save();
+                activity('项目日志')->performedOn($project)
+                    ->withProperties($task)
+                    ->log('完成任务');
             }
             activity('项目日志')->performedOn($project)
                 ->withProperties($dynamic->toArray())
@@ -65,17 +99,6 @@ class DynamicController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -84,12 +107,12 @@ class DynamicController extends Controller
     public function edit($id)
     {
         $dynamic = Dynamic::find($id);
-        $project  = $dynamic->project;
-        if(!check_project_owner($project,'edit')
-            && $dynamic->user->id != get_current_login_user_info()){
-            return _404('无权操作');
-        }
         if ($dynamic) {
+            $project  = $dynamic->project;
+            if(!check_project_owner($project,'edit')
+                && $dynamic->user->id != get_current_login_user_info()){
+                return _404('无权操作');
+            }
             return view('dynamic.default.edit', compact(['dynamic','project']));
         } else {
             return _404();
@@ -144,7 +167,7 @@ class DynamicController extends Controller
     public function destroy($id)
     {
         $dynamic = Dynamic::find($id);
-        if(!check_project_owner($dynamic->project,'edit')){
+        if(!check_project_owner($dynamic->project,'del')){
             return _404('无权操作');
         }
         if ($dynamic->delete($id)) {

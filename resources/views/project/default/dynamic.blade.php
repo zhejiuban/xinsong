@@ -28,14 +28,6 @@
                                             <div class="m-dropdown__content">
                                                 <ul class="m-nav">
                                                     <li class="m-nav__item">
-                                                        <a href="{{ route('dynamics.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link dynamic-add">
-                                                            <i class="m-nav__link-icon flaticon-add"></i>
-                                                            <span class="m-nav__link-text">
-                                                                上传日志
-                                                            </span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="m-nav__item">
                                                         <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link">
                                                             <i class="m-nav__link-icon flaticon-list"></i>
                                                             <span class="m-nav__link-text">
@@ -53,7 +45,7 @@
                                                     </li>
                                                     <li class="m-nav__separator m-nav__separator--fit"></li>
                                                     <li class="m-nav__item">
-                                                        <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
+                                                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'date'=>'day','mid'=>request('mid')]) }}" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
                                                             日
                                                         </a>
                                                         <a href="#" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">
@@ -88,14 +80,63 @@
                     </div>
                 </div>
                 <div class="m-portlet__body min-height-300">
-                    @if($project->checkUserTask() && !$project->checkDayLog())
+                    @php $dy_users = $project->getUnAddUserTaskDynamic();@endphp
+                    @if(check_project_owner($project,'edit') && $dy_users->isNotEmpty())
+                        <div class="m-widget4 row m--margin-bottom-20">
+                        @foreach($dy_users as $dy)
+                            <!--begin::Widget 14 Item-->
+                                <div class="m-widget4__item col-md-3 m-widget4__item-border-bottom"  >
+                                    <div class="m-widget4__img m-widget4__img--pic">
+                                        <img src="{{ avatar($dy->leaderUser ? $dy->leaderUser->avatar : null) }}" alt="">
+                                    </div>
+                                    <div class="m-widget4__info">
+                                    <span class="m-widget4__title">
+                                        {{$dy->leaderUser ? $dy->leaderUser->name : null }}
+                                    </span>
+                                        <br>
+                                        <span class="m-widget4__sub m--font-danger">
+                                        今日未上传日志
+                                    </span>
+                                    </div>
+                                </div>
+                                <!--end::Widget 14 Item-->
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="m-actions">
+                    @if($task = $project->checkUserTaskDayDynamic())
                         <div class="alert alert-warning alert-dismissible fade show   m-alert m-alert--square m-alert--air"
                              role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
                             <strong>温馨提醒：</strong>
-                            该项目今日您未上传日志
+                            今日您未上传日志，请尽快上传
                         </div>
+                        <a href="{{ route('dynamics.create',['project_id'=>$project->id,'task_id'=>$task->id,'mid'=>request('mid')]) }}"
+                           class="m-nav__link dynamic-add  btn btn-sm btn-primary  m--margin-bottom-20">
+                            <i class="m-nav__link-icon flaticon-add"></i>
+                            <span class="m-nav__link-text">
+                            上传日志
+                        </span>
+                        </a>
                     @endif
+                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
+                           class="m-nav__link  btn btn-sm btn-secondary  m--margin-bottom-20">
+                            <i class="m-nav__link-icon flaticon-list"></i>
+                            <span class="m-nav__link-text">
+                                所有日志
+                            </span>
+                        </a>
+
+                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}"
+                           class="m-nav__link  btn btn-sm btn-secondary  m--margin-bottom-20">
+                            <i class="m-nav__link-icon flaticon-user"></i>
+                            <span class="m-nav__link-text">
+                                只看自己的
+                            </span>
+                        </a>
+
+                    </div>
+
                     <div class="m-widget3">
                         @foreach($dynamics as $dynamic)
                             <div class="m-widget3__item" id="dynamic-{{$dynamic->id}}">
@@ -112,14 +153,14 @@
                                             {{$dynamic->created_at->diffForHumans()}}
                                         </span>
                                     </div>
-                                    <span class="m-widget3__status" style="float: none;">
-                                        @if(check_project_owner($dynamic->project,'edit') || $dynamic->user->id == get_current_login_user_info())
+                                    {{--<span class="m-widget3__status" style="float: none;">
+                                        @if(check_project_owner($dynamic->project,'del') || $dynamic->user->id == get_current_login_user_info())
                                         <a href="{{ route('dynamics.edit',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}"
                                            class="dynamic-edit btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill"><i class="la la-edit"></i></a>
                                         @endif
-                                    </span>
+                                    </span>--}}
                                     <span class="m-widget3__status" style="float: none;padding-left:10px;">
-                                    @if(check_project_owner($dynamic->project,'edit'))
+                                    @if(check_project_owner($dynamic->project,'del'))
                                         <a href="{{ route('dynamics.destroy',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}"
                                            class="dynamic-del btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill"><i class="la la-trash"></i></a>
                                     @endif
@@ -155,14 +196,7 @@
         </div>
     </div>
     <!--end::Modal-->
-    <!--begin::Modal-->
-    <div class="modal fade" id="_planModal" tabindex="-1" role="dialog" aria-labelledby="_planModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lgx" role="document">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div>
-    <!--end::Modal-->
+
 @endsection
 
 @section('js')

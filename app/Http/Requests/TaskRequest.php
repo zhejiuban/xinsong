@@ -36,7 +36,7 @@ class TaskRequest extends FormRequest
 //                    'end_at' => 'bail|required|after_or_equal:start_at',
                     'leader' => 'bail|required',
                     'content' => 'bail|required',
-                    'is_need_plan' => 'bail|required',
+//                    'is_need_plan' => 'bail|required',
                 ];
             }
             default:

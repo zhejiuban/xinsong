@@ -35,7 +35,7 @@
 			<textarea class="form-control" name="content" id="content" rows="6"></textarea>
 			<span class="m-form__help"></span>
 		</div>
-		<div class="form-group">
+		{{--<div class="form-group">
 			<label>
 				是否需要上传计划:
 			</label>
@@ -50,7 +50,7 @@
 				</label>
 			</div>
 			<span class="m-form__help"></span>
-		</div>
+		</div>--}}
 		<input type="hidden" name="project_id" value="{{$project_id}}"> {{ csrf_field() }}
 	</form>
 </div>

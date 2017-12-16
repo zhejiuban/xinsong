@@ -14,7 +14,7 @@
                         <ul class="nav nav-tabs m-tabs-line m-tabs-line--primary m-tabs-line--2x" role="tablist">
                             <li class="nav-item m-tabs__item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-left"
                                 data-dropdown-toggle="hover" aria-expanded="true">
-                                <a href="{{ route('project.tasks',['project'=>$project->id,'mid'=>request('mid')]) }}"
+                                <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
                                    class="nav-link m-tabs__link active m-dropdown__toggle dropdown-toggle">
                                     任务
                                 </a>
@@ -24,17 +24,6 @@
                                         <div class="m-dropdown__body">
                                             <div class="m-dropdown__content">
                                                 <ul class="m-nav">
-                                                    @if(check_project_owner($project,'edit') || check_project_leader($project))
-                                                        <li class="m-nav__item">
-                                                            <a href="{{ route('tasks.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
-                                                               id="task-add" class="m-nav__link">
-                                                                <i class="m-nav__link-icon flaticon-add"></i>
-                                                                <span class="m-nav__link-text">
-                                                                发布任务
-                                                            </span>
-                                                            </a>
-                                                        </li>
-                                                    @endif
                                                     <li class="m-nav__item">
                                                         <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
                                                            class="m-nav__link">
@@ -102,6 +91,33 @@
                     </div>
                 </div>
                 <div class="m-portlet__body min-height-300">
+                    <div class="m-actions">
+                        @if(check_project_owner($project,'edit') || check_project_leader($project))
+                        <a href="{{ route('tasks.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
+                           id="task-add" class="m-nav__link btn btn-sm btn-primary  m--margin-bottom-20">
+                            <i class="m-nav__link-icon flaticon-add"></i>
+                            <span class="m-nav__link-text">
+                                发布任务
+                            </span>
+                        </a>
+                        @endif
+                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
+                           class="m-nav__link btn btn-sm btn-secondary  m--margin-bottom-20">
+                            <i class="m-nav__link-icon flaticon-list"></i>
+                            <span class="m-nav__link-text">
+                                所有任务
+                            </span>
+                        </a>
+
+                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}"
+                           class="m-nav__link  btn btn-sm btn-secondary  m--margin-bottom-20">
+                            <i class="m-nav__link-icon flaticon-user"></i>
+                            <span class="m-nav__link-text">
+                                只看我的任务
+                            </span>
+                        </a>
+
+                    </div>
                     <div class="m-widget2">
                         @foreach($tasks as $task)
                             <div id="task-{{ $task->id }}"
@@ -114,7 +130,6 @@
                                 </div>
                                 <div class="m-widget2__desc">
                                 <span class="m-widget2__text">
-
                                     @if($task->status)
                                         <s><a href="{{ route('tasks.show',['task'=>$task->id,'mid' => request('mid')]) }}"
                                               class="task-look">{{$task->content}}</a></s>
@@ -124,16 +139,23 @@
                                     @endif
                                     <span class="m--font-size-12">(开始时间：{{$task->start_at}} @if($task->status) 完成时间：{{$task->finished_at}} @endif )</span>
                                 </span>
-                                    <br>
-                                    <span class="m-widget2__user-name">
-                                    接收人：{{$task->leaderUser->name}} 接收时间：{{$task->received_at}}
-                                        @if(check_project_owner($project,'edit'))
+                                <br>
+                                <span class="m-widget2__user-name">
+                                接收人：{{$task->leaderUser->name}} 接收时间：{{$task->received_at}}
+                                </span>
+                                <span class="pull-right">
+                                    @if(check_project_owner($project,'edit'))
                                         @if(!$task->status)
-                                        <a href="{{ route('tasks.edit',['task'=>$task->id])}}" class="fast-edit">编辑</a>
+                                            <a href="{{ route('tasks.edit',['task'=>$task->id])}}"
+                                               class="fast-edit btn btn-outline-primary m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                            <i class="la la-edit"></i></a>
                                         @endif
+                                    @endif
+                                    @if(check_project_owner($project,'del'))
                                         <a href="{{ route('tasks.destroy',['task'=>$task->id])}}"
-                                           class="fast-del m--font-danger">删除</a>
-                                        @endif
+                                           class="fast-del btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                            <i class="la la-trash"></i></a>
+                                    @endif
                                 </span>
                                 </div>
                             </div>

@@ -60,10 +60,10 @@
                     <div class="m-widget-body">
                         <div class="m-section m-section-none">
                             <h3 class="m-section__heading">
-                                 <span class="m-badge {{project_status($project->status,'class')}} m-badge--wide">
+                                <a class="m-line-height-25" href="{{ route('project.tasks',['project'=>$project->id,'mid'=>request('mid')]) }}">{{$project->title}}</a>
+                                <span class="m-badge {{project_status($project->status,'class')}} m-badge--wide">
                                     {{project_status($project->status)}}
                                 </span>
-                                <a class="m-line-height-25" href="{{ route('project.tasks',['project'=>$project->id,'mid'=>request('mid')]) }}">{{$project->title}}</a>
                             </h3>
                             <span class="m-section__sub">
                             {{str_limit($project->remark,250,'...')}}
@@ -76,18 +76,18 @@
                         </div>
                     </div>
                     <div class="m-widget__action m--margin-top-20">
-                        @if($project->checkUserTask() && !$project->checkDayLog())
+                        @if($task = $project->checkUserTaskDayDynamic())
                             <div class="alert alert-warning alert-dismissible fade show   m-alert m-alert--square m-alert--air"
                                  role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
                                 <strong>温馨提醒：</strong>
                                 该项目今日您未上传日志
                             </div>
+                            <a href="{{ route('dynamics.create',['project_id'=>$project->id,'task_id'=>$task,'mid'=>request('mid')]) }}"
+                               class="btn m-btn--pill  btn-sm  btn-secondary dynamic-add">
+                                <i class="fa fa-edit"></i> 填写日志
+                            </a>
                         @endif
-                        <a href="{{ route('dynamics.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
-                           class="btn m-btn--pill  btn-sm  btn-secondary dynamic-add">
-                            <i class="fa fa-edit"></i> 填写日志
-                        </a>
 
                         @if(check_project_leader($project))
                             <a href="{{ route('tasks.create',['project_id'=>$project->id]) }}"

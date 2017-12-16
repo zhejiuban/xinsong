@@ -113,7 +113,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
-                                        办事处负责人:
+                                        项目负责人:
                                     </label>
                                     <select class="form-control m-input" id="subcompany_leader"
                                             name="subcompany_leader">
@@ -345,9 +345,9 @@
                                 重置
                             </button>
                         </div>
-                        <div class="col-lg-6 m--align-right">
-                            <a href="{{ get_redirect_url() }}" class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>
-                        </div>
+                        {{--<div class="col-lg-6 m--align-right">--}}
+                            {{--<a href="{{ get_redirect_url() }}" class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>--}}
+                        {{--</div>--}}
                     </div>
                 </div>
             </div>

@@ -18,14 +18,18 @@
                             </div>
                             <br>
                             <span class="m-widget19__username">
-                                办事处负责人：{{$project->companyUser ? $project->companyUser->name : null}}
+                                新松负责人：{{$project->leaderUser ? $project->leaderUser->name : null}}
+                            </span>
+                            <br>
+                            <span class="m-widget19__username">
+                                项目负责人：{{$project->companyUser ? $project->companyUser->name : null}}
                             </span>
                             <br>
                             <span class="m-widget19__username">
                                 现场负责人：{{$project->agentUser?$project->agentUser->name:null}}
                                 @if(check_project_owner($project, 'edit'))
                                 <a href="{{route('project.agent_leader.update',['project'=>$project->id])}}" title="更改现场负责人"
-                                   id="agent-leader-change" class="btn btn-outline-metal m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                   id="agent-leader-change" class="btn btn-outline-primary m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
                                     <i class="la la-edit"></i>
                                 </a>
                                 @endif

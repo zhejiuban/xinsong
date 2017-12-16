@@ -46,14 +46,14 @@
                     <div class="m-widget-body">
                         <div class="m-section m-section-none">
                             <h3 class="m-section__heading">
-                                <span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">
-                                    {{tasks_status($task->status)}}
-                                </span>
                                 @if($task->status)
                                     <s><a class="look-task m-line-height-25"  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a></s>
                                 @else
                                     <a class="look-task m-line-height-25" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a>
                                 @endif
+                                    <span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">
+                                    {{tasks_status($task->status)}}
+                                </span>
                             </h3>
                             <span class="m-section__sub">
                                 所属项目：{{$task->project->title}} <br>
@@ -63,10 +63,10 @@
                         </div>
                     </div>
                     <div class="m-widget__action m--margin-top-20">
-                        <a href=""
-                           class="btn m-btn--pill  btn-sm btn-secondary ">
-                            <i class="fa fa-edit"></i> 计划管理
-                        </a>
+                        {{--<a href=""--}}
+                           {{--class="btn m-btn--pill  btn-sm btn-secondary ">--}}
+                            {{--<i class="fa fa-edit"></i> 计划管理--}}
+                        {{--</a>--}}
                         @if(!$task->status)
                         <a href="{{ route('tasks.finish',['task'=>$task->id,'mid'=>request('mid')])}}"
                            class="btn m-btn--pill  btn-sm  btn-accent finish-task">
@@ -85,6 +85,15 @@
     ])->links('vendor.pagination.bootstrap-4') }}
     <!--begin::Modal-->
     <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <!--end::Modal-->
+    <!--begin::Modal-->
+    <div class="modal fade" id="_editModal" tabindex="-1" role="dialog" aria-labelledby="_EditModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             </div>

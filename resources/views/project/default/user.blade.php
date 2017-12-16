@@ -87,7 +87,7 @@
                                     {{$user->department ? $user->department->name : null}}
                                 </span>
                             </div>
-                            @if(check_project_owner($project, 'edit'))
+                            @if(check_project_owner($project, 'del'))
                             <div class="m-widget4__ext">
                                 <a href="{{route('project.users.destroy',['project'=>$project->id,'user'=>$user->id,'mid'=>request('mid')])}}"
                                    class="user-del m-btn m-btn--pill  btn btn-sm btn-danger">

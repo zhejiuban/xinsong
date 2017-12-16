@@ -136,7 +136,7 @@ class TaskController extends Controller
         $task = Task::find($id);
         $project = Project::find($task->project_id);
         //判断任务删除权限
-        if (!check_project_owner($project, 'edit')) {
+        if (!check_project_owner($project, 'del')) {
             return _404('无权操作');
         }
         if ($task->delete($id)) {
@@ -162,7 +162,7 @@ class TaskController extends Controller
                 ], [
                     'builded_at.required' => '请输入去现场时间',
                     'leaved_at.required' => '请输入离开现场时间',
-                    'leaved_at.after' => '截止时间要大于开始时间',
+                    'leaved_at.after_or_equal' => '截止时间要大于开始时间',
                     'result.required' => '请输入完成情况',
                 ]);
                 $task->builded_at = $request->builded_at;

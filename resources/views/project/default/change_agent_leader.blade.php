@@ -9,7 +9,7 @@
     </button>
 </div>
 <div class="modal-body">
-    <form class="m-form" action="{{ route('project.agent_leader.update',['project'=>$project->id]) }}" method="post" id="file-form">
+    <form class="m-form" action="{{ route('project.agent_leader.update',['project'=>$project->id]) }}" method="post" id="change-user-form">
         <div class="form-group">
             <label for="user_select2" class="col-form-label">
                 变更为：
@@ -26,7 +26,7 @@
     <button type="button" class="btn btn-secondary" data-dismiss="modal"  >
         关闭
     </button>
-    <button type="button" class="btn btn-primary" id="submit-button">
+    <button type="button" class="btn btn-primary" id="change-user-submit-button">
         提交
     </button>
 </div>
@@ -82,8 +82,8 @@
             templateResult: formatRepo, // omitted for brevity, see the source of this page
             templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
         });
-        var form = $( "#file-form" );
-        var submitButton = $("#submit-button");
+        var form = $( "#change-user-form" );
+        var submitButton = $("#change-user-submit-button");
         form.validate({
             // define validation rules
             rules: {
@@ -130,7 +130,7 @@
                 });
             }
         });
-        $("#submit-button").click(function(event) {
+        $("#change-user-submit-button").click(function(event) {
             form.submit();
         });
     });

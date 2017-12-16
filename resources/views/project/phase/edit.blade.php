@@ -46,7 +46,7 @@
     <button type="button" class="btn btn-secondary" data-dismiss="modal">
         关闭
     </button>
-    <button type="button" class="btn btn-primary" id="submit-button">
+    <button type="button" class="btn btn-primary" id="phase-submit-button">
         提交
     </button>
 </div>
@@ -55,7 +55,7 @@
         mAppExtend.datePickerInstance();
         mAppExtend.select2Instance();
         var form = $("#phase-form");
-        var submitButton = $("#submit-button");
+        var submitButton = $("#phase-submit-button");
         form.validate({
             // define validation rules
             rules: {
@@ -113,7 +113,7 @@
                 });
             }
         });
-        $("#submit-button").click(function (event) {
+        $("#phase-submit-button").click(function (event) {
             form.submit();
         });
     });

@@ -52,7 +52,7 @@
                 </div>
             </div>
             <label class="col-lg-2 col-form-label">
-                办事处负责人:
+                项目负责人:
             </label>
             <div class="col-lg-3">
                 <div class="form-static-text">

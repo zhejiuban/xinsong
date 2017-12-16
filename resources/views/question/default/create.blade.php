@@ -118,9 +118,9 @@
                 重置
               </button>
             </div>
-            <div class="col-lg-6 m--align-right">
+            {{--<div class="col-lg-6 m--align-right">
               <a href="{{ get_redirect_url() }}"  class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>
-            </div>
+            </div>--}}
           </div>
         </div>
       </div>

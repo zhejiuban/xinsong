@@ -113,7 +113,7 @@
     </form>
 </div>
 <div class="modal-footer">
-  @if(!$task->status && (check_project_owner($task->project,'edit') || $task->leaderUser->id == get_current_login_user_info()))
+  @if(!$task->status && $task->leaderUser->id == get_current_login_user_info() )
   <button type="button" class="btn btn-primary"  href="{{ route('tasks.finish',['task'=>$task->id]) }}" id="finish-task">
     完成此任务
   </button>

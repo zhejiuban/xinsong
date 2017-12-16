@@ -278,3 +278,20 @@ body .m--padding-left-none {
 .m-form.m-form-group-padding-bottom-10 .m-form__group{
     padding-bottom: 10px;
 }
+.display-block{
+    display: block;
+}
+.full-width-height{
+    height: 100%;width:100%;
+}
+.btn-border-none{
+    border-style: none;
+}
+.m--border-radius-none{
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+.m--font-default{
+    color:#575962;
+}
