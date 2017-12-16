@@ -27,7 +27,8 @@ class HomeController extends Controller
 //        if(check_user_role(null,'总部管理员')){
 //            return view('home');
 //        }elseif(check_company_admin()){
-//            return view('home');
+//
+//
 //        }else{
             //获取当前用户未上传日志的任务
             $user = get_current_login_user_info(true);
