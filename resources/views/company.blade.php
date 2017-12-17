@@ -442,14 +442,14 @@
                 }
                 var chart = new Chartist.Pie('#m_chart_task', {
                     series: [{
-                        value: {{ $project['processing'] }},
+                        value: {{ $task['processing'] }},
                         className: 'custom',
                         meta: {
                             color: mUtil.getColor('brand')
                         }
                     },
                         {
-                            value: {{ $project['finished'] }},
+                            value: {{ $task['finished'] }},
                             className: 'custom',
                             meta: {
                                 color: mUtil.getColor('accent')
