@@ -295,3 +295,23 @@ body .m--padding-left-none {
 .m--font-default{
     color:#575962;
 }
+.m-widget-user{
+    display: inline-block;
+}
+.m-widget-user .m-widget-img img{
+    width: 4rem;
+    border-radius: 50%;
+}
+.m-widget-user .m-widget-text{
+    line-height: 25px;
+    text-align: center;
+}
+.m-widget1 .m-widget1__title{
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #575962;
+}
+.m-widget1 .m-widget1__header{
+    padding: 1.1rem 0;
+    margin-bottom: 0.5rem;
+}

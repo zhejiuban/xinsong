@@ -43,12 +43,12 @@
 										快捷操作
 									</span>
 								</li>
-								@if(check_company_admin())
+								@if(check_company_admin() || check_user_role(null,'总部管理员'))
 								<li class="m-nav__item">
 									<a href="{{url('project/projects?mid=bd128edbfd250c9c5eff5396329011cd')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-share"></i>
 										<span class="m-nav__link-text">
-											项目
+											项目汇总
 										</span>
 									</a>
 								</li>
@@ -57,28 +57,50 @@
 										<a href="{{url('project/personal?mid=2083c82948c9226afa0026c2ff3933b3')}}" class="m-nav__link">
 											<i class="m-nav__link-icon flaticon-share"></i>
 											<span class="m-nav__link-text">
-											项目
+											我参与的项目
 										</span>
 										</a>
 									</li>
 								@endif
+								@if(check_company_admin() || check_user_role(null,'总部管理员'))
 								<li class="m-nav__item">
-									<a href="" class="m-nav__link">
+									<a href="{{url('dynamic/dynamics?mid=0fb5fefdfc8b8731301c222636bf2934')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-chat-1"></i>
 										<span class="m-nav__link-text">
-											消息
+											工作日志汇总
 										</span>
 									</a>
 								</li>
+								@else
+									<li class="m-nav__item">
+										<a href="{{url('dynamic/personal?mid=9609eb5f4cae930f15d2deb1061fbe0d')}}" class="m-nav__link">
+											<i class="m-nav__link-icon flaticon-chat-1"></i>
+											<span class="m-nav__link-text">
+											我的日志
+										</span>
+										</a>
+									</li>
+								@endif
+								@if(check_company_admin() || check_user_role(null,'总部管理员'))
+								<li class="m-nav__item">
+									<a href="{{url('question/questions?mid=3affc334d19fc914c4d667a01848f55d')}}" class="m-nav__link">
+										<i class="m-nav__link-icon flaticon-info"></i>
+										<span class="m-nav__link-text">
+											协作汇总
+										</span>
+									</a>
+								</li>
+								@else
 								<li class="m-nav__item">
 									<a href="{{url('question/personal?mid=c41b512b04286cc8f479176a466d23ac')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-info"></i>
 										<span class="m-nav__link-text">
-											协作
-										</span>
+										我的协作
+									</span>
 									</a>
 								</li>
-								<li class="m-nav__item">
+								@endif
+									<li class="m-nav__item">
 									<a href="" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-lifebuoy"></i>
 										<span class="m-nav__link-text">
