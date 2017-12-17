@@ -17,7 +17,7 @@
                             <div class="col">
                                 <div id="m_chart_dynamic" class="m-widget14__chart" style="height: 200px">
                                     <div class="m-widget14__stat">
-                                        {{ $needAddDynamicTask->count() ? round(($all->count() - $needAddDynamicTask->count())  / $needAddDynamicTask->count()) * 100 : 100}}%
+                                        {{ $all->count() ? round(($all->count() - $needAddDynamicTask->count())  / $all->count() * 100) : 100}}%
                                     </div>
                                 </div>
                             </div>
