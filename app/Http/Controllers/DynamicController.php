@@ -17,9 +17,75 @@ class DynamicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $sort_field = $request->input('datatable.sort.field')
+                ? $request->input('datatable.sort.field') : 'id';
+            $sort = $request->input('datatable.sort.sort')
+                ? $request->input('datatable.sort.sort') : 'desc';
+            $prepage = $request->input('datatable.pagination.perpage')
+                ? (int)$request->input('datatable.pagination.perpage') : 20;
+            $project_id = $request->input('datatable.query.project_id');
+            $search = $request->input('datatable.query.search');
+            //管理员或总部管理员获取所有
+            if (check_user_role(null, '总部管理员')) {
+                $task = Dynamic::with([
+                    'user', 'project'
+                ])->when($search, function ($query) use ($search) {
+                    return $query->where(function ($query) use ($search) {
+                        $query->where(
+                            'content', 'like',
+                            "%{$search}%"
+                        );
+                    });
+                })->when($project_id,function ($query) use ($project_id) {
+                    return $query->where('project_id', $project_id);
+                })->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
+                );
+            } elseif (check_company_admin()) {
+                //分部管理员获取分部所有项目
+                //获取分部所有用户
+                $user = get_company_user(null,'id');
+                $task = Dynamic::with([
+                    'user',  'project'
+                ])->whereIn('user_id',$user)->when($search, function ($query) use ($search) {
+                    return $query->where(function ($query) use ($search) {
+                        $query->where(
+                            'content', 'like',
+                            "%{$search}%"
+                        );
+                    });
+                })->when($project_id,function ($query) use ($project_id) {
+                    return $query->where('project_id', $project_id);
+                })->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
+                );
+            }
+
+            $meta = [
+                'field' => $sort_field,
+                'sort' => $sort,
+                'page' => $task->currentPage(),
+                'pages' => $task->hasMorePages(),
+                'perpage' => $prepage,
+                'total' => $task->total()
+            ];
+            $data = $task->toArray();
+            $data['meta'] = $meta;
+            return response()->json($data);
+        }
+        set_redirect_url();
+        return view('dynamic.default.index');
     }
 
     /**
@@ -171,7 +237,7 @@ class DynamicController extends Controller
             return _404('无权操作');
         }
         if ($dynamic->delete($id)) {
-            activity('项目日志')->performedOn(Project::find($dynamic->project_id))
+            activity('项目日志')->performedOn($dynamic->project)
                 ->withProperties($dynamic->toArray())
                 ->log('删除动态');
             return _success('操作成功', $dynamic->toArray(), get_redirect_url());

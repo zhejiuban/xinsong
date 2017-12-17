@@ -65,7 +65,7 @@
 								@if(check_company_admin() || check_user_role(null,'总部管理员'))
 								<li class="m-nav__item">
 									<a href="{{url('dynamic/dynamics?mid=0fb5fefdfc8b8731301c222636bf2934')}}" class="m-nav__link">
-										<i class="m-nav__link-icon flaticon-chat-1"></i>
+										<i class="m-nav__link-icon flaticon-list"></i>
 										<span class="m-nav__link-text">
 											工作日志汇总
 										</span>
@@ -74,7 +74,7 @@
 								@else
 									<li class="m-nav__item">
 										<a href="{{url('dynamic/personal?mid=9609eb5f4cae930f15d2deb1061fbe0d')}}" class="m-nav__link">
-											<i class="m-nav__link-icon flaticon-chat-1"></i>
+											<i class="m-nav__link-icon flaticon-list"></i>
 											<span class="m-nav__link-text">
 											我的日志
 										</span>

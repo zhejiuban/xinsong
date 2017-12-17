@@ -40,38 +40,37 @@
     </div>
     @foreach($list as $task)
         <div class="m-portlet">
-            <div class="m-portlet__body">
-
-                <div class="m-widget">
-                    <div class="m-widget-body">
-                        <div class="m-section m-section-none">
-                            <h3 class="m-section__heading">
-                                @if($task->status)
-                                    <s><a class="look-task m-line-height-25"  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a></s>
-                                @else
-                                    <a class="look-task m-line-height-25" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a>
-                                @endif
-                                    <span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">
-                                    {{tasks_status($task->status)}}
-                                </span>
-                            </h3>
-                            <span class="m-section__sub">
+            <div class="m-portlet__body  m-portlet__body--no-padding">
+                <div class="row m-row--no-padding ">
+                    <div class="col-xl-11">
+                        <div class="m-widget1">
+                            @if($task->status)
+                                <s><a class="look-task m-line-height-25"  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a></s>
+                            @else
+                                <a class="look-task m-line-height-25" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a>
+                            @endif
+                            {{--<span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">--}}
+                            {{--{{tasks_status($task->status)}}--}}
+                            {{--</span>--}}
+                            <div class="m-section__sub">
                                 所属项目：{{$task->project->title}} <br>
                                 开始时间：{{$task->start_at}}
-                                {{$task->finished_at ?'，完成时间：'.$task->finished_at : null}}
-                            </span>
+                                    {{$task->finished_at ?'，完成时间：'.$task->finished_at : null}}
+                            </div>
                         </div>
                     </div>
-                    <div class="m-widget__action m--margin-top-20">
-                        {{--<a href=""--}}
-                           {{--class="btn m-btn--pill  btn-sm btn-secondary ">--}}
-                            {{--<i class="fa fa-edit"></i> 计划管理--}}
-                        {{--</a>--}}
+                    <div class="col-xl-1 text-center">
                         @if(!$task->status)
-                        <a href="{{ route('tasks.finish',['task'=>$task->id,'mid'=>request('mid')])}}"
-                           class="btn m-btn--pill  btn-sm  btn-accent finish-task">
-                            <i class="fa fa-check"></i> 完成任务
-                        </a>
+                            <button href="{{ route('tasks.finish',['task'=>$task->id,'mid'=>request('mid')])}}"
+                                    class="finish-task btn m-btn--square btn-secondary full-width-height btn-border-none m--padding-10 m--border-radius-none">
+                                <i class="flaticon-add"></i>
+                                <p class="m--margin-0 m--font-default">完成任务</p>
+                            </button>
+                        @else
+                            <button class="btn m-btn--square btn-accent full-width-height btn-border-none m--padding-10 m--border-radius-none">
+                                <i class="la la-check "></i>
+                                <p class="m--margin-0">已完成</p>
+                            </button>
                         @endif
                     </div>
                 </div>
