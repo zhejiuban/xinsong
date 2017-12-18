@@ -540,94 +540,7 @@
 
                     <div class="tab-pane active " id="m_quick_sidebar_tabs_profiles" role="tabpanel">
                         <div class="user-profile-form m-scrollable">
-                            <form action="{{ route('user.profile') }}" class="m-form m-form--fit " method="post" id="user-profile-form">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group ">
-                                            <label>
-                                                用户名<span class="required">*</span>:
-                                            </label>
-                                            <input type="text" class="form-control m-input" name="username"
-                                                   disabled value="{{$login_user->username}}" placeholder="用户名">
-                                            <span class="m-form__help"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="form-group ">
-                                            <label>
-                                                登录密码:
-                                            </label>
-                                            <input type="password" class="form-control m-input" name="password" value="" placeholder="登录密码">
-                                            <span class="m-form__help">留空不修改</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group ">
-                                            <label>
-                                                姓名<span class="required">*</span>:
-                                            </label>
-                                            <input type="text" name="name" value="{{$login_user->name}}" class="form-control m-input" placeholder="姓名">
-                                            <span class="m-form__help"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="form-group ">
-                                            <label class="">
-                                                性别<span class="required">*</span>:
-                                            </label>
-                                            <div class="m-radio-inline">
-                                                <label class="m-radio">
-                                                    <input type="radio" name="sex" value="男" {{ $login_user->sex == '男' ? 'checked' : '' }}>
-                                                    男
-                                                    <span></span>
-                                                </label>
-                                                <label class="m-radio">
-                                                    <input type="radio" name="sex" value="女" {{ $login_user->sex == '男' ? '' : 'checked' }}>
-                                                    女
-                                                    <span></span>
-                                                </label>
-                                            </div>
-                                            <span class="m-form__help"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label>
-                                                邮箱<span class="required">*</span>:
-                                            </label>
-                                            <input type="text" class="form-control m-input" name="email" value="{{$login_user->email}}" placeholder="邮箱">
-                                            <span class="m-form__help"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label class="">
-                                                手机号<span class="required">*</span>:
-                                            </label>
-                                            <input type="text" class="form-control m-input" name="tel" value="{{$login_user->tel}}" placeholder="手机号">
-                                            <span class="m-form__help"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label>
-                                                所属部门<span class="required">*</span>:
-                                            </label>
-                                            <div>
-                                                {{$login_user->company()->name}} / {{$login_user->department->name}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{ csrf_field() }}
-                                {{method_field('PUT')}}
-                            </form>
+
                         </div>
                         <div class="m-separator m-separator--dashed "></div>
                         <div class="user-profile-form-action">
@@ -962,10 +875,10 @@
             }
         });
         jQuery(document).ready(function () {
-            /*mAppExtend.ajaxGetHtml(
+            mAppExtend.ajaxGetHtml(
                 '.user-profile-form'
                 ,"{{route('user.profile')}}"
-                ,{},false);*/
+                ,{},false);
 
             mQuickSidebar.init({
                 'trigger':function () {
@@ -990,14 +903,14 @@
                     initProfile();
                 }
             });
-            $("#user-profile-form-submit").click(function () {
+           /* $("#user-profile-form-submit").click(function () {
                 $("#user-profile-form").ajaxSubmit(
                     {
                         beforeSend: function () {
                             mApp.block($('#m_quick_sidebar'));
                         },
                         complete: function () {
-                            mApp.unblock(topbarAside);
+                            mApp.unblock($('#m_quick_sidebar'));
                         },
                         success: function (response, status, xhr, $form) {
                             if (response.status == 'success') {
@@ -1021,7 +934,7 @@
                         }
                     }
                 );
-            });
+            });*/
         });
         </script>
         <!--end::Base Scripts -->

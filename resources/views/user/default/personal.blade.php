@@ -5,7 +5,8 @@
                 <label>
                     用户名<span class="required">*</span>:
                 </label>
-                <input type="text" class="form-control m-input" name="username" disabled value="" placeholder="用户名">
+                <input type="text" class="form-control m-input" name="username"
+                       disabled value="{{$user->username}}" placeholder="用户名">
                 <span class="m-form__help"></span>
             </div>
         </div>
@@ -25,7 +26,7 @@
                 <label>
                     姓名<span class="required">*</span>:
                 </label>
-                <input type="text" name="name" class="form-control m-input" placeholder="姓名">
+                <input type="text" name="name" value="{{$user->name}}" class="form-control m-input" placeholder="姓名">
                 <span class="m-form__help"></span>
             </div>
         </div>
@@ -36,12 +37,12 @@
                 </label>
                 <div class="m-radio-inline">
                     <label class="m-radio">
-                        <input type="radio" name="sex" value="男" checked>
+                        <input type="radio" name="sex" value="男" {{ $user->sex == '男' ? 'checked' : '' }}>
                         男
                         <span></span>
                     </label>
                     <label class="m-radio">
-                        <input type="radio" name="sex" value="女">
+                        <input type="radio" name="sex" value="女" {{ $user->sex == '男' ? '' : 'checked' }}>
                         女
                         <span></span>
                     </label>
@@ -56,7 +57,7 @@
                 <label>
                     邮箱<span class="required">*</span>:
                 </label>
-                <input type="text" class="form-control m-input" name="email" value="" placeholder="邮箱">
+                <input type="text" class="form-control m-input" name="email" value="{{$user->email}}" placeholder="邮箱">
                 <span class="m-form__help"></span>
             </div>
         </div>
@@ -65,7 +66,7 @@
                 <label class="">
                     手机号<span class="required">*</span>:
                 </label>
-                <input type="text" class="form-control m-input" name="tel" value="" placeholder="手机号">
+                <input type="text" class="form-control m-input" name="tel" value="{{$user->tel}}" placeholder="手机号">
                 <span class="m-form__help"></span>
             </div>
         </div>
@@ -76,10 +77,9 @@
                 <label>
                     所属部门<span class="required">*</span>:
                 </label>
-                <select name="department_id" id="department_id" disabled class="form-control m-input select2 m-select2">
-                    {!! department_select() !!}
-                </select>
-                <span class="m-form__help"></span>
+                <div>
+                    {{$user->company()->name}} / {{$user->department->name}}
+                </div>
             </div>
         </div>
     </div>
@@ -96,12 +96,13 @@
                         mApp.block($('#m_quick_sidebar'));
                     },
                     complete: function () {
-                        mApp.unblock(topbarAside);
+                        mApp.unblock($('#m_quick_sidebar'));
                     },
                     success: function (response, status, xhr, $form) {
                         if (response.status == 'success') {
                             mAppExtend.notification(response.message, 'success', 'toastr', function () {
-                                mAppExtend.backUrl(response.url);
+                                // mAppExtend.backUrl(response.url);
+                                $('#m_quick_sidebar_close').click();
                             });
                         } else {
                             mAppExtend.notification(response.message, 'error');
