@@ -6241,10 +6241,28 @@ var mQuickSidebar = function() {
         mUtil.addResizeHandler(init);
     }
 
+    var initProfile = function() {
+        var init = function() {
+            var profiler = $('#m_quick_sidebar_tabs_profiles');
+            var profileForm = profiler.find('.user-profile-form');
+            var height = topbarAside.outerHeight(true) -
+                topbarAsideTabs.outerHeight(true) - 125;
+            // init messages scrollable content
+            profileForm.css('height', height);
+            mApp.initScroller(profileForm, {});
+        };
+
+        init();
+
+        // reinit on window resize
+        mUtil.addResizeHandler(init);
+    };
+
     var initOffcanvasTabs = function() {
-        initMessages();
+        //initMessages();
         initSettings();
         initLogs();
+        // initProfile();
     }
 
     var initOffcanvas = function(options) {
@@ -6256,16 +6274,16 @@ var mQuickSidebar = function() {
         });
 
         // run once on first time dropdown shown
-        topbarAside.mOffcanvas().one('afterShow', function() {
-            mApp.block(topbarAside);
+        topbarAside.mOffcanvas().on('afterShow', function() {
+            // mApp.block(topbarAside);
 
-            setTimeout(function() {
-                mApp.unblock(topbarAside);
+            // setTimeout(function() {
+            //     mApp.unblock(topbarAside);
 
                 topbarAsideContent.removeClass('m--hide');
 
                 initOffcanvasTabs();
-            }, 1000);
+            // }, 1000);
 
             if(options.trigger instanceof Function){
                 options.trigger();

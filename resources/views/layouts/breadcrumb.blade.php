@@ -64,7 +64,7 @@
 								@endif
 								@if(check_company_admin() || check_user_role(null,'总部管理员'))
 								<li class="m-nav__item">
-									<a href="{{url('dynamic/dynamics?mid=0fb5fefdfc8b8731301c222636bf2934')}}" class="m-nav__link">
+									<a href="{{url('project/dynamics?mid=a70ebe696b17f962d6271b83eee22c7c')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-list"></i>
 										<span class="m-nav__link-text">
 											工作日志汇总

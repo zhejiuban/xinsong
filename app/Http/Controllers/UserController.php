@@ -107,6 +107,9 @@ class UserController extends Controller
             if ($request->role_id) {
                 $user->syncRoles($request->role_id);
             }
+            activity('系统日志')->performedOn($user)
+                ->withProperties($user)
+                ->log('新增用户');
             return response()->json([
                 'message' => '保存成功', 'status' => 'success',
                 'url' => route('users.index'), 'data' => $user->toArray()
@@ -180,6 +183,9 @@ class UserController extends Controller
                         $user->roles()->detach();
                     }
                 }
+                activity('系统日志')->performedOn($user)
+                    ->withProperties($user)
+                    ->log('更新用户');
                 return response()->json([
                     'message' => '保存成功', 'status' => 'success',
                     'url' => route('users.index'), 'data' => $user->toArray()
@@ -219,6 +225,9 @@ class UserController extends Controller
             //判断是否有相关项目
 
             if ($user->delete()) {
+                activity('系统日志')->performedOn($user)
+                    ->withProperties($user)
+                    ->log('删除用户');
                 return response()->json([
                     'message' => '您操作的信息已被删除', 'data' => $user->toArray(),
                     'url' => route('users.index'), 'status' => 'success'
@@ -261,6 +270,9 @@ class UserController extends Controller
         }else{
             return _404('您操作的数据不存在');
         }
+        activity('系统日志')
+            ->withProperties($user)
+            ->log('授权成功');
         return response()->json([
             'message' => '授权成功', 'status' => 'success',
             'data' => null, 'url' => route('users.index')
@@ -303,6 +315,9 @@ class UserController extends Controller
         }else{
            return _404('您操作的数据不存在');
         }
+        activity('系统日志')
+            ->withProperties($user)
+            ->log('重置密码');
         return response()->json([
             'message' => '重置成功，新密码为 ' . $request->password, 'status' => 'success',
             'data' => null, 'url' => route('users.index')
@@ -317,7 +332,37 @@ class UserController extends Controller
     public function profile(Request $request){
         $user = get_current_login_user_info(true);
         if($request->isMethod('PUT')){
-
+            //验证
+            $this->validate($request,[
+                'password'=>'bail|nullable|min:6',
+                'name'=>'bail|required',
+                'email'=>'bail|required|email|unique:users,email,'.$user->id,
+                'tel'=>'bail|required|unique:users,tel,'.$user->id
+            ],[
+                'password.required'=>'请输入登录密码',
+                'password.min'=>'密码不能小于6个字符',
+                'name.required'=>'请输入姓名',
+                'email.required'=>'请输入邮箱',
+                'email.email'=>'请输入正确格式的邮箱',
+                'email.unique'=>'邮箱已存在',
+                'tel.required'=>'请输入手机号',
+                'tel.unique'=>'手机号已存在',
+            ]);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->tel = $request->tel;
+            $user->sex = $request->sex;
+            if ($request->password) {
+                $user->password = $request->password;
+            }
+            if($user->save()){
+                activity('系统日志')->performedOn($user)
+                    ->withProperties($user)
+                    ->log($user->username.'更新个人资料');
+                return _success('更新成功');
+            }else{
+                return _error('更新失败');
+            }
         }else{
             return view('user.default.personal',compact('user'));
         }

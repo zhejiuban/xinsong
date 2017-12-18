@@ -402,7 +402,7 @@
                                                                     </span>
                                                                 </li>
                                                                 <li class="m-nav__item">
-                                                                    <a href="{{route('user.profile')}}"
+                                                                    <a href="javascript:;"
                                                                        class="m-nav__link user-profile-edit m_quick_sidebar_toggle">
                                                                         <i class="m-nav__link-icon flaticon-profile-1"></i>
                                                                         <span class="m-nav__link-title">
@@ -520,16 +520,16 @@
                 </span>
                 <ul id="m_quick_sidebar_tabs" class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand" role="tablist">
                     <li class="nav-item m-tabs__item ">
-                        <a class="nav-link m-tabs__link active" data-toggle="tab" href="#m_quick_sidebar_tabs_profile" role="tab">
+                        <a class="nav-link m-tabs__link active" data-toggle="tab" href="#m_quick_sidebar_tabs_profiles" role="tab">
                             个人资料
                         </a>
                     </li>
-                    {{--<li class="nav-item m-tabs__item">
+                    <li class="nav-item m-tabs__item">
                         <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_quick_sidebar_tabs_settings" role="tab">
-                            个人设置
+                            设置
                         </a>
                     </li>
-                    <li class="nav-item m-tabs__item">
+                    {{--<li class="nav-item m-tabs__item">
                         <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_quick_sidebar_tabs_logs" role="tab">
                             操作记录
                         </a>
@@ -538,144 +538,123 @@
                 <div class="tab-content">
 
 
-                    <div class="tab-pane active m-scrollable" id="m_quick_sidebar_tabs_profile" role="tabpanel">
+                    <div class="tab-pane active " id="m_quick_sidebar_tabs_profiles" role="tabpanel">
+                        <div class="user-profile-form m-scrollable">
+                            <form action="{{ route('user.profile') }}" class="m-form m-form--fit " method="post" id="user-profile-form">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group ">
+                                            <label>
+                                                用户名<span class="required">*</span>:
+                                            </label>
+                                            <input type="text" class="form-control m-input" name="username"
+                                                   disabled value="{{$login_user->username}}" placeholder="用户名">
+                                            <span class="m-form__help"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group ">
+                                            <label>
+                                                登录密码:
+                                            </label>
+                                            <input type="password" class="form-control m-input" name="password" value="" placeholder="登录密码">
+                                            <span class="m-form__help">留空不修改</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group ">
+                                            <label>
+                                                姓名<span class="required">*</span>:
+                                            </label>
+                                            <input type="text" name="name" value="{{$login_user->name}}" class="form-control m-input" placeholder="姓名">
+                                            <span class="m-form__help"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group ">
+                                            <label class="">
+                                                性别<span class="required">*</span>:
+                                            </label>
+                                            <div class="m-radio-inline">
+                                                <label class="m-radio">
+                                                    <input type="radio" name="sex" value="男" {{ $login_user->sex == '男' ? 'checked' : '' }}>
+                                                    男
+                                                    <span></span>
+                                                </label>
+                                                <label class="m-radio">
+                                                    <input type="radio" name="sex" value="女" {{ $login_user->sex == '男' ? '' : 'checked' }}>
+                                                    女
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <span class="m-form__help"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>
+                                                邮箱<span class="required">*</span>:
+                                            </label>
+                                            <input type="text" class="form-control m-input" name="email" value="{{$login_user->email}}" placeholder="邮箱">
+                                            <span class="m-form__help"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label class="">
+                                                手机号<span class="required">*</span>:
+                                            </label>
+                                            <input type="text" class="form-control m-input" name="tel" value="{{$login_user->tel}}" placeholder="手机号">
+                                            <span class="m-form__help"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>
+                                                所属部门<span class="required">*</span>:
+                                            </label>
+                                            <div>
+                                                {{$login_user->company()->name}} / {{$login_user->department->name}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ csrf_field() }}
+                                {{method_field('PUT')}}
+                            </form>
+                        </div>
+                        <div class="m-separator m-separator--dashed "></div>
+                        <div class="user-profile-form-action">
+                            <button type="button" id="user-profile-form-submit" class="btn btn-primary btn-sm m-btn m-btn--icon m-btn--pill">
+                                <span>
+                                    <i class="fa fa-check"></i>
+                                    <span>
+                                        保存
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                     <div class="tab-pane  m-scrollable" id="m_quick_sidebar_tabs_settings" role="tabpanel">
                         <div class="m-list-settings">
                             <div class="m-list-settings__group">
                                 <div class="m-list-settings__heading">
-                                    General Settings
+                                   通用设置
                                 </div>
                                 <div class="m-list-settings__item">
                                     <span class="m-list-settings__item-label">
-                                        Email Notifications
+                                        消息提醒
                                     </span>
                                     <span class="m-list-settings__item-control">
                                         <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
                                             <label>
                                                 <input type="checkbox" checked="checked" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        Site Tracking
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        SMS Alerts
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        Backup Storage
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        Audit Logs
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" checked="checked" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="m-list-settings__group">
-                                <div class="m-list-settings__heading">
-                                    System Settings
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        System Logs
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        Error Reporting
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        Applications Logs
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        Backup Servers
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" checked="checked" name="">
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="m-list-settings__item">
-                                    <span class="m-list-settings__item-label">
-                                        Audit Logs
-                                    </span>
-                                    <span class="m-list-settings__item-control">
-                                        <span class="m-switch m-switch--outline m-switch--icon-check m-switch--brand">
-                                            <label>
-                                                <input type="checkbox" name="">
                                                 <span></span>
                                             </label>
                                         </span>
@@ -982,18 +961,67 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        mQuickSidebar.init({
-            'trigger':function () {
-            }
-        });
-        $('.user-profile-edit').click(function (event) {
-            event.preventDefault();
-            // var url = $(this).attr('href');
-            // $('#_CommonModal').modal('show');
-            // mAppExtend.ajaxGetHtml(
-            //     '#_modal .modal-content',
-            //     url,
-            //     {},true);
+        jQuery(document).ready(function () {
+            /*mAppExtend.ajaxGetHtml(
+                '.user-profile-form'
+                ,"{{route('user.profile')}}"
+                ,{},false);*/
+
+            mQuickSidebar.init({
+                'trigger':function () {
+                    var initProfile = function() {
+                        var init = function() {
+                            var profiler = $('#m_quick_sidebar_tabs_profiles');
+                            var profileForm = profiler.find('.user-profile-form');
+                            var topbarAside = $('#m_quick_sidebar');
+                            var topbarAsideTabs = $('#m_quick_sidebar_tabs');
+                            var height =  topbarAside.outerHeight(true)  -
+                                topbarAsideTabs.outerHeight(true) - 125;
+                            // init messages scrollable content
+                            profileForm.css('height', height);
+                            mApp.initScroller(profileForm, {});
+                        };
+
+                        init();
+
+                        // reinit on window resize
+                        mUtil.addResizeHandler(init);
+                    };
+                    initProfile();
+                }
+            });
+            $("#user-profile-form-submit").click(function () {
+                $("#user-profile-form").ajaxSubmit(
+                    {
+                        beforeSend: function () {
+                            mApp.block($('#m_quick_sidebar'));
+                        },
+                        complete: function () {
+                            mApp.unblock(topbarAside);
+                        },
+                        success: function (response, status, xhr, $form) {
+                            if (response.status == 'success') {
+                                mAppExtend.notification(response.message, 'success', 'toastr', function () {
+                                    mAppExtend.backUrl(response.url);
+                                });
+                            } else {
+                                mAppExtend.notification(response.message, 'error');
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            _$error = xhr.responseJSON.errors;
+                            var _err_mes = '未知错误，请重试';
+                            if (_$error != undefined) {
+                                _err_mes = '';
+                                $.each(_$error, function (i, v) {
+                                    _err_mes += v[0] + '<br>';
+                                });
+                            }
+                            mAppExtend.notification(_err_mes, 'error');
+                        }
+                    }
+                );
+            });
         });
         </script>
         <!--end::Base Scripts -->

@@ -456,7 +456,61 @@ function active_menu_pattern_str($uri, $level = 0)
             $new[] = $val;
         }
     }
-    return arr2str($new, '/') . '*';
+    return arr2str($new, '/') . ($level ? '' : '*');
+}
+
+function check_active_url($url)
+{
+    $return = false;
+    $res = parse_url($url);
+    $path = isset($res['path']) ? $res['path'] : null;
+    $query = isset($res['query']) ? $res['query'] : null;
+    if($path && if_uri_pattern($path)){
+        $return = true;
+    }
+    if($query){
+        $query_arr = convertUrlQuery($res['query']);
+        foreach ($query_arr as $key=>$value){
+            if(!if_query($key,$value)){
+                $return = false;
+                break;
+            }else{
+                $return = true;
+            }
+        }
+    }
+    return $return;
+}
+
+/**
+ * 将参数转换成字符串
+ * @param $query
+ * @return array
+ */
+function convertUrlQuery($query)
+{
+    $queryParts = explode('&', $query);
+    $params = array();
+    foreach ($queryParts as $param) {
+        $item = explode('=', $param);
+        $params[$item[0]] = $item[1];
+    }
+    return $params;
+}
+
+/**
+ * 将参数变为字符串
+ * @param $array_query
+ * @return string
+ */
+function getUrlQuery($array_query)
+{
+    $tmp = array();
+    foreach ($array_query as $k => $param) {
+        $tmp[] = $k . '=' . $param;
+    }
+    $params = implode('&', $tmp);
+    return $params;
 }
 
 /**
@@ -1073,12 +1127,13 @@ function project_folders_info($folder, $field = true)
  * @param $project
  * @return mixed
  */
-function get_project_current_phase($project){
-    if(is_object($project)){
-        $current_phase = $project->phases()->where('status','<',2)
-            ->orderBy('id','asc')->first();
+function get_project_current_phase($project)
+{
+    if (is_object($project)) {
+        $current_phase = $project->phases()->where('status', '<', 2)
+            ->orderBy('id', 'asc')->first();
     }
-    $current_phase = \App\ProjectPhase::where('project_id',$project)->where('status','<',2)
-        ->orderBy('id','asc')->first();
+    $current_phase = \App\ProjectPhase::where('project_id', $project)->where('status', '<', 2)
+        ->orderBy('id', 'asc')->first();
     return $current_phase;
 }

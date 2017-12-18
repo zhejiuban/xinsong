@@ -34,7 +34,7 @@
                         <span class="m-menu__arrow"></span>
                         <ul class="m-menu__subnav">
                             @foreach ($value['_child'] as $sk => $sv)
-                              <li class="m-menu__item {{ active_class(if_uri_pattern(active_menu_pattern_str($sv['url'],1)),'m-menu__item--active')}}" aria-haspopup="true" >
+                              <li class="m-menu__item {{ active_class(check_active_url($sv['url']),'m-menu__item--active')}}" aria-haspopup="true" >
                                   <a  href="{{menu_url_format($sv['url'],['mid'=>$sv['uniqid']])}}" target="{{$sv['target']}}" class="m-menu__link ">
                                       <i class="m-menu__link-bullet m-menu__link-bullet--dot">
                                           <span></span>

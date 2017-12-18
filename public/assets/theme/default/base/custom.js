@@ -809,7 +809,6 @@ var mAppExtend = function () {
             });
             return $return;
         }
-
     }
 }();
 $(document).ready(function () {

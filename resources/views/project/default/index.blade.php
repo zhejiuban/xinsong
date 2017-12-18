@@ -140,6 +140,7 @@
                 var status = @json(config('common.project_status'));
                 var rowStatus = Number(row.status);
                 if(row.status == 1){
+                    mAppExtend.select2Instance();
                     var phase = mAppExtend.projectPhases(row.phases);
                     var phaseStatus =  Number(phase['status']);
                     return '<span class="m-badge ' + status[phaseStatus].class + ' m-badge--wide">' + phase['name'] +':'+ status[phaseStatus].title + '</span>';
