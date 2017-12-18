@@ -1067,3 +1067,18 @@ function project_folders_info($folder, $field = true)
     }
     return isset($folder->$field) ? $folder->$field : null;
 }
+
+/**
+ * 获取当前项目所处阶段
+ * @param $project
+ * @return mixed
+ */
+function get_project_current_phase($project){
+    if(is_object($project)){
+        $current_phase = $project->phases()->where('status','<',2)
+            ->orderBy('id','asc')->first();
+    }
+    $current_phase = \App\ProjectPhase::where('project_id',$project)->where('status','<',2)
+        ->orderBy('id','asc')->first();
+    return $current_phase;
+}

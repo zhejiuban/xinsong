@@ -15,10 +15,10 @@ class ProjectPhase extends Model
         return $this->belongsTo('App\Project');
     }
     public function getStartedAtAttribute($value){
-        return Carbon::parse($value)->toDateString();
+        return $value ? Carbon::parse($value)->toDateString() : null;
     }
     public function getFinishedAtAttribute($value){
-        return Carbon::parse($value)->toDateString();
+        return $value ? Carbon::parse($value)->toDateString() : null;
     }
     public function tasks(){
         return $this->hasMany('App\Task');

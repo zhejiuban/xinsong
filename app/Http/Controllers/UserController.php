@@ -308,4 +308,22 @@ class UserController extends Controller
             'data' => null, 'url' => route('users.index')
         ]);
     }
+
+    /**
+     * 修改个人资料
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function profile(Request $request){
+        $user = get_current_login_user_info(true);
+        if($request->isMethod('PUT')){
+
+        }else{
+            return view('user.default.personal',compact('user'));
+        }
+    }
+
+    public function editPersonalPwd(Request $request){
+
+    }
 }

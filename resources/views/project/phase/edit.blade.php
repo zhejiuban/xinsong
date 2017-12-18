@@ -27,7 +27,7 @@
                    value="{{$phase->finished_at}}"/>
             <span class="m-form__help"></span>
         </div>
-        <div class="form-group">
+        {{--<div class="form-group">
             <label>
                 状态:
             </label>
@@ -37,7 +37,7 @@
                 </select>
             </div>
             <span class="m-form__help"></span>
-        </div>
+        </div>--}}
         {{ csrf_field() }}
         {{ method_field('PUT') }}
     </form>
@@ -59,15 +59,15 @@
         form.validate({
             // define validation rules
             rules: {
-                started_at: {
-                    required: true
-                },
-                finished_at: {
-                    required: true
-                },
-                status: {
-                    required: true
-                }
+                // started_at: {
+                //     required: true
+                // },
+                // finished_at: {
+                //     required: true
+                // },
+                // status: {
+                //     required: true
+                // }
             },
             messages: {
                 started_at: {

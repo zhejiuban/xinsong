@@ -99,7 +99,7 @@
                                                 </div>
                                             </div>
                                         </li>--}}
-                                        <li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right  m-dropdown--mobile-full-width" data-dropdown-toggle="click" data-dropdown-persistent="true">
+                                        {{--<li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right  m-dropdown--mobile-full-width" data-dropdown-toggle="click" data-dropdown-persistent="true">
                                             <a href="javascript:;" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_icon">
                                                 <span class="m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger"></span>
                                                 <span class="m-nav__link-icon">
@@ -307,7 +307,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </li>
+                                        </li>--}}
                                         {{--<li class="m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light"  data-dropdown-toggle="click">--}}
                                             {{--<a href="#" class="m-nav__link m-dropdown__toggle">--}}
                                                 {{--<span class="m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide"></span>--}}
@@ -398,11 +398,12 @@
                                                             <ul class="m-nav m-nav--skin-light">
                                                                 <li class="m-nav__section m--hide">
                                                                     <span class="m-nav__section-text">
-                                                                        Section
+
                                                                     </span>
                                                                 </li>
                                                                 <li class="m-nav__item">
-                                                                    <a href="#" class="m-nav__link">
+                                                                    <a href="{{route('user.profile')}}"
+                                                                       class="m-nav__link user-profile-edit m_quick_sidebar_toggle">
                                                                         <i class="m-nav__link-icon flaticon-profile-1"></i>
                                                                         <span class="m-nav__link-title">
                                                                             <span class="m-nav__link-wrap">
@@ -426,15 +427,15 @@
                                                                         </span>
                                                                     </a>
                                                                 </li>-->
-                                                                <li class="m-nav__item">
+                                                                {{--<li class="m-nav__item">
                                                                     <a href="#" class="m-nav__link">
                                                                         <i class="m-nav__link-icon flaticon-chat-1"></i>
                                                                         <span class="m-nav__link-text">
                                                                             消息通知
                                                                         </span>
                                                                     </a>
-                                                                </li>
-                                                                <li class="m-nav__separator m-nav__separator--fit"></li>
+                                                                </li>--}}
+                                                                {{--<li class="m-nav__separator m-nav__separator--fit"></li>
 
                                                                 <li class="m-nav__item">
                                                                     <a href="#" class="m-nav__link">
@@ -443,7 +444,7 @@
                                                                             帮助文档
                                                                         </span>
                                                                     </a>
-                                                                </li>
+                                                                </li>--}}
                                                                 <li class="m-nav__separator m-nav__separator--fit"></li>
                                                                 <li class="m-nav__item">
                                                                     <a href="{{ route('logout') }}" class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">
@@ -456,14 +457,13 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <!-- <li id="m_quick_sidebar_toggle" class="m-nav__item">
+                                        {{--<li id="m_quick_sidebar_toggle" class="m-nav__item m_quick_sidebar_toggle">
                                             <a href="#" class="m-nav__link m-dropdown__toggle">
                                                 <span class="m-nav__link-icon">
                                                     <i class="flaticon-grid-menu"></i>
                                                 </span>
                                             </a>
-                                        </li>
-                                      -->
+                                        </li>--}}
                                     </ul>
                                 </div>
                             </div>
@@ -519,177 +519,26 @@
                     <i class="la la-close"></i>
                 </span>
                 <ul id="m_quick_sidebar_tabs" class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand" role="tablist">
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link active" data-toggle="tab" href="#m_quick_sidebar_tabs_messenger" role="tab">
-                            Messages
+                    <li class="nav-item m-tabs__item ">
+                        <a class="nav-link m-tabs__link active" data-toggle="tab" href="#m_quick_sidebar_tabs_profile" role="tab">
+                            个人资料
                         </a>
                     </li>
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link"        data-toggle="tab" href="#m_quick_sidebar_tabs_settings" role="tab">
-                            Settings
+                    {{--<li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_quick_sidebar_tabs_settings" role="tab">
+                            个人设置
                         </a>
                     </li>
                     <li class="nav-item m-tabs__item">
                         <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_quick_sidebar_tabs_logs" role="tab">
-                            Logs
+                            操作记录
                         </a>
-                    </li>
+                    </li>--}}
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active m-scrollable" id="m_quick_sidebar_tabs_messenger" role="tabpanel">
-                        <div class="m-messenger m-messenger--message-arrow m-messenger--skin-light">
-                            <div class="m-messenger__messages">
-                                <div class="m-messenger__message m-messenger__message--in">
-                                    <div class="m-messenger__message-pic">
-                                        <img src="../../assets/app/media/img/users/default.jpg" alt=""/>
-                                    </div>
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-username">
-                                                Megan wrote
-                                            </div>
-                                            <div class="m-messenger__message-text">
-                                                Hi Bob. What time will be the meeting ?
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--out">
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-text">
-                                                Hi Megan. It's at 2.30PM
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--in">
-                                    <div class="m-messenger__message-pic">
-                                        <img src="../../assets/app/media/img//users/default.jpg" alt=""/>
-                                    </div>
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-username">
-                                                Megan wrote
-                                            </div>
-                                            <div class="m-messenger__message-text">
-                                                Will the development team be joining ?
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--out">
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-text">
-                                                Yes sure. I invited them as well
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__datetime">
-                                    2:30PM
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--in">
-                                    <div class="m-messenger__message-pic">
-                                        <img src="../../assets/app/media/img//users/default.jpg"  alt=""/>
-                                    </div>
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-username">
-                                                Megan wrote
-                                            </div>
-                                            <div class="m-messenger__message-text">
-                                                Noted. For the Coca-Cola Mobile App project as well ?
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--out">
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-text">
-                                                Yes, sure.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--out">
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-text">
-                                                Please also prepare the quotation for the Loop CRM project as well.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__datetime">
-                                    3:15PM
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--in">
-                                    <div class="m-messenger__message-no-pic m--bg-fill-danger">
-                                        <span>
-                                            M
-                                        </span>
-                                    </div>
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-username">
-                                                Megan wrote
-                                            </div>
-                                            <div class="m-messenger__message-text">
-                                                Noted. I will prepare it.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--out">
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-text">
-                                                Thanks Megan. I will see you later.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-messenger__message m-messenger__message--in">
-                                    <div class="m-messenger__message-pic">
-                                        <img src="../../assets/app/media/img//users/default.jpg"  alt=""/>
-                                    </div>
-                                    <div class="m-messenger__message-body">
-                                        <div class="m-messenger__message-arrow"></div>
-                                        <div class="m-messenger__message-content">
-                                            <div class="m-messenger__message-username">
-                                                Megan wrote
-                                            </div>
-                                            <div class="m-messenger__message-text">
-                                                Sure. See you in the meeting soon.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="m-messenger__seperator"></div>
-                            <div class="m-messenger__form">
-                                <div class="m-messenger__form-controls">
-                                    <input type="text" name="" placeholder="Type here..." class="m-messenger__form-input">
-                                </div>
-                                <div class="m-messenger__form-tools">
-                                    <a href="" class="m-messenger__form-attachment">
-                                        <i class="la la-paperclip"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+
+
+                    <div class="tab-pane active m-scrollable" id="m_quick_sidebar_tabs_profile" role="tabpanel">
                     </div>
                     <div class="tab-pane  m-scrollable" id="m_quick_sidebar_tabs_settings" role="tabpanel">
                         <div class="m-list-settings">
@@ -1100,6 +949,16 @@
             <i class="la la-arrow-up"></i>
         </div>
         <!-- end::Scroll Top -->
+
+        <!--begin::Modal-->
+        <div class="modal fade" id="_CommonModal" tabindex="-1" role="dialog" aria-labelledby="_CommonModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                </div>
+            </div>
+        </div>
+        <!--end::Modal-->
+
         <!--begin::Base Scripts -->
         <script src="{{ asset('assets/vendors/base/vendors.bundle.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/theme/default/base/scripts.bundle.js') }}" type="text/javascript"></script>
@@ -1122,6 +981,19 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+        mQuickSidebar.init({
+            'trigger':function () {
+            }
+        });
+        $('.user-profile-edit').click(function (event) {
+            event.preventDefault();
+            // var url = $(this).attr('href');
+            // $('#_CommonModal').modal('show');
+            // mAppExtend.ajaxGetHtml(
+            //     '#_modal .modal-content',
+            //     url,
+            //     {},true);
         });
         </script>
         <!--end::Base Scripts -->

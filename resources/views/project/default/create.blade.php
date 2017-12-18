@@ -476,7 +476,7 @@
                 templateResult: formatRepo, // omitted for brevity, see the source of this page
                 templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
             });
-            var $userSelector = $("#user_select").select2({
+            var $userSelector2 = $("#user_select").select2({
                 language: 'zh-CN',
                 placeholder: "输入姓名、用户名等关键字搜索",
                 allowClear: true,
@@ -608,7 +608,7 @@
                 }
             });
 
-            var form = $('#project-form');
+            var form = $('#project-forms');
             var submitButton = $("#submit-button");
             form.validate({
                 // define validation rules

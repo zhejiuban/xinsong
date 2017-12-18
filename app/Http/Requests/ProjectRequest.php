@@ -42,8 +42,8 @@ class ProjectRequest extends FormRequest
                     'device_project.*.device_id' => 'bail|required|distinct',
                     'device_project.*.number' => 'bail|required',
                     'project_phases.*.name' => 'bail|required',
-                    'project_phases.*.started_at' => 'bail|required',
-                    'project_phases.*.finished_at' => 'bail|required|after_or_equal:project_phases.*.started_at',
+//                    'project_phases.*.started_at' => 'bail|required',
+//                    'project_phases.*.finished_at' => 'bail|required|after_or_equal:project_phases.*.started_at',
                 ];
             }
             case 'PUT':
@@ -61,8 +61,8 @@ class ProjectRequest extends FormRequest
                     'device_project.*.device_id' => 'bail|required|distinct',
                     'device_project.*.number' => 'bail|required',
                     'project_phases.*.name' => 'bail|required',
-                    'project_phases.*.started_at' => 'bail|required',
-                    'project_phases.*.finished_at' => 'bail|required|after_or_equal:project_phases.*.started_at',
+//                    'project_phases.*.started_at' => 'bail|required',
+//                    'project_phases.*.finished_at' => 'bail|required|after_or_equal:project_phases.*.started_at',
                 ];
             }
             default:

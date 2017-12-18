@@ -36,6 +36,7 @@ class ProjectController extends Controller
             if (check_user_role(null, '总部管理员')) {
                 $project = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
+                    ,'phases'
                 ])->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
                 }, function ($query) use ($status) {
@@ -61,6 +62,7 @@ class ProjectController extends Controller
                 //分部管理员获取分部所有项目
                 $project = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
+                    ,'phases'
                 ])->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
                 }, function ($query) use ($status) {
@@ -124,6 +126,7 @@ class ProjectController extends Controller
         if (!check_permission('project/projects/create')) {
             return _404('无权操作！');
         }
+
         $project = new Project();
         $project->title = $request->title;
         $project->no = $request->no;
@@ -155,7 +158,18 @@ class ProjectController extends Controller
                 $project->devices()->attach($d_data);
             }
             //关联写入建设阶段信息
-            $project->phases()->createMany($request->project_phases);
+            $phases = $request->project_phases;
+            foreach ($phases as $key => $phase) {
+                if (!$phase['started_at']) {
+                    $phases[$key]['status'] = 0;
+                } elseif ($phase['started_at'] && !$phase['finished_at']) {
+                    $phases[$key]['status'] = 1;
+                }elseif ($phase['started_at'] && $phase['finished_at']) {
+                    $phases[$key]['status'] = 2;
+                }
+            }
+            $project->phases()->createMany($phases);
+            $project->updateStatus();
             //关联写入文件信息
             if ($files = $request->input('file_project')) {
                 $project->files()->attach((array)$files);
@@ -207,8 +221,8 @@ class ProjectController extends Controller
             'devices', 'phases', 'users', 'files', 'department',
             'leaderUser', 'agentUser', 'companyUser'
         ])->find($id);
-        if (!$project) {
-            return _404();
+        if (!$project || $project->status == 2) {
+            return _404('无权操作');
         }
         //检测项目权限
         if (!check_project_owner($project, 'edit')) {
@@ -232,7 +246,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
         if ($project) {
             //检测项目权限
-            if (!check_project_owner($project, 'edit')) {
+            if ($project->status == 2 || !check_project_owner($project, 'edit')) {
                 return _404('无权操作');
             }
 
@@ -266,7 +280,7 @@ class ProjectController extends Controller
                 }
                 //关联写入建设阶段信息
                 $phases = $request->project_phases;
-                $phases_ids = collect($phases)->pluck('id')->toArray();
+                /*$phases_ids = collect($phases)->pluck('id')->toArray();
 
                 $haved_phases = $project->phases()->get();//获取已有建设阶段
                 $haved_phases_ids = collect($haved_phases)->pluck('id');
@@ -276,10 +290,17 @@ class ProjectController extends Controller
                 if (!empty($del_phases_id)) {
                     //删除原有关联
                     $project->phases()->delete($del_phases_id);
-                }
+                }*/
                 $phases_add = [];
                 //需要更新的阶段
                 foreach ($phases as $ks => $phase) {
+                    if (!$phase['started_at']) {
+                        $phase['status'] = 0;
+                    } elseif ($phase['started_at'] && !$phase['finished_at']) {
+                        $phase['status'] = 1;
+                    }elseif ($phase['started_at'] && $phase['finished_at']) {
+                        $phase['status'] = 2;
+                    }
                     if (!isset($phase['id'])) {
                         $phases_add[] = $phase;
                     } else {
@@ -292,6 +313,7 @@ class ProjectController extends Controller
                     //增加新建设阶段
                     $project->phases()->createMany($phases_add);
                 }
+                $project->updateStatus();
                 //关联写入文件信息
                 if ($files = $request->input('file_project')) {
                     $project->files()->sync((array)$files);
@@ -325,11 +347,22 @@ class ProjectController extends Controller
         if (!check_project_owner($project, 'del')) {
             return _404('无权操作');
         }
-        //检测项目是否有
-        //下发任务
-        if($project->status){
+
+        if ($project->status && !is_administrator()) {
             return _error('不允许删除');
         }
+        //检测关联信息
+        //检测项目是否有下发任务
+        if($project->tasks()->first()){
+            return _error('请先删除相关任务');
+        }
+        if($project->dynamics()->first()){
+            return _error('请先删除相关日志');
+        }
+        if($project->users()->first()){
+            return _error('请先删除参与人员');
+        }
+
         if ($project->destroy($id)) {
             activity('项目日志')->performedOn($project)
                 ->withProperties($project)
@@ -380,7 +413,7 @@ class ProjectController extends Controller
                 $only, function ($query) {
                 return $query->where('leader', get_current_login_user_info());
             })->when($date, function ($query) use ($date) {
-                if($date == 'day'){
+                if ($date == 'day') {
                     return $query->whereBetween('start_at', [
                         date_start_end(), date_start_end(null, 'end')
                     ]);
@@ -406,7 +439,7 @@ class ProjectController extends Controller
                 $only, function ($query) {
                 return $query->where('user_id', get_current_login_user_info());
             })->when($date, function ($query) use ($date) {
-                if($date == 'day'){
+                if ($date == 'day') {
                     return $query->whereBetween('created_at', [
                         date_start_end(), date_start_end(null, 'end')
                     ]);
@@ -432,7 +465,7 @@ class ProjectController extends Controller
                 $only, function ($query) {
                 return $query->where('user_id', get_current_login_user_info());
             })->when($date, function ($query) use ($date) {
-                if($date == 'day'){
+                if ($date == 'day') {
                     return $query->whereBetween('created_at', [
                         date_start_end(), date_start_end(null, 'end')
                     ]);
@@ -744,7 +777,15 @@ class ProjectController extends Controller
             if ($request->isMethod('put')) {
                 $phase->started_at = $request->started_at;
                 $phase->finished_at = $request->finished_at;
-                $phase->status = $request->status;
+                $status = $request->status;
+                if(!$phase->started_at){
+                   $status = 0;
+                }elseif($phase->started_at && !$phase->finished_at){
+                   $status = 1;
+                }else{
+                    $status = 2;
+                }
+                $phase->status = $status;
                 if ($phase->save()) {
                     //更新项目本身的状态，如果所有阶段都已完成，设置项目为已完成阶段，如全为未开始设置项目为未开始状态，否则为进行中项目
                     $project->updateStatus();
@@ -804,22 +845,22 @@ class ProjectController extends Controller
         }
         if ($request->isMethod('put')) {
             $user = $request->agent;
-            if($user){
+            if ($user) {
                 $project->agent = $user;
-                if($project->save()){
+                if ($project->save()) {
                     //如参与人中不存在同步至参与人
-                    if(!$project->users()->where('user_id',$user)->first()){
+                    if (!$project->users()->where('user_id', $user)->first()) {
                         $project->users()->attach($user);
                     }
                     activity('项目日志')->performedOn($project)
                         ->withProperties($project)
-                        ->log('变更现场负责人为：'.$project->agentUser->name);
-                    return _success('操作成功',$project,get_redirect_url());
-                }else{
+                        ->log('变更现场负责人为：' . $project->agentUser->name);
+                    return _success('操作成功', $project, get_redirect_url());
+                } else {
                     return _error('操作失败');
                 }
-            }else{
-               return _404('操作失败');
+            } else {
+                return _404('操作失败');
             }
         } else {
             return view(

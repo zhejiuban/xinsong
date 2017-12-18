@@ -138,7 +138,15 @@ class DynamicController extends Controller
             $phase_id = $request->phase_id;
             $phase_status = $request->phase_status;
             if($phase_status !== null){
-                ProjectPhase::where('id',$phase_id)->where('status','<',2)->update(['status'=>intval($phase_status) + 1]);
+                $update = ['status'=>intval($phase_status) + 1];
+                if(!$phase_status){
+                    $update['started_at'] = Carbon::now();
+                }else{
+                    $update['finished_at'] = Carbon::now();
+                }
+                ProjectPhase::where('id',$phase_id)
+                    ->where('status','<',2)
+                    ->update($update);
                 //如果是完成某个阶段，自动启动下一个阶段
                 //更新项目状态
                 $project->updateStatus();
@@ -208,7 +216,15 @@ class DynamicController extends Controller
                 $phase_id = $request->phase_id;
                 $phase_status = $request->phase_status;
                 if($phase_status !== null){
-                    ProjectPhase::where('id',$phase_id)->where('status','<',2)->update(['status'=>intval($phase_status) + 1]);
+                    $update = ['status'=>intval($phase_status) + 1];
+                    if(!$phase_status){
+                        $update['started_at'] = Carbon::now();
+                    }else{
+                        $update['finished_at'] = Carbon::now();
+                    }
+                    ProjectPhase::where('id',$phase_id)
+                        ->where('status','<',2)
+                        ->update($update);
                     //更新项目状态
                     $project->updateStatus();
                 }

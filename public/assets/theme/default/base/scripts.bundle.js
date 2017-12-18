@@ -6184,7 +6184,7 @@ var mQuickSidebar = function() {
     var topbarAside = $('#m_quick_sidebar');
     var topbarAsideTabs = $('#m_quick_sidebar_tabs');
     var topbarAsideClose = $('#m_quick_sidebar_close');
-    var topbarAsideToggle = $('#m_quick_sidebar_toggle');
+    var topbarAsideToggle = $('.m_quick_sidebar_toggle');
     var topbarAsideContent = topbarAside.find('.m-quick-sidebar__content');
 
     var initMessages = function() {
@@ -6247,7 +6247,7 @@ var mQuickSidebar = function() {
         initLogs();
     }
 
-    var initOffcanvas = function() {
+    var initOffcanvas = function(options) {
         topbarAside.mOffcanvas({
             class: 'm-quick-sidebar',
             //overlay: false,
@@ -6266,16 +6266,20 @@ var mQuickSidebar = function() {
 
                 initOffcanvasTabs();
             }, 1000);
+
+            if(options.trigger instanceof Function){
+                options.trigger();
+            }
         });
     }
 
     return {
-        init: function() {
-            initOffcanvas();
+        init: function(options) {
+            initOffcanvas(options);
         }
     };
 }();
 
 $(document).ready(function() {
-    mQuickSidebar.init();
+   //mQuickSidebar.init();
 });

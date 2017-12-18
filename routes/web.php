@@ -20,6 +20,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::resource('departments', 'DepartmentController');//分部管理
     Route::post('users/power', 'UserController@power')->name('users.power');//用户授权管理
     Route::post('users/edit_pwd', 'UserController@editPwd')->name('users.edit_pwd');//重置密码
+    Route::match(['get','put'],'profile','UserController@profile')->name('user.profile');
     Route::resource('users', 'UserController');//用户管理
 
 });

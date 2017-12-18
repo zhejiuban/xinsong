@@ -156,9 +156,9 @@
                                     <div class="m-list-timeline__item">
                                         <span class="m-list-timeline__badge m-list-timeline__badge--{{project_phases_status($phase->status,'color')}}"></span>
                                         <span class="m-list-timeline__text">
-                                        <a href="{{route('project.phases.update',['phase'=>$phase->id])}}" class="phase_status" data-container="body" data-html=true data-toggle="m-tooltip"
+                                        <a href="{{route('project.phases.update',['phase'=>$phase->id])}}" class="phase_status" data-container="body" data-html="true" data-toggle="m-tooltip"
                                            data-placement="top"
-                                           data-original-title="周期：{{$phase->started_at}} ~ {{$phase->finished_at}}">{{$phase->name}}</a>
+                                           data-original-title="开始：{{$phase->started_at}}<br>完成：{{$phase->finished_at}}">{{$phase->name}}</a>
                                         <span class="m-badge m-badge--{{project_phases_status($phase->status,'color')}} m-badge--wide">
                                             {{project_phases_status($phase->status,'title')}}
                                         </span> 

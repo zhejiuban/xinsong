@@ -73,7 +73,7 @@
 								</li>
 								@else
 									<li class="m-nav__item">
-										<a href="{{url('dynamic/personal?mid=9609eb5f4cae930f15d2deb1061fbe0d')}}" class="m-nav__link">
+										<a href="{{url('project/dynamic/personal?mid=9609eb5f4cae930f15d2deb1061fbe0d')}}" class="m-nav__link">
 											<i class="m-nav__link-icon flaticon-list"></i>
 											<span class="m-nav__link-text">
 											我的日志
@@ -100,14 +100,14 @@
 									</a>
 								</li>
 								@endif
-									<li class="m-nav__item">
+								{{--<li class="m-nav__item">
 									<a href="" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-lifebuoy"></i>
 										<span class="m-nav__link-text">
 											帮助
 										</span>
 									</a>
-								</li>
+								</li>--}}
 								<li class="m-nav__separator m-nav__separator--fit"></li>
 								<li class="m-nav__item">
 									<a title="返回上一页" href="javascript:history.back(-1);" class="btn btn-outline-primary m-btn m-btn--pill m-btn--wide btn-sm">

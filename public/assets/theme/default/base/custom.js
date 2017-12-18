@@ -798,6 +798,16 @@ var mAppExtend = function () {
         },
         handleInitTooltips:function (el) {
             handleTooltips(el);
+        },
+        projectPhases:function(data){
+            var $return = null;
+            $.each(data,function (i,v) {
+                if(v['status'] < 2){
+                    $return = v;
+                    return false;
+                }
+            });
+            return $return;
         }
 
     }

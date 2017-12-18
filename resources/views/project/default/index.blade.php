@@ -135,11 +135,17 @@
           selector: {class: 'm-checkbox--solid m-checkbox--brand'}
         },{
             field: "status",
-            title: "状态",width: 60,
+            title: "状态",width: 150,
             template:function (row) {
                 var status = @json(config('common.project_status'));
-								var rowStatus = Number(row.status);
-                return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
+                var rowStatus = Number(row.status);
+                if(row.status == 1){
+                    var phase = mAppExtend.projectPhases(row.phases);
+                    var phaseStatus =  Number(phase['status']);
+                    return '<span class="m-badge ' + status[phaseStatus].class + ' m-badge--wide">' + phase['name'] +':'+ status[phaseStatus].title + '</span>';
+                }else{
+                    return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
+                }
             }
         }, {
           field: "no",
@@ -200,6 +206,9 @@
             var del = '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.destroy")}}',{project:row.id})+'" class="action-delete m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>';
 						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("projects.edit")}}',{project:row.id,mid:"{{request('mid')}}" })+'" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
                 <i class="la la-edit"></i></a>';
+                if(row.status == 2){
+                    edit = '';
+                }
                 return edit + del;
           }
         }]
