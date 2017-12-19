@@ -1132,9 +1132,10 @@ function get_project_current_phase($project)
     if (is_object($project)) {
         $current_phase = $project->phases()->where('status', '<', 2)
             ->orderBy('id', 'asc')->first();
+    }else{
+        $current_phase = \App\ProjectPhase::where('project_id', $project)->where('status', '<', 2)
+            ->orderBy('id', 'asc')->first();
     }
-    $current_phase = \App\ProjectPhase::where('project_id', $project)->where('status', '<', 2)
-        ->orderBy('id', 'asc')->first();
     return $current_phase;
 }
 

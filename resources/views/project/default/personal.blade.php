@@ -61,9 +61,15 @@
                         <div class="m-section m-section-none">
                             <h3 class="m-section__heading">
                                 <a class="m-line-height-25" href="{{ route('project.tasks',['project'=>$project->id,'mid'=>request('mid')]) }}">{{$project->title}}</a>
-                                <span class="m-badge {{project_status($project->status,'class')}} m-badge--wide">
-                                    {{project_status($project->status)}}
-                                </span>
+                                @if($project->status == 1 && $phase = get_project_current_phase($project))
+                                    <span class="m-badge {{project_status($phase->status,'class')}} m-badge--wide">
+                                        {{$phase->name}} : {{project_status($phase->status)}}
+                                    </span>
+                                @else
+                                    <span class="m-badge {{project_status($project->status,'class')}} m-badge--wide">
+                                        {{project_status($project->status)}}
+                                    </span>
+                                @endif
                             </h3>
                             <span class="m-section__sub">
                             {{str_limit($project->remark,250,'...')}}
