@@ -141,7 +141,7 @@
                                 </span>
                                 <br>
                                 <span class="m-widget2__user-name">
-                                接收人：{{$task->leaderUser->name}} 接收时间：{{$task->received_at}}
+                                接收人：{{$task->leaderUser?$task->leaderUser->name:null}} 接收时间：{{$task->received_at}}
                                 </span>
                                 <span class="pull-right">
                                     @if(check_project_owner($project,'edit'))
