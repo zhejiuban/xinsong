@@ -287,7 +287,7 @@ class TaskController extends Controller
             if ($status !== null) {
                 return $query->where('status', $status);
             }
-        })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+        })->orderBy('status')->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
         set_redirect_url();
         return view('task.default.personal', compact('list'));
     }

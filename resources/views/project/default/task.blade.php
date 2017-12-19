@@ -150,7 +150,7 @@
                                                class="fast-edit btn btn-outline-primary m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
                                             <i class="la la-edit"></i></a>
                                         @endif
-                                     
+
                                         <a href="{{ route('tasks.destroy',['task'=>$task->id])}}"
                                            class="fast-del btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
                                             <i class="la la-trash"></i></a>
