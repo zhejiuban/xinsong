@@ -151,6 +151,15 @@
                             return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
                         }
                     }, {
+                        field: "project_no",
+                        width: 100,
+                        title: "项目编号", sortable: false,
+                        template: function (row) {
+                            if (row.project) {
+                                return row.project.no;
+                            }
+                        }
+                    },  {
                         field: "project_id",
                         width: 240,
                         title: "所属项目", sortable: false,
@@ -173,7 +182,9 @@
                             return '<a href="' + mAppExtend.laravelRoute('{{route_uri("tasks.show")}}', {
                                 task: row.id,
                                 mid: "{{request('mid')}}"
-                            }) + '" class="action-show m-portlet__nav-link" title="详情">' + row.content + '</a>';
+                            }) + '" class="action-show m-portlet__nav-link" title="详情">' +
+                                (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
+                                + '</a>';
                         }
                     }, {
                         field: "start_at",

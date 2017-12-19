@@ -172,6 +172,10 @@ class DynamicController extends Controller
         }
     }
 
+    public function show($id){
+        echo $id;
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

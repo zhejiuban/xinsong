@@ -165,7 +165,7 @@
           allowClear: true,
           width:'100%',
           ajax: {
-              url: "{{route('users.selector.data')}}",
+              url: "{{route('users.selector.data',['type'=>'all'])}}",
               dataType: 'json',
               delay: 250,
               data: function(params) {

@@ -608,7 +608,7 @@
                 }
             });
 
-            var form = $('#project-forms');
+            var form = $('#project-form');
             var submitButton = $("#submit-button");
             form.validate({
                 // define validation rules

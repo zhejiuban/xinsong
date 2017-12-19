@@ -128,6 +128,15 @@
                         sortable: false,
                         selector: {class: 'm-checkbox--solid m-checkbox--brand'}
                     }, {
+                        field: "project_no",
+                        width: 100,
+                        title: "项目编号", sortable: false,
+                        template: function (row) {
+                            if (row.project) {
+                                return row.project.no;
+                            }
+                        }
+                    }, {
                         field: "project_id",
                         width: 240,
                         title: "所属项目", sortable: false,
@@ -139,17 +148,22 @@
                     }, {
                         width: 340,
                         field: "content", sortable: false,
-                        title: "日志内容"
+                        title: "日志内容", template: function (row) {
+                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' +
+                                (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
+                                + '</a>';
+                        }
                     }, {
                         field: "user_id", sortable: false,
-                        title: "上报人", template: function (row) {
+                        width: 60, title: "上报人", template: function (row) {
                             if (row.user) {
                                 return row.user.name;
                             }
                         }
                     }, {
                         field: "created_at",
-                        title: "上报时间"
+                        title: "上报时间",
+                        width: 150
                     }, {
                         field: "actions",
                         width: 50,
