@@ -142,11 +142,11 @@
                             <div class="m-widget3__item" id="dynamic-{{$dynamic->id}}">
                                 <div class="m-widget3__header">
                                     <div class="m-widget3__user-img">
-                                        <img class="m-widget3__img" src="{{avatar($dynamic->user->avatar)}}" alt="">
+                                        <img class="m-widget3__img" src="{{avatar($dynamic->user?$dynamic->user->avatar:null)}}" alt="">
                                     </div>
                                     <div class="m-widget3__info">
                                         <span class="m-widget3__username">
-                                            {{$dynamic->user->name}}
+                                            {{$dynamic->user?$dynamic->user->name:null}}
                                         </span>
                                         <br>
                                         <span class="m-widget3__time">
