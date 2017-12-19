@@ -57,6 +57,9 @@ class UserRequest extends FormRequest
                     unset($rule['department_id']);
                     unset($rule['status']);
                 }
+                if($this->user == get_current_login_user_info()){
+                    unset($rule['status']);
+                }
                 return $rule;
             }
             default:break;

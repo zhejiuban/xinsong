@@ -325,7 +325,7 @@ if (!function_exists('department_select')) {
 if (!function_exists('role_select')) {
     function role_select($selected = '', $type = 0, $vType = 'id')
     {
-        if (!is_administrator()) {
+        if (!check_user_role(null, '总部管理员')) {
             $list = \Spatie\Permission\Models\Role::where('is_call', 1)->get()->toArray();
         } else {
             $list = \Spatie\Permission\Models\Role::get()->toArray();
@@ -465,16 +465,16 @@ function check_active_url($url)
     $res = parse_url($url);
     $path = isset($res['path']) ? $res['path'] : null;
     $query = isset($res['query']) ? $res['query'] : null;
-    if($path && if_uri_pattern($path)){
+    if ($path && if_uri_pattern($path)) {
         $return = true;
     }
-    if($query){
+    if ($query) {
         $query_arr = convertUrlQuery($res['query']);
-        foreach ($query_arr as $key=>$value){
-            if(!if_query($key,$value)){
+        foreach ($query_arr as $key => $value) {
+            if (!if_query($key, $value)) {
                 $return = false;
                 break;
-            }else{
+            } else {
                 $return = true;
             }
         }
@@ -1136,4 +1136,21 @@ function get_project_current_phase($project)
     $current_phase = \App\ProjectPhase::where('project_id', $project)->where('status', '<', 2)
         ->orderBy('id', 'asc')->first();
     return $current_phase;
+}
+
+function current_date()
+{
+    return \Carbon\Carbon::now()->toDateString();
+}
+
+function is_image($ext)
+{
+    $ext_arr = config('filesystems.disks.image.validate.ext')
+        ? config('filesystems.disks.image.validate.ext')
+        : ['jpg','jpeg','png','gif','bmp'];
+    if (in_array($ext,$ext_arr)) {
+        return true;
+    } else {
+        return false;
+    }
 }

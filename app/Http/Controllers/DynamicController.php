@@ -102,6 +102,7 @@ class DynamicController extends Controller
             return _404('无权操作');
         }
         $task = Task::find($task_id);
+        $task->received();
         return view('dynamic.default.create', compact(['project_id','project','task']));
     }
 
@@ -122,8 +123,9 @@ class DynamicController extends Controller
         if($request->task_status){ //如果设置完成任务
             //验证任务的信息
             $this->validate($request, [
-                'task_builded_at' => 'bail|required',
-                'task_leaved_at' => 'bail|required|after_or_equal:builded_at',
+//                'task_builded_at' => 'bail|required',
+//                'task_leaved_at' => 'bail|required|after_or_equal:builded_at',
+                'task_leaved_at' => 'bail|required',
                 'task_result' => 'bail|required'
             ], [
                 'task_builded_at.required' => '请输入去现场时间',
@@ -151,9 +153,11 @@ class DynamicController extends Controller
                 //更新项目状态
                 $project->updateStatus();
             }
+            $task = Task::find($request->task_id);
             if($request->task_status){
-                $task = Task::find($request->task_id);
-                $task->builded_at = $request->task_builded_at;
+                if(!$task->builded_at){
+                    $task->builded_at = $request->task_builded_at;
+                }
                 $task->leaved_at = $request->task_leaved_at;
                 $task->result = $request->task_result;
                 $task->finished_at = Carbon::now();
@@ -162,6 +166,9 @@ class DynamicController extends Controller
                 activity('项目日志')->performedOn($project)
                     ->withProperties($task)
                     ->log('完成任务');
+            }elseif(!$task->builded_at){
+                $task->builded_at = Carbon::now();
+                $task->save();
             }
             activity('项目日志')->performedOn($project)
                 ->withProperties($dynamic->toArray())

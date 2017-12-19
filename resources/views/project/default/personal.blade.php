@@ -89,7 +89,7 @@
                             </a>
                         @endif
 
-                        @if(check_project_leader($project))
+                        @if(check_project_owner($project,'del'))
                             <a href="{{ route('tasks.create',['project_id'=>$project->id]) }}"
                                class="btn m-btn--pill btn-sm btn-secondary task-add">
                                 <i class="fa fa-plus"></i> 发布任务

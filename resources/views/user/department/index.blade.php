@@ -75,7 +75,7 @@
                             @endif
                         </td>
                         <td class="middle">
-                          @if(is_administrator())
+                          @if(check_user_role(null,'总部管理员'))
                             @if($val['level'] != 1)
                             <a href="{{ menu_url_format(url('user/departments/sub_create?parent_id='.$val['id']),['mid'=>request('mid')])  }}" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill"
                               data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="添加子部门" title="添加子部门">

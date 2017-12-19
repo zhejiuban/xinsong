@@ -92,7 +92,7 @@
                 </div>
                 <div class="m-portlet__body min-height-300">
                     <div class="m-actions">
-                        @if(check_project_owner($project,'edit') || check_project_leader($project))
+                        @if(check_project_owner($project,'del'))
                         <a href="{{ route('tasks.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
                            id="task-add" class="m-nav__link btn btn-sm btn-primary  m--margin-bottom-20">
                             <i class="m-nav__link-icon flaticon-add"></i>

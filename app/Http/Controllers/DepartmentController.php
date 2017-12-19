@@ -20,7 +20,7 @@ class DepartmentController extends Controller
             return _404('无权操作');
         }
         //获取部门信息
-        if (is_administrator()) {
+        if (check_user_role(null,'总部管理员')) {
             $menu = Department::get()->toArray();
             $list = formatTreeData($menu);
         } else {
@@ -196,7 +196,7 @@ class DepartmentController extends Controller
         if (!check_permission('user/departments/sub/create')) {
             return _404('无权操作');
         }
-        if (is_administrator()) {
+        if (check_user_role(null,'总部管理员')) {
             $menu = Department::find($id);
         } else {
             $menu = Department::where('company_id', get_user_company_id())->find($id);

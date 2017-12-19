@@ -61,11 +61,13 @@
                     去、离现场日期:<span class="required">*</span>
                 </label>
                 <div class="input-daterange input-group ">
-                    <input type="text" class="form-control m-input m-datetime" placeholder="去现场日期" name="task_builded_at" value=""/>
+                    <input type="text" class="form-control m-input m-date"
+                           placeholder="去现场日期" name="task_builded_at" value="{{$task->builded_at ? $task->builded_at : current_date()}}"/>
                     <span class="input-group-addon">
                     <i class="la la-ellipsis-h"></i>
                     </span>
-                    <input type="text" class="form-control m-datetime" placeholder="离开现场日期" name="task_leaved_at" value=""/>
+                    <input type="text" class="form-control m-date" placeholder="离开现场日期"
+                           name="task_leaved_at" value="{{$task->leaved_at ? $task->leaved_at : current_date()}}"/>
                 </div>
                 <span class="m-form__help"></span>
             </div>
@@ -101,7 +103,7 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function () {
-        mAppExtend.dateTimePickerInstance();
+        mAppExtend.datePickerInstance();
         mAppExtend.select2Instance();
         $('[data-switch=true]').bootstrapSwitch();
         $('#task_status').on('switchChange.bootstrapSwitch', function(event, state) {

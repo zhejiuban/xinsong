@@ -112,7 +112,7 @@ class TaskController extends Controller
     {
         $project = Project::find($request->project_id);
         //检测项目权限
-        if(!check_project_owner($project,'edit')){
+        if(!check_project_owner($project,'del')){
             return _404('无权操作');
         }
         $data = [];
@@ -169,6 +169,11 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
         if ($task) {
+            //检测项目权限
+            $project = $task->project;
+            if(!check_project_owner($project,'del')){
+                return _404('无权操作');
+            }
             return view('task.default.edit', compact('task'));
         } else {
             return _404();
@@ -186,6 +191,10 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
         if ($task) {
+            $project = $task->project;
+            if(!check_project_owner($project,'del')){
+                return _404('无权操作');
+            }
             $task->project_phase_id = $request->project_phase_id;
             $task->start_at = $request->start_at;
             $task->end_at = $request->end_at;
@@ -193,8 +202,8 @@ class TaskController extends Controller
             $task->content = $request->input('content');
             $task->leader = $request->leader;
             if ($task->save()) {
-                activity('项目日志')->performedOn(Project::find($task->project_id))
-                    ->withProperties($task->toArray())
+                activity('项目日志')->performedOn($project)
+                    ->withProperties($task)
                     ->log('编辑任务');
                 return _success('操作成功', $task->toArray());
             } else {
@@ -213,7 +222,7 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
-        $project = Project::find($task->project_id);
+        $project = $task->project;
         //判断任务删除权限
         if (!check_project_owner($project, 'del')) {
             return _404('无权操作');

@@ -8,9 +8,9 @@ class Department extends Model
 {
     public static function getTreeData($type = 1)
     {
-        if (is_administrator()) {
+        if (check_user_role(null,'总部管理员')) {
             if($type == 1){
-                $data = self::where('status', 1)->where('level', '>', 1)->get()->toArray();
+                $data = self::where('status', 1)->get()->toArray();
             }else{
                 $data = self::where('status', 1)->where('level', '=', 2)->get()->toArray();
             }
@@ -28,6 +28,9 @@ class Department extends Model
                     ['status', '=', 1], ['level', '=', 2],['id','=',$company_id]
                 ])->get()->toArray();
             }
+        }
+        if (check_user_role(null,'总部管理员')) {
+            return formatTreeData($data, 'id', 'parent_id', 0);
         }
         return formatTreeData($data, 'id', 'parent_id', headquarters('id'));
     }

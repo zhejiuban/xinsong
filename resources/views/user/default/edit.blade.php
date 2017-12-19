@@ -96,6 +96,7 @@
         <span class="m-form__help"></span>
         </div>
       </div>
+      @if($user->id != get_current_login_user_info())
       <div class="col-lg-6">
         <div class="form-group">
         <label class="">
@@ -116,6 +117,7 @@
         <span class="m-form__help"></span>
         </div>
       </div>
+      @endif
     </div>
     @endif
     @if (!is_administrator_user($user->id) && $user->id != get_current_login_user_info())
@@ -193,47 +195,27 @@
                 .removeClass('m-loader m-loader--light m-loader--right');
               },
               success: function(response, status, xhr, $form) {
-                  if(response.status == 'success'){
-                      datatable.load(); //加载数据列表
-                      $.notify({'message':response.message},{
-                          type: 'success',
-                          placement: {
-                              from: "top",
-                              align: "center"
-                          },delay:100,
-                          onClose:function() {
+                  if (response.status == 'success') {
+                      mAppExtend.notification(response.message
+                          ,'success','toastr',function() {
                               $('#m_role_modal_edit').modal('hide');
-                          }
-                      });
-                  }else{
-                      $.notify({'message':response.message},{
-                          type: 'danger',
-                          placement: {
-                              from: "top",
-                              align: "center"
-                          },delay:1000,
-                          mouse_over:'pause'
-                      });
+                              datatable.reload();
+                          });
+                  } else {
+                      mAppExtend.notification(response.message
+                          ,'error');
                   }
               },
               error:function (xhr, textStatus, errorThrown) {
+                  _$error = xhr.responseJSON.errors;
                   var _err_mes = '未知错误，请重试';
-                  if(xhr.responseJSON != undefined){
-                    _$error = xhr.responseJSON.errors;
-                    if(_$error != undefined){
-                        _err_mes = '';
-                        $.each(_$error, function (i, v) {
-                            _err_mes += v[0] + '<br>';
-                        });
-                    }
+                  if(_$error != undefined){
+                      _err_mes = '';
+                      $.each(_$error, function (i, v) {
+                          _err_mes += v[0] + '<br>';
+                      });
                   }
-                  $.notify({'message':_err_mes},{
-                      type: 'danger',
-                      placement: {
-                          from: "top",
-                          align: "center"
-                      },delay:1000, mouse_over:'pause'
-                  });
+                  mAppExtend.notification(_err_mes,'error');
               }
           });
         }

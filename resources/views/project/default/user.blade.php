@@ -43,7 +43,7 @@
                                    class="nav-link m-tabs__link active m-dropdown__toggle dropdown-toggle">
                                     参与人
                                 </a>
-                                @if(check_project_owner($project, 'edit'))
+                                @if(check_project_owner($project, 'del'))
                                 <div class="m-dropdown__wrapper">
                                     <span class="m-dropdown__arrow m-dropdown__arrow--left"></span>
                                     <div class="m-dropdown__inner">
@@ -52,7 +52,7 @@
                                                 <ul class="m-nav">
                                                     <li class="m-nav__item">
                                                         <a href="{{ route('project.users.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
-                                                           id="user-add" class="m-nav__link">
+                                                            class="m-nav__link user-add">
                                                             <i class="m-nav__link-icon flaticon-add"></i>
                                                             <span class="m-nav__link-text">
                                                             增加参与人
@@ -70,6 +70,17 @@
                     </div>
                 </div>
                 <div class="m-portlet__body min-height-300">
+                    <div class="m-actions">
+                        @if(check_project_owner($project,'del'))
+                            <a href="{{ route('project.users.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
+                                class="m-nav__link btn btn-sm btn-primary  m--margin-bottom-20 user-add">
+                                <i class="m-nav__link-icon flaticon-add"></i>
+                                <span class="m-nav__link-text">
+                                添加参与人
+                            </span>
+                            </a>
+                        @endif
+                    </div>
                     <!--begin::Widget 14-->
                     <div class="m-widget4 row">
                     @foreach($users as $user)
@@ -148,7 +159,7 @@
                 {}, true);
         };
         $(document).ready(function () {
-            $("#user-add").click(function (event) {
+            $(".user-add").click(function (event) {
                 event.preventDefault();
                 var url = $(this).attr('href');
                 modal(url);

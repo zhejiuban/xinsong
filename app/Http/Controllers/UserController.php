@@ -27,7 +27,7 @@ class UserController extends Controller
                 ? $request->input('datatable.sort.sort') : 'desc';
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
-            if (is_administrator()) {
+            if (check_user_role(null,'总部管理员')) {
                 $user = User::with(['department', 'roles'])->where(
                     'name', 'like',
                     "%{$request->input('datatable.query.search')}%"
@@ -53,7 +53,11 @@ class UserController extends Controller
                     , 'datatable.pagination.page'
                 );
             }
-
+            if($user){
+                foreach ($user as $key=>$val){
+                    $user[$key]->company = $val->company();
+                }
+            }
             $meta = [
                 'field' => $sort_field,
                 'sort' => $sort,
@@ -130,7 +134,7 @@ class UserController extends Controller
         if (!check_permission('user/users/edit')) {
             return _404('无权操作');
         }
-        if (is_administrator()) {
+        if (check_user_role(null,'总部管理员')) {
             $user = User::with(['department', 'roles'])->find($id);
         } else {
             $user = User::with(['department', 'roles'])->whereIn('department_id'
@@ -155,7 +159,7 @@ class UserController extends Controller
         if (!check_permission('user/users/edit')) {
             return _404('无权操作');
         }
-        if (is_administrator()) {
+        if (check_user_role(null,'总部管理员')) {
             $user = User::find($id);
         } else {
             $user = User::whereIn('department_id'
@@ -170,13 +174,16 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->tel = $request->tel;
             $user->sex = $request->sex;
+            $is_own = $user->id !== get_current_login_user_info();
             if(!is_administrator_user($user->id)){
                 $user->department_id = $request->department_id ? $request->department_id : 0;
-                $user->status = $request->status ? 1 : 0;
+                if($is_own){
+                    $user->status = $request->status ? 1 : 0;
+                }
             }
             if ($user->save()) {
                 //授权角色
-                if (!is_administrator_user($user->id) && $user->id !== get_current_login_user_info()) {
+                if (!is_administrator_user($user->id) && $is_own) {
                     if ($request->role_id) {
                         $user->syncRoles($request->role_id);
                     } else {
@@ -209,7 +216,7 @@ class UserController extends Controller
         if (!check_permission('user/users/destroy')) {
             return _404('无权操作');
         }
-        if (is_administrator()) {
+        if (check_user_role(null,'总部管理员')) {
             $user = User::find($id);
         } else {
             $user = User::whereIn('department_id'
@@ -223,6 +230,11 @@ class UserController extends Controller
                 return _404('系统管理员不允许被删除');
             }
             //判断是否有相关项目
+            if($user->projects->isNotEmpty() || $user->leaderTasks->isNotEmpty()
+                || $user->dynamics->isNotEmpty() || $user->questions->isNotEmpty()
+                || $user->receiveQuestions->isNotEmpty()){
+                return _404('该用户有关联数据不允许被删除');
+            }
 
             if ($user->delete()) {
                 activity('系统日志')->performedOn($user)
@@ -244,13 +256,13 @@ class UserController extends Controller
         if (!check_permission('user/users/power')) {
             return _404('无权操作');
         }
-        Validator::make($request->all(), [
+        $this->validate($request, [
             'id' => 'bail|required'
         ], [
             'id.required' => '请选择要操作的数据'
-        ])->validate();
+        ]);
         //获取用户实例
-        if(is_administrator()){
+        if(check_user_role(null,'总部管理员')){
             $user = User::whereIn('id', $request->id)->get();
         }else{
             $user = User::whereIn('id', $request->id)->whereIn('department_id'
@@ -284,15 +296,15 @@ class UserController extends Controller
         if (!check_permission('user/users/edit')) {
             return _404('无权操作');
         }
-        Validator::make($request->all(), [
+        $this->validate($request, [
             'id' => 'bail|required',
             'password' => 'bail|required|min:6'
         ], [
             'id.required' => '请选择要操作的数据',
             'password.required' => '请输入密码',
             'password.min' => '密码长度不能小于6位',
-        ])->validate();
-        if(is_administrator()){
+        ]);
+        if(check_user_role(null,'总部管理员')){
             $user = User::whereIn('id', $request->id)->get();
         }else{
             $user = User::whereIn('id', $request->id)->whereIn('department_id'

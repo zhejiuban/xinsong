@@ -495,7 +495,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
         if ($project) {
             //检测权限
-            if (!check_project_owner($project, 'edit')) {
+            if (!check_project_owner($project, 'del')) {
                 return _404('无权操作');
             }
             if ($request->isMethod('post')) {
@@ -770,7 +770,7 @@ class ProjectController extends Controller
         $phase = ProjectPhase::find($id);
         $project = $phase->project;
         //检测项目权限
-        if (!check_project_owner($project, 'edit')) {
+        if (!check_project_owner($project, 'del')) {
             return _404('无权操作');
         }
         if ($phase) {
@@ -840,7 +840,7 @@ class ProjectController extends Controller
             return _404();
         }
         //检测项目权限
-        if (!check_project_owner($project, 'edit')) {
+        if (!check_project_owner($project, 'del')) {
             return _404('无权操作');
         }
         if ($request->isMethod('put')) {
