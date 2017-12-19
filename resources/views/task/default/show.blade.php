@@ -123,7 +123,7 @@
     相关计划
   </button>
   @endif
-  @if(check_project_owner($task->project,'edit'))
+  @if(check_project_owner($task->project,'del'))
   @if(!$task->status)
   <button type="button" class="btn btn-primary" href="{{ route('tasks.edit',['task'=>$task->id]) }}" id="edit-task">
     编辑

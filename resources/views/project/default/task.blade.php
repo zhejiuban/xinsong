@@ -144,14 +144,13 @@
                                 接收人：{{$task->leaderUser?$task->leaderUser->name:null}} 接收时间：{{$task->received_at}}
                                 </span>
                                 <span class="pull-right">
-                                    @if(check_project_owner($project,'edit'))
+                                    @if(check_project_owner($project,'del'))
                                         @if(!$task->status)
                                             <a href="{{ route('tasks.edit',['task'=>$task->id])}}"
                                                class="fast-edit btn btn-outline-primary m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
                                             <i class="la la-edit"></i></a>
                                         @endif
-                                    @endif
-                                    @if(check_project_owner($project,'del'))
+                                     
                                         <a href="{{ route('tasks.destroy',['task'=>$task->id])}}"
                                            class="fast-del btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
                                             <i class="la la-trash"></i></a>
