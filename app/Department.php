@@ -6,26 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model
 {
-    public static function getTreeData($type = 1)
+    public static function getTreeData($type = 1, $is_admin = 0)
     {
-        if (is_administrator()) {
-            if($type == 1){
+        if (is_administrator() || check_user_role(null,'总部管理员') || $is_admin) {
+            if ($type == 1) {
                 $data = self::where('status', 1)->get()->toArray();
-            }else{
-                $data = self::where('status', 1)->where('level', '=', 2)->get()->toArray();
+            } else {
+                $data = self::where('status', 1)->where('level', '<=', 2)->get()->toArray();
             }
         } else {
             $company_id = get_user_company_id();
-            if($type == 1){
+            if ($type == 1) {
                 $data = self::where([
                     ['status', '=', 1]
                 ])->where(function ($query) use ($company_id) {
                     $query->where('company_id', '=', $company_id)
                         ->orWhere('id', '=', $company_id);
                 })->get()->toArray();
-            }else{
+            } else {
                 $data = self::where([
-                    ['status', '=', 1], ['level', '=', 2],['id','=',$company_id]
+                    ['status', '=', 1], ['level', '<=', 2], ['id', '=', $company_id]
                 ])->get()->toArray();
             }
         }

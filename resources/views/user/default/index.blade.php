@@ -24,7 +24,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <select name="department_id" id="department_id" class="form-control m-input select2 m-select2">
-                                        {!! department_select() !!}
+                                        {!! department_select(0,1,1) !!}
                                     </select>
                                 </div>
                             </div>

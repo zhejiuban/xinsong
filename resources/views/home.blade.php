@@ -138,7 +138,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                问题统计
+                                我发布的问题
                             </h3>
                         </div>
                         <div class="row  align-items-center">
@@ -186,7 +186,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                项目统计
+                                我参与的项目
                             </h3>
                         </div>
                         <div class="row  align-items-center">

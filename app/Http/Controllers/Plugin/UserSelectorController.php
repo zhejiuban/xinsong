@@ -22,7 +22,7 @@ class UserSelectorController extends Controller
     public function data(Request $request)
     {
         $search = $request->input('q');
-        if($request->input('type') == 'all'){ //超级管理员或总部管理员
+        if($request->input('type') == 'all' || check_user_role(null,'总部管理员')){ //超级管理员或总部管理员
             $list = User::with(['department'])->when($search, function ($query) use ($search) {
                 return $query->where('name', 'like', "%$search%")
                     ->orWhere('email', 'like', "%$search%")

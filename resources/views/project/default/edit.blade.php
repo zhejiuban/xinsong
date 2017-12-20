@@ -88,10 +88,10 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="">
-                                        所属部门:
+                                        所属办事处:
                                     </label>
                                     <select class="form-control m-input select2" name="department_id">
-                                        {!! department_select($project->department_id) !!}
+                                        {!! department_select($project->department_id,2) !!}
                                     </select>
                                     <span class="m-form__help"></span>
                                 </div>
@@ -390,7 +390,7 @@
                 allowClear: true,
                 width: '100%',
                 ajax: {
-                    url: "{{route('users.selector.data',['type'=>'all'])}}",
+                    url: "{{route('users.selector.data',['type'=>'headquarters'])}}",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {

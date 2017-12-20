@@ -29,7 +29,7 @@ class UserController extends Controller
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
             $search = $request->input('datatable.query.search');
             $department = $request->input('datatable.query.department_id');
-            if (is_administrator()) {
+            if (is_administrator() || check_user_role(null,'总部管理员')) {
                 $user = User::with(['department', 'roles'])->when($search,function ($query) use ($search){
                     return $query->where(function ($query) use ($search){
                         $query->where('name', 'like', "%$search%")
@@ -150,7 +150,7 @@ class UserController extends Controller
         if (!check_permission('user/users/edit')) {
             return _404('无权操作');
         }
-        if (check_user_role(null,'总部管理员')) {
+        if (is_administrator()) {
             $user = User::with(['department', 'roles'])->find($id);
         } else {
             $user = User::with(['department', 'roles'])->whereIn('department_id'
@@ -159,7 +159,7 @@ class UserController extends Controller
         if ($user) {
             return view('user.default.edit', compact('user'));
         } else {
-            return _404('你访问的信息不存在');
+            return _404('无权操作');
         }
     }
 
@@ -175,7 +175,7 @@ class UserController extends Controller
         if (!check_permission('user/users/edit')) {
             return _404('无权操作');
         }
-        if (check_user_role(null,'总部管理员')) {
+        if (is_administrator()) {
             $user = User::find($id);
         } else {
             $user = User::whereIn('department_id'
@@ -217,7 +217,7 @@ class UserController extends Controller
                 return _404('保存失败');
             }
         } else {
-            return _404('您访问信息不存在');
+            return _404('无权操作');
         }
     }
 
@@ -232,7 +232,7 @@ class UserController extends Controller
         if (!check_permission('user/users/destroy')) {
             return _404('无权操作');
         }
-        if (check_user_role(null,'总部管理员')) {
+        if (is_administrator()) {
             $user = User::find($id);
         } else {
             $user = User::whereIn('department_id'
@@ -263,7 +263,7 @@ class UserController extends Controller
             }
             return _404('您操作的数据删除失败，未知错误');
         } else {
-            return _404('您删除的信息不存在');
+            return _404('无权操作');
         }
     }
 
@@ -278,7 +278,7 @@ class UserController extends Controller
             'id.required' => '请选择要操作的数据'
         ]);
         //获取用户实例
-        if(check_user_role(null,'总部管理员')){
+        if(is_administrator()){
             $user = User::whereIn('id', $request->id)->get();
         }else{
             $user = User::whereIn('id', $request->id)->whereIn('department_id'
@@ -296,7 +296,7 @@ class UserController extends Controller
                 }
             }
         }else{
-            return _404('您操作的数据不存在');
+            return _404('无权操作');
         }
         activity('系统日志')
             ->withProperties($user)
@@ -320,7 +320,7 @@ class UserController extends Controller
             'password.required' => '请输入密码',
             'password.min' => '密码长度不能小于6位',
         ]);
-        if(check_user_role(null,'总部管理员')){
+        if(is_administrator()){
             $user = User::whereIn('id', $request->id)->get();
         }else{
             $user = User::whereIn('id', $request->id)->whereIn('department_id'
@@ -341,7 +341,7 @@ class UserController extends Controller
                 ]);
             }
         }else{
-           return _404('您操作的数据不存在');
+           return _404('无权操作');
         }
         activity('系统日志')
             ->withProperties($user)
@@ -396,7 +396,4 @@ class UserController extends Controller
         }
     }
 
-    public function editPersonalPwd(Request $request){
-
-    }
 }

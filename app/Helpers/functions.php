@@ -307,9 +307,9 @@ if (!function_exists('department_select')) {
      * @param int $selected
      * @return string
      */
-    function department_select($selected = 0, $type = 1)
+    function department_select($selected = 0, $type = 1,$is_admin=0)
     {
-        $list = \App\Department::getTreeData($type);
+        $list = \App\Department::getTreeData($type,$is_admin);
         $str = '<option value="">' . ($type == 1 ? '请选择部门' : '请选择办事处') . '</option>';
         if ($list) {
             foreach ($list as $key => $val) {
