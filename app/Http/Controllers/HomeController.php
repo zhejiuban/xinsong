@@ -9,6 +9,7 @@ use App\Task;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Facades\Agent;
 
 class HomeController extends Controller
 {

@@ -24,7 +24,7 @@
                             </li>
                             <li class="nav-item m-tabs__item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-center" data-dropdown-toggle="hover" aria-expanded="true">
                                 <a href="{{ route('project.questions',['project'=>$project->id,'mid'=>request('mid')]) }}" class="nav-link m-tabs__link active m-dropdown__toggle dropdown-toggle">
-                                    协作
+                                    问题
                                 </a>
                                 <div class="m-dropdown__wrapper">
                                     <span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
@@ -36,7 +36,7 @@
                                                         {{--<a href="{{ route('questions.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}" id="question-add" class="m-nav__link">--}}
                                                             {{--<i class="m-nav__link-icon flaticon-add"></i>--}}
                                                             {{--<span class="m-nav__link-text">--}}
-                                                                {{--发布协作--}}
+                                                                {{--发布问题--}}
                                                             {{--</span>--}}
                                                         {{--</a>--}}
                                                     {{--</li>--}}
@@ -94,7 +94,7 @@
                            class="m-nav__link  btn btn-sm btn-primary  m--margin-bottom-20">
                             <i class="m-nav__link-icon flaticon-add"></i>
                             <span class="m-nav__link-text">
-                                发布协作
+                                发布问题
                             </span>
                         </a>
 
@@ -102,7 +102,7 @@
                            class="m-nav__link  btn btn-sm btn-secondary  m--margin-bottom-20">
                             <i class="m-nav__link-icon flaticon-list"></i>
                             <span class="m-nav__link-text">
-                                所有的协作
+                                所有的问题
                             </span>
                         </a>
 
@@ -110,7 +110,7 @@
                            class="m-nav__link  btn btn-sm btn-secondary  m--margin-bottom-20">
                             <i class="m-nav__link-icon flaticon-user"></i>
                             <span class="m-nav__link-text">
-                                只看我的协作
+                                只看我的问题
                             </span>
                         </a>
 

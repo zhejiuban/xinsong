@@ -116,10 +116,10 @@
                             <div class="row m-row--no-padding align-items-center">
                                 <div class="col">
                                     <h3 class="m-widget1__title">
-                                        协作
+                                        问题
                                     </h3>
                                     <span class="m-widget1__desc">
-                                        待办协作：
+                                        待办问题：
                                         <span class="m--font-danger">
                                             {{$user->receiveQuestions()->count()}}
                                         </span>
@@ -138,7 +138,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                协作统计
+                                问题统计
                             </h3>
                         </div>
                         <div class="row  align-items-center">
@@ -294,7 +294,7 @@
                     <div class="m-portlet__head-caption">
                         <div class="m-portlet__head-title">
                             <h3 class="m-portlet__head-text">
-                                协作
+                                问题
                             </h3>
                         </div>
                     </div>

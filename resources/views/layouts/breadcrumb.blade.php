@@ -86,7 +86,7 @@
 									<a href="{{url('question/questions?mid=3affc334d19fc914c4d667a01848f55d')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-info"></i>
 										<span class="m-nav__link-text">
-											协作汇总
+											问题汇总
 										</span>
 									</a>
 								</li>
@@ -95,7 +95,7 @@
 									<a href="{{url('question/personal?mid=c41b512b04286cc8f479176a466d23ac')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-info"></i>
 										<span class="m-nav__link-text">
-										我的协作
+										我的问题
 									</span>
 									</a>
 								</li>

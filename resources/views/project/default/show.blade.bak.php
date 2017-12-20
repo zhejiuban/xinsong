@@ -167,7 +167,7 @@
         </div>
     </div>
     <!--End::Main Portlet-->
-    <!-- 协作，项目日志 -->
+    <!-- 问题，项目日志 -->
     <!--Begin::Main Portlet-->
     <div class="row">
         <div class="col-xl-8">
@@ -176,7 +176,7 @@
                     <div class="m-portlet__head-caption">
                         <div class="m-portlet__head-title">
                             <h3 class="m-portlet__head-text">
-                                协作交流
+                                问题交流
                             </h3>
                         </div>
                     </div>
@@ -198,7 +198,7 @@
                                                             <a href="{{ route('questions.create',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link">
                                                                 <i class="m-nav__link-icon flaticon-add"></i>
                                                                 <span class="m-nav__link-text">
-                                                                    发布协作
+                                                                    发布问题
                                                                 </span>
                                                             </a>
                                                         </li>
@@ -206,7 +206,7 @@
                                                             <a href="{{ route('project.questions',['project'=>$project->id,'mid'=>request('mid')]) }}" class="m-nav__link">
                                                                 <i class="m-nav__link-icon flaticon-list"></i>
                                                                 <span class="m-nav__link-text">
-                                                                    所有协作
+                                                                    所有问题
                                                                 </span>
                                                             </a>
                                                         </li>

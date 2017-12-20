@@ -105,10 +105,10 @@
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
                                 <h3 class="m-widget1__title">
-                                    协作
+                                    问题
                                 </h3>
                                 <span class="m-widget1__desc">
-                                    今日协作数：+{{ $project->questions()->whereBetween('created_at',[date_start_end(),date_start_end(null,'end')])->count() }}
+                                    今日问题数：+{{ $project->questions()->whereBetween('created_at',[date_start_end(),date_start_end(null,'end')])->count() }}
                                 </span>
                             </div>
                             <div class="col m--align-right">

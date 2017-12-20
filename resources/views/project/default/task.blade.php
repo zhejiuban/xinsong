@@ -72,7 +72,7 @@
                             <li class="nav-item m-tabs__item">
                                 <a href="{{ route('project.questions',['project'=>$project->id,'mid'=>request('mid')]) }}"
                                    class="nav-link m-tabs__link">
-                                    协作
+                                    问题
                                 </a>
                             </li>
                             <li class="nav-item m-tabs__item">

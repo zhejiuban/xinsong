@@ -185,10 +185,10 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                协作统计
+                                问题统计
                             </h3>
                             <span class="m-widget14__desc">
-                                今日协作：+{{$question['day_add']}}
+                                今日问题：+{{$question['day_add']}}
                             </span>
                         </div>
                         <div class="row  align-items-center">
