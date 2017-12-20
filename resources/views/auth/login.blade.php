@@ -8,7 +8,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="description" content="">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, maximum-scale=1, user-scalable=no" >
+
         <!--begin::Base Styles -->
         <link href="{{ asset('assets/vendors/base/vendors.bundle.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/theme/default/base/style.bundle.css') }}" rel="stylesheet" type="text/css" />
