@@ -7,16 +7,25 @@
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
                 <div class="row align-items-center">
                     <div class="col-xl-8 order-2 order-xl-1">
-                        <div class="form-group m-form__group row align-items-center">
+                        <div class="m-form__group row align-items-center">
                             <div class="col-md-4">
-                                <div class="m-input-icon m-input-icon--left">
-                                    <input type="text" class="form-control m-input" placeholder="关键字..."
-                                           id="m_form_search">
-                                    <span class="m-input-icon__icon m-input-icon__icon--left">
-									<span>
-										<i class="fa fa-search"></i>
-									</span>
-								</span>
+                                <div class="form-group">
+                                    <div class="m-input-icon m-input-icon--left">
+                                        <input type="text" class="form-control m-input" placeholder="关键字..."
+                                               id="m_form_search">
+                                        <span class="m-input-icon__icon m-input-icon__icon--left">
+                                            <span>
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select name="department_id" id="department_id" class="form-control m-input select2 m-select2">
+                                        {!! department_select() !!}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -208,7 +217,7 @@
                         selector: {class: 'm-checkbox--solid m-checkbox--brand'}
                     }, {
                         field: "status",
-                        title: "状态", width: 60,
+                        title: "状态", width: 80,
                         template: function (row) {
                             var status = {
                                 1: {'title': '启用', 'class': ' m-badge--success'},
@@ -218,7 +227,10 @@
                         }
                     }, {
                         field: "username",
-                        title: "用户名"
+                        title: "用户名",template:function (row) {
+                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("users.edit")}}', {user: row.id}) + '" class="action-edit " title="编辑">' +
+                                row.username+'</a>';
+                        }
                     }, {
                         field: "roles",
                         title: "所属角色",
@@ -293,26 +305,14 @@
                     datatable.load();
                 }).val(query.search);
 
-                /*$('#m_form_status').on('change', function () {
+                $('#department_id').on('change', function () {
                   // shortcode to datatable.getDataSourceParam('query');
                   var query = datatable.getDataSourceQuery();
-                  query.status = $(this).val();
+                  query.department_id = $(this).val();
                   // shortcode to datatable.setDataSourceParam('query', query);
                   datatable.setDataSourceQuery(query);
                   datatable.load();
-                }).val(typeof query.status !== 'undefined' ? query.status : '');
-
-                $('#m_form_type').on('change', function () {
-                  // shortcode to datatable.getDataSourceParam('query');
-                  var query = datatable.getDataSourceQuery();
-                  query.type = $(this).val();
-                  // shortcode to datatable.setDataSourceParam('query', query);
-                  datatable.setDataSourceQuery(query);
-                  datatable.load();
-                }).val(typeof query.type !== 'undefined' ? query.type : '');
-
-                $('#m_form_status, #m_form_type').selectpicker();*/
-
+                }).val(typeof query.department_id !== 'undefined' ? query.department_id : '');
             };
 
             return {

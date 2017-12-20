@@ -27,11 +27,20 @@ class UserController extends Controller
                 ? $request->input('datatable.sort.sort') : 'desc';
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
-            if (check_user_role(null,'总部管理员')) {
-                $user = User::with(['department', 'roles'])->where(
-                    'name', 'like',
-                    "%{$request->input('datatable.query.search')}%"
-                )->orderBy(
+            $search = $request->input('datatable.query.search');
+            $department = $request->input('datatable.query.department_id');
+            if (is_administrator()) {
+                $user = User::with(['department', 'roles'])->when($search,function ($query) use ($search){
+                    return $query->where(function ($query) use ($search){
+                        $query->where('name', 'like', "%$search%")
+                            ->orWhere('email', 'like', "%$search%")
+                            ->orWhere('username', 'like', "%$search%")
+                            ->orWhere('tel', 'like', "%$search%");
+                    });
+                })->when($department,function ($query) use ($department){
+                    $department_arr = (array) get_company_deparent($department);
+                    return $query->whereIn('department_id',array_unique($department_arr));
+                })->orderBy(
                     $sort_field
                     , $sort)->paginate(
                     $prepage
@@ -39,10 +48,17 @@ class UserController extends Controller
                     , 'datatable.pagination.page'
                 );
             } else {
-                $user = User::with(['department', 'roles'])->where(
-                    'name', 'like',
-                    "%{$request->input('datatable.query.search')}%"
-                )->where(function ($query) {
+                $user = User::with(['department', 'roles'])->when($search,function ($query) use ($search){
+                    return $query->where(function ($query) use ($search){
+                        $query->where('name', 'like', "%$search%")
+                            ->orWhere('email', 'like', "%$search%")
+                            ->orWhere('username', 'like', "%$search%")
+                            ->orWhere('tel', 'like', "%$search%");
+                    });
+                })->when($department,function ($query) use ($department){
+                    $department_arr = (array) get_company_deparent($department);
+                    return $query->whereIn('department_id',array_unique($department_arr));
+                })->where(function ($query) {
                     //获取用户所属分部所有部门
                     $query->whereIn('department_id', get_company_deparent(get_user_company_id()));
                 })->orderBy(

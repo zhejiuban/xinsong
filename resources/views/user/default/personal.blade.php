@@ -78,7 +78,7 @@
                     所属部门<span class="required">*</span>:
                 </label>
                 <div>
-                    {{$user->company()->name ? $user->company()->name : ''}}{{$user->department && $user->department->level == 3 ? '/'.$user->department->name:''}}
+                    {{$user->company() ? $user->company()->name : ''}}{{$user->department && $user->department->level == 3 ? '/'.$user->department->name:''}}
                 </div>
             </div>
         </div>

@@ -22,7 +22,7 @@ class UserSelectorController extends Controller
     public function data(Request $request)
     {
         $search = $request->input('q');
-        if($request->input('type') == 'all' || check_user_role(null,'总部管理员')){ //超级管理员或总部管理员
+        if($request->input('type') == 'all'){ //超级管理员或总部管理员
             $list = User::with(['department'])->when($search, function ($query) use ($search) {
                 return $query->where('name', 'like', "%$search%")
                     ->orWhere('email', 'like', "%$search%")
@@ -42,7 +42,17 @@ class UserSelectorController extends Controller
                 , get_company_deparent(get_user_company_id()))
                 ->orWhere('id'
                     , get_current_login_user_info())
-                ->orWhere('department_id',headquarters('id'))
+                ->orWhereIn('department_id',get_company_deparent(headquarters('id')))
+                ->paginate(config('common.page.per_page'));
+        }elseif($request->input('type') == 'headquarters'){
+            $list = User::with(['department'])->when($search, function ($query) use ($search) {
+                return $query->where(function ($query) use ($search){
+                    $query->where('name', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%")
+                        ->orWhere('username', 'like', "%$search%")
+                        ->orWhere('tel', 'like', "%$search%");
+                });
+            })->WhereIn('department_id',get_company_deparent(headquarters('id')))
                 ->paginate(config('common.page.per_page'));
         }else{
             $list = User::with(['department'])->when($search, function ($query) use ($search) {

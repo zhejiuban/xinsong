@@ -20,7 +20,7 @@ class DepartmentController extends Controller
             return _404('无权操作');
         }
         //获取部门信息
-        if (check_user_role(null,'总部管理员')) {
+        if (is_administrator()) {
             $menu = Department::get()->toArray();
             $list = formatTreeData($menu);
         } else {
@@ -30,7 +30,7 @@ class DepartmentController extends Controller
             $menu = Department::where(
                 'company_id', $company_id
             )->orWhere('id', $company_id)->get()->toArray();
-            $list = formatTreeData($menu, 'id', 'parent_id', headquarters('id'));
+            $list = formatTreeData($menu, 'id', 'parent_id');
         }
         set_redirect_url();
         return view('user.department.index', compact('list'));
@@ -59,7 +59,7 @@ class DepartmentController extends Controller
             return _404('无权操作');
         }
         $menu = new Department();
-        $menu->parent_id = headquarters('id');
+        $menu->parent_id = 0;
         $menu->name = $request->name;
         $menu->status = $request->status;
         $menu->sort = $request->sort ? intval($request->sort) : 0;
@@ -68,6 +68,8 @@ class DepartmentController extends Controller
         $menu->company_id = 0;
         if ($menu->save()) {
             //权限同步
+            activity('系统日志')->performedOn($menu)
+                ->withProperties($menu)->log('添加分部信息');
             return response()->json([
                 'message' => '添加成功', 'url' => route('departments.index'),
                 'data' => $menu->toArray(), 'status' => 'success'
@@ -105,12 +107,13 @@ class DepartmentController extends Controller
             $headquarters = headquarters('id');
             if ($menu->id != $headquarters) {
                 $menu->status = $request->status;
-                $menu->parent_id = $headquarters;
             }
             $menu->name = $request->name;
             $menu->sort = $request->sort ? intval($request->sort) : 0;
             $menu->remark = $request->remark ? $request->remark : '';
             if ($menu->save()) {
+                activity('系统日志')->performedOn($menu)
+                    ->withProperties($menu)->log('编辑分部信息');
                 return response()->json([
                     'message' => '编辑成功', 'url' => route('departments.index'),
                     'data' => $menu->toArray(), 'status' => 'success'
@@ -145,7 +148,10 @@ class DepartmentController extends Controller
         if (User::where('department_id', $id)->first()) {
             return _404('不能删除，请先删除部门人员信息');
         }
-        if (Department::destroy($id)) {
+        $menu = Department::find($id);
+        if ($menu->delete()) {
+            activity('系统日志')->performedOn($menu)
+                ->withProperties($menu)->log('删除部门信息');
             return response()->json([
                 'message' => '您操作的数据已被删除', 'data' => null
                 , 'url' => route('departments.index'), 'status' => 'success'
@@ -175,7 +181,8 @@ class DepartmentController extends Controller
                 $menu->company_id = $request->parent_id;
             }
             if ($menu->save()) {
-                //权限同步
+                activity('系统日志')->performedOn($menu)
+                    ->withProperties($menu)->log('添加部门信息');
                 return response()->json([
                     'message' => '添加成功', 'url' => get_redirect_url(),
                     'data' => $menu->toArray(), 'status' => 'success'
@@ -196,7 +203,7 @@ class DepartmentController extends Controller
         if (!check_permission('user/departments/sub/create')) {
             return _404('无权操作');
         }
-        if (check_user_role(null,'总部管理员')) {
+        if (is_administrator()) {
             $menu = Department::find($id);
         } else {
             $menu = Department::where('company_id', get_user_company_id())->find($id);
@@ -214,6 +221,8 @@ class DepartmentController extends Controller
                     $menu->company_id = $request->parent_id;
                 }
                 if ($menu->save()) {
+                    activity('系统日志')->performedOn($menu)
+                        ->withProperties($menu)->log('编辑部门信息');
                     return response()->json([
                         'message' => '编辑成功', 'url' => route('departments.index'),
                         'data' => $menu->toArray(), 'status' => 'success'

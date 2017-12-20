@@ -135,26 +135,14 @@
                                 .removeClass('m-loader m-loader--light m-loader--right');
                         },
                         success: function(response, status, xhr, $form) {
-                            if(response.status == 'success'){
-                                $.notify({'message':response.message},{
-                                    type: 'success',
-                                    placement: {
-                                        from: "top",
-                                        align: "center"
-                                    },delay:500,
-                                    onClose:function() {
-                                        //$('#m_role_modal').modal('hide');
+                            if (response.status == 'success') {
+                                mAppExtend.notification(response.message
+                                    ,'success','toastr',function() {
                                         mAppExtend.backUrl(response.url);
-                                    }
-                                });
-                            }else{
-                                $.notify({'message':response.message},{
-                                    type: 'danger',
-                                    placement: {
-                                        from: "top",
-                                        align: "center"
-                                    },delay:1000
-                                });
+                                    });
+                            } else {
+                                mAppExtend.notification(response.message
+                                    ,'error');
                             }
                         },
                         error:function (xhr, textStatus, errorThrown) {
@@ -166,13 +154,8 @@
                                     _err_mes += v[0] + '<br>';
                                 });
                             }
-                            $.notify({'message':_err_mes},{
-                                type: 'danger',
-                                placement: {
-                                    from: "top",
-                                    align: "center"
-                                },delay:1000
-                            });
+                            mAppExtend.notification(_err_mes
+                                ,'error');
                         }
                     });
                 }

@@ -8,7 +8,7 @@ class Department extends Model
 {
     public static function getTreeData($type = 1)
     {
-        if (check_user_role(null,'总部管理员')) {
+        if (is_administrator()) {
             if($type == 1){
                 $data = self::where('status', 1)->get()->toArray();
             }else{
@@ -18,7 +18,7 @@ class Department extends Model
             $company_id = get_user_company_id();
             if($type == 1){
                 $data = self::where([
-                    ['status', '=', 1], ['level', '>', 1]
+                    ['status', '=', 1]
                 ])->where(function ($query) use ($company_id) {
                     $query->where('company_id', '=', $company_id)
                         ->orWhere('id', '=', $company_id);
@@ -29,10 +29,7 @@ class Department extends Model
                 ])->get()->toArray();
             }
         }
-        if (check_user_role(null,'总部管理员')) {
-            return formatTreeData($data, 'id', 'parent_id', 0);
-        }
-        return formatTreeData($data, 'id', 'parent_id', headquarters('id'));
+        return formatTreeData($data, 'id', 'parent_id', 0);
     }
 
     public static function info($id, $field = true)

@@ -325,7 +325,7 @@ if (!function_exists('department_select')) {
 if (!function_exists('role_select')) {
     function role_select($selected = '', $type = 0, $vType = 'id')
     {
-        if (!check_user_role(null, '总部管理员')) {
+        if (!is_administrator()) {
             $list = \Spatie\Permission\Models\Role::where('is_call', 1)->get()->toArray();
         } else {
             $list = \Spatie\Permission\Models\Role::get()->toArray();
@@ -677,8 +677,6 @@ function get_department_user_count($id, $level)
 {
     switch ($level) {
         case 1:
-            //总部
-            return \App\User::count();
         case 2:
             //获取分部所有部门信息
             $dep = get_company_deparent($id);
