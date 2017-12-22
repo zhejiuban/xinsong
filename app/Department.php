@@ -8,7 +8,7 @@ class Department extends Model
 {
     public static function getTreeData($type = 1, $is_admin = 0)
     {
-        if (is_administrator() || check_user_role(null,'总部管理员') || $is_admin) {
+        if (is_administrator() || $is_admin) {
             if ($type == 1) {
                 $data = self::where('status', 1)->get()->toArray();
             } else {

@@ -20432,7 +20432,7 @@ body.m-content--skin-light2 {
   .m-subheader .m-subheader__breadcrumbs.m-nav > .m-nav__separator {
     padding: 0 3px;
     color: #898b96; }
-  .m-subheader .m-subheader__daterange {
+  .m-subheader__daterange {
     display: inline-block;
     -webkit-border-radius: 2rem;
     -moz-border-radius: 2rem;
@@ -20442,19 +20442,19 @@ body.m-content--skin-light2 {
     padding: 5px;
     cursor: pointer;
     background: #fff; }
-    .m-subheader .m-subheader__daterange .m-subheader__daterange-label {
+    .m-subheader__daterange .m-subheader__daterange-label {
       padding: 0.7rem 0.75rem 0.7rem 1.5rem; }
-      .m-subheader .m-subheader__daterange .m-subheader__daterange-label .m-subheader__daterange-title {
+    .m-subheader__daterange .m-subheader__daterange-label .m-subheader__daterange-title {
         display: inline-block;
         font-weight: 400;
         color: #aaaeb8; }
-      .m-subheader .m-subheader__daterange .m-subheader__daterange-label .m-subheader__daterange-date {
+     .m-subheader__daterange .m-subheader__daterange-label .m-subheader__daterange-date {
         display: inline-block;
         font-weight: 500; }
-    .m-subheader .m-subheader__daterange > .btn {
+     .m-subheader__daterange > .btn {
       width: 32px !important;
       height: 32px !important; }
-      .m-subheader .m-subheader__daterange > .btn > i {
+       .m-subheader__daterange > .btn > i {
         font-size: 0.8rem !important; }
 
 @media (max-width: 992px) {

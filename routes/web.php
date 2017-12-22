@@ -84,6 +84,9 @@ Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
     Route::post('video/upload', 'Plugin\FileController@videoUpload')->name('video.upload');
 
     Route::get('file/download/{file}', 'Plugin\FileController@download')->name('file.download');
+
+    Route::get('dynamic/need/add/count','Plugin\DynamicCountController@needAddDynamicCount')->name('dynamic.need.add.count');
+    Route::get('dynamic/need/add/user','Plugin\DynamicCountController@needAddDynamicUser')->name('dynamic.need.add.user');
 });
 
 Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {

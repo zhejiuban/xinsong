@@ -258,9 +258,10 @@ var mAppExtend = function () {
             }
         },
         /*ajax加载页面*/
-        ajaxGetHtml: function (el, url, query, isLoading, callback, errorCallback) {
+        ajaxGetHtml: function (el, url, query, isLoading, callback, errorCallback,loadingType) {
             var loading = isLoading ? true : false;
             var loadingEl = isLoading != true ? isLoading : 'body';
+            var loadingType = loadingType == false ? false : true;
             jQuery.ajax({
                 url: url,
                 type: 'GET',
@@ -269,12 +270,16 @@ var mAppExtend = function () {
                 data: query,
                 beforeSend: function () {
                     if (loading) {
-                        mApp.block(loadingEl, {
-                            overlayColor: '#000000',
-                            type: 'loader',
-                            state: 'primary',
-                            message: '正在加载...'
-                        });
+                        if(loadingType){
+                            mApp.block(loadingEl, {
+                                overlayColor: '#000000',
+                                type: 'loader',
+                                state: 'primary',
+                                message: '正在加载...'
+                            });
+                        }else{
+                            mApp.block(loadingEl);
+                        }
                     }
                 },
                 complete: function (xhr, textStatus) {

@@ -82,4 +82,53 @@ class Task extends Model
         }
         return true;
     }
+
+    /**
+     * 获取需要上传日志的任务
+     * @param $query
+     * @param $date
+     * @param $project_id
+     * @param $user
+     * @return mixed
+     */
+    public function scopeNeedAddDynamic($query, $date, $project_id, $user)
+    {
+        return $query->when($project_id, function ($query) use ($project_id) {
+            if (is_array($project_id)){
+                return $query->whereIn('project_id',$project_id);
+            }
+            return $query->where('project_id',$project_id);
+        })->when($user, function ($query) use ($user) {
+            if (is_array($user)){
+                return $query->whereIn('leader', $user);
+            }
+            return $query->where('leader',$user);
+        })->where(function ($query) use ($date) {
+            $query->where(function ($query) use ($date) {
+                $query->where('status', 0)->whereDate(
+                    'start_at', '<=', $date
+                );
+            })->orWhere(function ($query) use ($date) {
+                $query->where('status', 1)->whereDate(
+                    'start_at', '<=', $date
+                )->whereDate(
+                    'finished_at', '>=', $date
+                );
+            });
+        });
+    }
+
+    /**
+     * 获取没有管理日志的任务
+     * @param $query
+     * @param $date
+     * @return mixed
+     */
+    public function scopeDoesntHaveDynamic($query,$date){
+        return $query->whereDoesntHave('dynamics',function ($query) use ($date){
+            $query->whereBetween('created_at', [
+                date_start_end($date), date_start_end($date, 'end')
+            ]);
+        });
+    }
 }

@@ -325,7 +325,7 @@ if (!function_exists('department_select')) {
 if (!function_exists('role_select')) {
     function role_select($selected = '', $type = 0, $vType = 'id')
     {
-        if (!is_administrator()) {
+        if (!is_administrator() && !check_user_role(null,'总部管理员')) {
             $list = \Spatie\Permission\Models\Role::where('is_call', 1)->get()->toArray();
         } else {
             $list = \Spatie\Permission\Models\Role::get()->toArray();
