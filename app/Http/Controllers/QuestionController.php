@@ -7,6 +7,7 @@ use App\Project;
 use App\Question;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Facades\Agent;
 
 class QuestionController extends Controller
 {
@@ -20,89 +21,74 @@ class QuestionController extends Controller
         if (!check_permission('question/questions')) {
             return _404('无权操作！');
         }
-        if ($request->ajax()) {
-            $sort_field = $request->input('datatable.sort.field')
-                ? $request->input('datatable.sort.field') : 'id';
-            $sort = $request->input('datatable.sort.sort')
-                ? $request->input('datatable.sort.sort') : 'desc';
-            $prepage = $request->input('datatable.pagination.perpage')
-                ? (int)$request->input('datatable.pagination.perpage') : 20;
-            $search = $request->input('datatable.query.search');
-            $project_id = $request->input('datatable.query.project_id');
-            $date = $request->input('datatable.query.date');
-            $status = $request->input('datatable.query.status');
-            if (check_user_role(null, '总部管理员')) {
-                $role = Question::with([
-                    'category', 'project', 'user', 'receiveUser'
-                ])->when($status, function ($query) use ($status) {
-                    return $query->where('status', $status);
-                }, function ($query) use ($status) {
-                    if ($status !== null) {
-                        return $query->where('status', $status);
-                    }
-                })->when($search,function ($query) use ($search){
-                    return $query->where(
-                        'title', 'like',
-                        "%$search%"
+        if(!Agent::isMobile()){
+            if ($request->ajax()) {
+                $sort_field = $request->input('datatable.sort.field')
+                    ? $request->input('datatable.sort.field') : 'id';
+                $sort = $request->input('datatable.sort.sort')
+                    ? $request->input('datatable.sort.sort') : 'desc';
+                $prepage = $request->input('datatable.pagination.perpage')
+                    ? (int)$request->input('datatable.pagination.perpage') : 20;
+                $search = $request->input('datatable.query.search');
+                $project_id = $request->input('datatable.query.project_id');
+                $date = $request->input('datatable.query.date');
+                $status = $request->input('datatable.query.status');
+                if (check_user_role(null, '总部管理员')) {
+                    $role = Question::with([
+                        'category', 'project', 'user', 'receiveUser'
+                    ])->baseQuestion($status,$search,$date,$project_id)->orderBy(
+                        $sort_field
+                        , $sort)->paginate(
+                        $prepage
+                        , ['*']
+                        , 'datatable.pagination.page'
                     );
-                })->when($date,function ($query) use ($date) {
-                    return $query->whereBetween('created_at', [
-                        date_start_end($date),date_start_end($date,'end')
-                    ]);
-                })->when($project_id,function ($query) use ($project_id) {
-                    return $query->where('project_id', $project_id);
-                })->orderBy(
-                    $sort_field
-                    , $sort)->paginate(
-                    $prepage
-                    , ['*']
-                    , 'datatable.pagination.page'
-                );
-            } elseif (check_company_admin()) {
-                $user = get_company_user(null, 'id');
-                $role = Question::with([
-                    'category', 'project', 'user', 'receiveUser'
-                ])->when($status, function ($query) use ($status) {
-                    return $query->where('status', $status);
-                }, function ($query) use ($status) {
-                    if ($status !== null) {
-                        return $query->where('status', $status);
-                    }
-                })->when($search,function ($query) use ($search){
-                    return $query->where(
-                        'title', 'like',
-                        "%$search%"
+                } elseif (check_company_admin()) {
+                    $role = Question::with([
+                        'category', 'project', 'user', 'receiveUser'
+                    ])->baseQuestion($status,$search,$date,$project_id)->companyQuestion()->orderBy(
+                        $sort_field
+                        , $sort)->paginate(
+                        $prepage
+                        , ['*']
+                        , 'datatable.pagination.page'
                     );
-                })->when($date,function ($query) use ($date) {
-                    return $query->whereBetween('created_at', [
-                        date_start_end($date),date_start_end($date,'end')
-                    ]);
-                })->when($project_id,function ($query) use ($project_id) {
-                    return $query->where('project_id', $project_id);
-                })->whereIn(
-                    'user_id', $user
-                )->orderBy(
-                    $sort_field
-                    , $sort)->paginate(
-                    $prepage
-                    , ['*']
-                    , 'datatable.pagination.page'
-                );
+                }
+                $meta = [
+                    'field' => $sort_field,
+                    'sort' => $sort,
+                    'page' => $role->currentPage(),
+                    'pages' => $role->hasMorePages(),
+                    'perpage' => $prepage,
+                    'total' => $role->total()
+                ];
+                $data = $role->toArray();
+                $data['meta'] = $meta;
+                return response()->json($data);
             }
-            $meta = [
-                'field' => $sort_field,
-                'sort' => $sort,
-                'page' => $role->currentPage(),
-                'pages' => $role->hasMorePages(),
-                'perpage' => $prepage,
-                'total' => $role->total()
-            ];
-            $data = $role->toArray();
-            $data['meta'] = $meta;
-            return response()->json($data);
+            set_redirect_url();
+            return view('question.default.index');
+        }else{
+            $search = $request->input('search');
+            $project_id = $request->input('project_id');
+            $date = $request->input('date');
+            $status = $request->input('status');
+            if (check_user_role(null, '总部管理员')) {
+                $list = Question::with([
+                    'category', 'project', 'user', 'receiveUser'
+                ])->baseQuestion($status,$search,$date,$project_id)->orderBy(
+                    'id'
+                    , 'desc')->paginate(config('common.page.per_page'));
+            } elseif (check_company_admin()) {
+                $list = Question::with([
+                    'category', 'project', 'user', 'receiveUser'
+                ])->baseQuestion($status,$search,$date,$project_id)->companyQuestion()->orderBy(
+                    'id'
+                    , 'desc')->paginate(config('common.page.per_page'));
+            }
+            set_redirect_url();
+            return view('question.default.index_mobile',compact('list'));
         }
-        set_redirect_url();
-        return view('question.default.index');
     }
 
     /**
@@ -310,57 +296,54 @@ class QuestionController extends Controller
         if (!check_permission('question/personal')) {
             return _404('无权操作！');
         }
-        if ($request->ajax()) {
-            $sort_field = $request->input('datatable.sort.field')
-                ? $request->input('datatable.sort.field') : 'id';
-            $sort = $request->input('datatable.sort.sort')
-                ? $request->input('datatable.sort.sort') : 'desc';
-            $prepage = $request->input('datatable.pagination.perpage')
-                ? (int)$request->input('datatable.pagination.perpage') : 20;
-            $search = $request->input('datatable.query.search');
-            $project_id = $request->input('datatable.query.project_id');
-            $date = $request->input('datatable.query.date');
-            $status = $request->input('datatable.query.status');
-            $role = Question::with([
-                'category', 'project', 'receiveUser'
-            ])->when($status, function ($query) use ($status) {
-                return $query->where('status', $status);
-            }, function ($query) use ($status) {
-                if ($status !== null) {
-                    return $query->where('status', $status);
-                }
-            })->when($search,function ($query) use ($search){
-                return $query->where(
-                    'title', 'like',
-                    "%$search%"
+        if (!Agent::isMobile()){
+            if ($request->ajax()) {
+                $sort_field = $request->input('datatable.sort.field')
+                    ? $request->input('datatable.sort.field') : 'id';
+                $sort = $request->input('datatable.sort.sort')
+                    ? $request->input('datatable.sort.sort') : 'desc';
+                $prepage = $request->input('datatable.pagination.perpage')
+                    ? (int)$request->input('datatable.pagination.perpage') : 20;
+                $search = $request->input('datatable.query.search');
+                $project_id = $request->input('datatable.query.project_id');
+                $date = $request->input('datatable.query.date');
+                $status = $request->input('datatable.query.status');
+                $role = Question::with([
+                    'category', 'project', 'receiveUser'
+                ])->baseQuestion($status,$search,$date,$project_id)->personalQuestion()->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
                 );
-            })->when($date,function ($query) use ($date) {
-                return $query->whereBetween('created_at', [
-                    date_start_end($date),date_start_end($date,'end')
-                ]);
-            })->when($project_id,function ($query) use ($project_id) {
-                return $query->where('project_id', $project_id);
-            })->where('user_id', get_current_login_user_info())->orderBy(
-                $sort_field
-                , $sort)->paginate(
-                $prepage
-                , ['*']
-                , 'datatable.pagination.page'
-            );
-            $meta = [
-                'field' => $sort_field,
-                'sort' => $sort,
-                'page' => $role->currentPage(),
-                'pages' => $role->hasMorePages(),
-                'perpage' => $prepage,
-                'total' => $role->total()
-            ];
-            $data = $role->toArray();
-            $data['meta'] = $meta;
-            return response()->json($data);
+                $meta = [
+                    'field' => $sort_field,
+                    'sort' => $sort,
+                    'page' => $role->currentPage(),
+                    'pages' => $role->hasMorePages(),
+                    'perpage' => $prepage,
+                    'total' => $role->total()
+                ];
+                $data = $role->toArray();
+                $data['meta'] = $meta;
+                return response()->json($data);
+            }
+            set_redirect_url();
+            return view('question.default.personal');
+        }else{
+            $search = $request->input('search');
+            $project_id = $request->input('project_id');
+            $date = $request->input('date');
+            $status = $request->input('status');
+            $list = Question::with([
+                'category', 'project', 'receiveUser'
+            ])->baseQuestion($status,$search,$date,$project_id)->personalQuestion()->orderBy(
+                'id'
+                , 'desc')->paginate(config('common.page.per_page'));
+            set_redirect_url();
+            return view('question.default.personal_mobile',compact('list'));
         }
-        set_redirect_url();
-        return view('question.default.personal');
     }
 
     public function pending(Request $request)
@@ -368,58 +351,57 @@ class QuestionController extends Controller
         if (!check_permission('question/pending')) {
             return _404('无权操作！');
         }
-        if ($request->ajax()) {
-            $sort_field = $request->input('datatable.sort.field')
-                ? $request->input('datatable.sort.field') : 'id';
-            $sort = $request->input('datatable.sort.sort')
-                ? $request->input('datatable.sort.sort') : 'desc';
-            $prepage = $request->input('datatable.pagination.perpage')
-                ? (int)$request->input('datatable.pagination.perpage') : 20;
-            $search = $request->input('datatable.query.search');
-            $project_id = $request->input('datatable.query.project_id');
-            $date = $request->input('datatable.query.date');
-            $status = $request->input('datatable.query.status');
+        if (Agent::isMobile()){
+            if ($request->ajax()) {
+                $sort_field = $request->input('datatable.sort.field')
+                    ? $request->input('datatable.sort.field') : 'id';
+                $sort = $request->input('datatable.sort.sort')
+                    ? $request->input('datatable.sort.sort') : 'desc';
+                $prepage = $request->input('datatable.pagination.perpage')
+                    ? (int)$request->input('datatable.pagination.perpage') : 20;
+                $search = $request->input('datatable.query.search');
+                $project_id = $request->input('datatable.query.project_id');
+                $date = $request->input('datatable.query.date');
+                $status = $request->input('datatable.query.status');
 
-            $role = Question::with([
-                'category', 'project', 'receiveUser', 'user'
-            ])->when($status, function ($query) use ($status) {
-                return $query->where('status', $status);
-            }, function ($query) use ($status) {
-                if ($status !== null) {
-                    return $query->where('status', $status);
-                }
-            })->when($search,function ($query) use ($search){
-                return $query->where(
-                    'title', 'like',
-                    "%$search%"
+                $role = Question::with([
+                    'category', 'project', 'receiveUser', 'user'
+                ])->baseQuestion($status,$search,$date,$project_id)->receiveQuestion()->orderBy(
+                    $sort_field
+                    , $sort)->paginate(
+                    $prepage
+                    , ['*']
+                    , 'datatable.pagination.page'
                 );
-            })->when($date,function ($query) use ($date) {
-                return $query->whereBetween('created_at', [
-                    date_start_end($date),date_start_end($date,'end')
-                ]);
-            })->when($project_id,function ($query) use ($project_id) {
-                return $query->where('project_id', $project_id);
-            })->where('receive_user_id', get_current_login_user_info())->orderBy(
-                $sort_field
-                , $sort)->paginate(
-                $prepage
-                , ['*']
-                , 'datatable.pagination.page'
-            );
-            $meta = [
-                'field' => $sort_field,
-                'sort' => $sort,
-                'page' => $role->currentPage(),
-                'pages' => $role->hasMorePages(),
-                'perpage' => $prepage,
-                'total' => $role->total()
-            ];
-            $data = $role->toArray();
-            $data['meta'] = $meta;
-            return response()->json($data);
+                $meta = [
+                    'field' => $sort_field,
+                    'sort' => $sort,
+                    'page' => $role->currentPage(),
+                    'pages' => $role->hasMorePages(),
+                    'perpage' => $prepage,
+                    'total' => $role->total()
+                ];
+                $data = $role->toArray();
+                $data['meta'] = $meta;
+                return response()->json($data);
+            }
+            set_redirect_url();
+            return view('question.default.pending');
+        }else{
+            $search = $request->input('search');
+            $project_id = $request->input('project_id');
+            $date = $request->input('date');
+            $status = $request->input('status');
+
+            $list = Question::with([
+                'category', 'project', 'receiveUser', 'user'
+            ])->baseQuestion($status,$search,$date,$project_id)->receiveQuestion()->orderBy(
+                'id'
+                , 'desc')->paginate(config('common.page.per_page'));
+
+            set_redirect_url();
+            return view('question.default.pending_mobile',compact('list'));
         }
-        set_redirect_url();
-        return view('question.default.pending');
     }
 
     //问题回复设置

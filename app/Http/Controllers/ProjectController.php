@@ -32,12 +32,15 @@ class ProjectController extends Controller
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
             $status = $request->input('datatable.query.status');
             $search = $request->input('datatable.query.search');
+            $department_id = $request->input('datatable.query.department_id');
             //管理员或总部管理员获取所有项目
             if (check_user_role(null, '总部管理员')) {
                 $project = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
                     ,'phases'
-                ])->when($status, function ($query) use ($status) {
+                ])->when($department_id,function ($query) use ($department_id) {
+                    return $query->where('department_id', $department_id);
+                })->when($status, function ($query) use ($status) {
                     return $query->where('status', $status);
                 }, function ($query) use ($status) {
                     if ($status !== null) {

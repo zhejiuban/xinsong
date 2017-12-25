@@ -172,6 +172,8 @@ class Project extends Model
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|static[]
      */
     public function getUnAddUserTaskDynamic(){
-        return $this->tasks()->doesntHaveDynamic(current_date())->get();
+        $date = current_date();
+        return $this->tasks()->needAddDynamic($date)->doesntHaveDynamic($date)->get();
     }
+
 }

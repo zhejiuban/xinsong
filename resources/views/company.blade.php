@@ -24,6 +24,12 @@
                            data-toggle="modal" data-target="#_needmodal" title="更多查询">
                             <i class="la la-ellipsis-h"></i>
                         </a>
+
+                        <a href="{{url('project/dynamics?mid=a70ebe696b17f962d6271b83eee22c7c')}}" class=" btn btn-secondary  m-btn  m-btn--icon m-btn--icon-only m-btn--pill"
+                           data-toggle="m-tooltip" data-skin="dark"  title="日志统计">
+                            <i class="la la-list"></i>
+                        </a>
+
                         <div class="row  align-items-center min-height-200" id="dynamic-need-count">
                         </div>
                     </div>

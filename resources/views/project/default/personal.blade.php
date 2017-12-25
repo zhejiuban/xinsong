@@ -75,14 +75,9 @@
                                     <span class="m-section__sub">
                                     {{str_limit($project->remark,250,'...')}}
                                     </span>
-                                    <span class="m-section__sub">
-                                        编号：{{$project->no}}
-                                        客户联系人：{{$project->customers}} 电话：{{$project->customers_tel}}
-                                        地址：{{$project->customers_address}}
-                                    </span>
                                 </div>
                             </div>
-                            <div class="m-widget__action m--margin-top-20">
+                            <div class="m-widget__action ">
                                 @if($task = $project->checkUserTaskDayDynamic())
                                     <div class="alert alert-warning alert-dismissible fade show   m-alert m-alert--square m-alert--air"
                                          role="alert">
@@ -90,44 +85,57 @@
                                         <strong>温馨提醒：</strong>
                                         该项目今日您未上传日志
                                     </div>
-                                    <a href="{{ route('dynamics.create',['project_id'=>$project->id,'task_id'=>$task,'mid'=>request('mid')]) }}"
-                                       class="btn m-btn--pill  btn-sm  btn-secondary dynamic-add">
-                                        <i class="fa fa-edit"></i> 填写日志
-                                    </a>
                                 @endif
-
-                                @if(check_project_owner($project,'del'))
-                                    <a href="{{ route('tasks.create',['project_id'=>$project->id]) }}"
-                                       class="btn m-btn--pill btn-sm btn-secondary task-add">
-                                        <i class="fa fa-plus"></i> 发布任务
-                                    </a>
-                                @endif
-                                <div class="btn-group" >
-                                    <button type="button" class="btn btn-secondary btn-sm m-btn--pill dropdown-toggle" data-toggle="dropdown" data-dropdown-toggle="hover" aria-expanded="true" aria-haspopup="true" >
-                                        更多
-                                    </button>
-                                    <div class="dropdown-menu" x-placement="top-start">
-                                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="dropdown-item">
-                                            <i class="flaticon-share"></i>
-                                                所有任务
-                                        </a>
-                                        <a href="{{ route('project.tasks',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="dropdown-item">
-                                            <i class="flaticon-user"></i>
-                                                只看我的任务 <span class="m-badge m-badge--brand">{{$project->tasks()->where('leader',get_current_login_user_info())->count()}}</span>
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="dropdown-item">
-                                            <i class="flaticon-list"></i>
-                                                所有日志
-                                        </a>
-                                        <a href="{{ route('project.dynamics',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="dropdown-item">
-                                            <i class="flaticon-user"></i>
-                                            只看我的日志 <span class="m-badge m-badge--brand">{{$project->dynamics()->where('user_id',get_current_login_user_info())->count()}}</span>
-                                        </a>
-                                    </div>
-                                </div>
-
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet-action row">
+                <div class="btn-group m-btn-group col" role="group" aria-label="">
+                    <a href="{{ route('dynamics.create',['project_id'=>$project->id,'task_id'=>$task,'mid'=>request('mid')]) }}"
+                       class="m-btn-left-bottom-border-none m-btn
+                            m-btn--square btn btn-secondary col m-btn--icon
+                            m-btn--icon-center dynamic-add @if(!$project->checkUserTaskDayDynamic()) disabled @endif">
+                        <span>
+                            <i class="la la-edit"></i>
+                            <span>上传日志</span>
+                        </span>
+                    </a>
+                    @if(check_project_owner($project,'del'))
+                    <a class="m-btn-bottom-border-none m-btn
+                            m-btn--square m-btn--icon btn btn-secondary
+                            col m-btn--icon-center task-add @if(!check_project_owner($project,'del')) disabled @endif"
+                       href="{{ route('tasks.create',['project_id'=>$project->id]) }}">
+                        <span>
+                            <i class="la la-plus"></i>
+                            <span>发布任务</span>
+                        </span>
+                    </a>
+                    @endif
+                    <div class="btn-group" >
+                        <button type="button" class="m-btn--square m-btn--icon btn btn-secondary
+                            col m-btn--icon-center dropdown-toggle m-btn-right-bottom-border-none" data-toggle="dropdown" data-dropdown-toggle="hover" aria-expanded="true" aria-haspopup="true" >
+                            更多
+                        </button>
+                        <div class="dropdown-menu" x-placement="top-start">
+                            <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                <i class="flaticon-share"></i>
+                                所有任务
+                            </a>
+                            <a href="{{ route('project.tasks',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                <i class="flaticon-user"></i>
+                                只看我的任务 <span class="m-badge m-badge--brand">{{$project->tasks()->where('leader',get_current_login_user_info())->count()}}</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ route('project.dynamics',['project_id'=>$project->id,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                <i class="flaticon-list"></i>
+                                所有日志
+                            </a>
+                            <a href="{{ route('project.dynamics',['project_id'=>$project->id,'only'=>1,'mid'=>request('mid')]) }}" class="dropdown-item">
+                                <i class="flaticon-user"></i>
+                                只看我的日志 <span class="m-badge m-badge--brand">{{$project->dynamics()->where('user_id',get_current_login_user_info())->count()}}</span>
+                            </a>
                         </div>
                     </div>
                 </div>
