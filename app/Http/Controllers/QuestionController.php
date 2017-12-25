@@ -351,7 +351,7 @@ class QuestionController extends Controller
         if (!check_permission('question/pending')) {
             return _404('无权操作！');
         }
-        if (Agent::isMobile()){
+        if (!Agent::isMobile()){
             if ($request->ajax()) {
                 $sort_field = $request->input('datatable.sort.field')
                     ? $request->input('datatable.sort.field') : 'id';
