@@ -31,44 +31,42 @@
     <div class="m-portlet__body">
   		<!--begin: Search Form -->
   		<div class="m-form m-form--label-align-right  m--margin-bottom-20">
-  			<div class="row align-items-center">
-  				<div class="col-xl-12 order-2 order-xl-1">
-  					<div class="m-form__group row align-items-center">
-  						<div class="col-md-3">
-                            <div class="form-group">
-                            <select class="form-control m-bootstrap-select" id="m_form_status">
-                                <option value="">
-                                    所有状态
-                                </option>
-                                <option value="0">
-                                    未开始
-                                </option>
-                                <option value="1">
-                                    进行中
-                                </option>
-                                <option value="2">
-                                    已完成
-                                </option>
-                            </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-  							<div class="m-input-icon m-input-icon--left">
-  								<input type="text" class="form-control m-input" placeholder="关键字..." id="m_form_search">
-  								<span class="m-input-icon__icon m-input-icon__icon--left">
-  									<span>
-  										<i class="fa fa-search"></i>
-  									</span>
-  								</span>
-  							</div>
-                            </div>
-  						</div>
-                        <div class="col-md-3">
-  						</div>
-  					</div>
-  				</div>
-  			</div>
+
+            <div class="m-form__group row align-items-center">
+                <div class="col-md-3">
+                    <div class="form-group">
+                    <select class="form-control m-bootstrap-select" id="m_form_status">
+                        <option value="">
+                            所有状态
+                        </option>
+                        <option value="0">
+                            未开始
+                        </option>
+                        <option value="1">
+                            进行中
+                        </option>
+                        <option value="2">
+                            已完成
+                        </option>
+                    </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                    <div class="m-input-icon m-input-icon--left">
+                        <input type="text" class="form-control m-input" placeholder="关键字..." id="m_form_search">
+                        <span class="m-input-icon__icon m-input-icon__icon--left">
+                            <span>
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </span>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                </div>
+            </div>
+
   		</div>
       <div class="m-separator m-separator--dashed"></div>
   		<!--end: Search Form -->

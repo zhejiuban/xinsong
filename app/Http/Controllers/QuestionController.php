@@ -27,13 +27,31 @@ class QuestionController extends Controller
                 ? $request->input('datatable.sort.sort') : 'desc';
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
+            $search = $request->input('datatable.query.search');
+            $project_id = $request->input('datatable.query.project_id');
+            $date = $request->input('datatable.query.date');
+            $status = $request->input('datatable.query.status');
             if (check_user_role(null, '总部管理员')) {
                 $role = Question::with([
                     'category', 'project', 'user', 'receiveUser'
-                ])->where(
-                    'title', 'like',
-                    "%{$request->input('datatable.query.search')}%"
-                )->orderBy(
+                ])->when($status, function ($query) use ($status) {
+                    return $query->where('status', $status);
+                }, function ($query) use ($status) {
+                    if ($status !== null) {
+                        return $query->where('status', $status);
+                    }
+                })->when($search,function ($query) use ($search){
+                    return $query->where(
+                        'title', 'like',
+                        "%$search%"
+                    );
+                })->when($date,function ($query) use ($date) {
+                    return $query->whereBetween('created_at', [
+                        date_start_end($date),date_start_end($date,'end')
+                    ]);
+                })->when($project_id,function ($query) use ($project_id) {
+                    return $query->where('project_id', $project_id);
+                })->orderBy(
                     $sort_field
                     , $sort)->paginate(
                     $prepage
@@ -44,10 +62,24 @@ class QuestionController extends Controller
                 $user = get_company_user(null, 'id');
                 $role = Question::with([
                     'category', 'project', 'user', 'receiveUser'
-                ])->where(
-                    'title', 'like',
-                    "%{$request->input('datatable.query.search')}%"
-                )->whereIn(
+                ])->when($status, function ($query) use ($status) {
+                    return $query->where('status', $status);
+                }, function ($query) use ($status) {
+                    if ($status !== null) {
+                        return $query->where('status', $status);
+                    }
+                })->when($search,function ($query) use ($search){
+                    return $query->where(
+                        'title', 'like',
+                        "%$search%"
+                    );
+                })->when($date,function ($query) use ($date) {
+                    return $query->whereBetween('created_at', [
+                        date_start_end($date),date_start_end($date,'end')
+                    ]);
+                })->when($project_id,function ($query) use ($project_id) {
+                    return $query->where('project_id', $project_id);
+                })->whereIn(
                     'user_id', $user
                 )->orderBy(
                     $sort_field
@@ -285,12 +317,30 @@ class QuestionController extends Controller
                 ? $request->input('datatable.sort.sort') : 'desc';
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
+            $search = $request->input('datatable.query.search');
+            $project_id = $request->input('datatable.query.project_id');
+            $date = $request->input('datatable.query.date');
+            $status = $request->input('datatable.query.status');
             $role = Question::with([
                 'category', 'project', 'receiveUser'
-            ])->where(
-                'title', 'like',
-                "%{$request->input('datatable.query.search')}%"
-            )->where('user_id', get_current_login_user_info())->orderBy(
+            ])->when($status, function ($query) use ($status) {
+                return $query->where('status', $status);
+            }, function ($query) use ($status) {
+                if ($status !== null) {
+                    return $query->where('status', $status);
+                }
+            })->when($search,function ($query) use ($search){
+                return $query->where(
+                    'title', 'like',
+                    "%$search%"
+                );
+            })->when($date,function ($query) use ($date) {
+                return $query->whereBetween('created_at', [
+                    date_start_end($date),date_start_end($date,'end')
+                ]);
+            })->when($project_id,function ($query) use ($project_id) {
+                return $query->where('project_id', $project_id);
+            })->where('user_id', get_current_login_user_info())->orderBy(
                 $sort_field
                 , $sort)->paginate(
                 $prepage
@@ -325,12 +375,31 @@ class QuestionController extends Controller
                 ? $request->input('datatable.sort.sort') : 'desc';
             $prepage = $request->input('datatable.pagination.perpage')
                 ? (int)$request->input('datatable.pagination.perpage') : 20;
+            $search = $request->input('datatable.query.search');
+            $project_id = $request->input('datatable.query.project_id');
+            $date = $request->input('datatable.query.date');
+            $status = $request->input('datatable.query.status');
+
             $role = Question::with([
                 'category', 'project', 'receiveUser', 'user'
-            ])->where(
-                'title', 'like',
-                "%{$request->input('datatable.query.search')}%"
-            )->where('receive_user_id', get_current_login_user_info())->orderBy(
+            ])->when($status, function ($query) use ($status) {
+                return $query->where('status', $status);
+            }, function ($query) use ($status) {
+                if ($status !== null) {
+                    return $query->where('status', $status);
+                }
+            })->when($search,function ($query) use ($search){
+                return $query->where(
+                    'title', 'like',
+                    "%$search%"
+                );
+            })->when($date,function ($query) use ($date) {
+                return $query->whereBetween('created_at', [
+                    date_start_end($date),date_start_end($date,'end')
+                ]);
+            })->when($project_id,function ($query) use ($project_id) {
+                return $query->where('project_id', $project_id);
+            })->where('receive_user_id', get_current_login_user_info())->orderBy(
                 $sort_field
                 , $sort)->paginate(
                 $prepage

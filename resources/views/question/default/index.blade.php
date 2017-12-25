@@ -2,45 +2,82 @@
 
 @section('content')
     <div class="m-portlet m-portlet--mobile m--margin-bottom-0">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <span class="m-portlet__head-icon">
+                        <i class="flaticon-info"></i>
+                    </span>
+                    <h3 class="m-portlet__head-text m--font-primary">
+                        问题汇总
+                    </h3>
+                </div>
+            </div>
+            <div class="m-portlet__head-tools">
+                <ul class="m-portlet__nav">
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('questions.create'),['mid'=>request('mid')]) }}"
+                           class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
+                                <span>
+                                    <i class="fa fa-plus"></i>
+                                    <span>
+                                        新增
+                                    </span>
+                                </span>
+                        </a>
+                    </li>
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('questions.delete'),['mid'=>request('mid')]) }}"
+                           class="batch-delete btn btn-sm btn-danger m-btn m-btn--icon m-btn--air m-btn--pill">
+                            <span>
+                                <i class="fa fa-trash"></i>
+                                <span>
+                                    删除
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div class="m-portlet__body">
             <!--begin: Search Form -->
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
-                <div class="row align-items-center">
-                    <div class="col-xl-8 order-2 order-xl-1">
-                        <div class="form-group m-form__group row align-items-center">
-                            <div class="col-md-4">
-                                <div class="m-input-icon m-input-icon--left">
-                                    <input type="text" class="form-control m-input" placeholder="关键字..."
-                                           id="m_form_search">
-                                    <span class="m-input-icon__icon m-input-icon__icon--left">
-									<span>
-										<i class="fa fa-search"></i>
-									</span>
-								</span>
-                                </div>
+                <div class="m-form__group row align-items-center">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="m-input-icon m-input-icon--left">
+                                <input type="text" class="form-control m-input" placeholder="关键字..."
+                                       id="m_form_search">
+                                <span class="m-input-icon__icon m-input-icon__icon--left">
+                                    <span>
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 order-1 order-xl-2 m--align-right">
-                        <a href="{{ menu_url_format(route('questions.create'),['mid'=>request('mid')]) }}"
-                           class="btn btn-sm btn-primary m-btn m-btn--icon m-btn--air m-btn--pill">
-						<span>
-							<i class="fa fa-plus"></i>
-							<span>
-								新增
-							</span>
-						</span>
-                        </a>
-                        <a href="{{ menu_url_format(route('questions.delete'),['mid'=>request('mid')]) }}"
-                           class="batch-delete btn btn-sm btn-danger m-btn m-btn--icon m-btn--air m-btn--pill">
-						<span>
-							<i class="fa fa-trash"></i>
-							<span>
-								删除
-							</span>
-						</span>
-                        </a>
-                        <div class="m-separator m-separator--dashed d-xl-none"></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control m-input m-date"
+                                   placeholder="上传日期" name="date" id="date"
+                                   readonly value="{{request('date')}}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select name="project_id" class="form-control m-input" id="project_id">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control m-bootstrap-select" id="m_form_status">
+                                {!! question_status_select() !!}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -64,6 +101,19 @@
 
 @section('js')
     <script type="text/javascript">
+        function formatProjectRepo(repo) {
+            if (repo.loading) return repo.text;
+            var markup = "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" + repo.title + "</div>";
+            markup += "<div class='select2-result-repository__description'>项目编号：" + repo.no + "</div>";
+            markup += "</div></div>";
+            return markup;
+        }
+
+        function formatProjectRepoSelection(repo) {
+            return repo.title || repo.text;
+        }
         var datatable;
         var DatatableAjax = function () {
             //== Private functions
@@ -213,6 +263,16 @@
                     datatable.setDataSourceQuery(query);
                     datatable.load();
                 }).val(query.search);
+                $('#project_id').on('change', function () {
+                    datatable.search($(this).val(), 'project_id');
+                }).val(typeof query.project_id !== 'undefined' ? query.project_id : '');
+                $('#date').on('change', function () {
+                    datatable.search($(this).val(), 'date');
+                }).val(typeof query.date !== 'undefined' ? query.date : '');
+                $('#m_form_status').on('change', function () {
+                    datatable.search($(this).val(), 'status');
+                }).val(typeof query.status !== 'undefined' ? query.status : '');
+
             };
 
             return {
@@ -225,6 +285,41 @@
 
         jQuery(document).ready(function () {
             DatatableAjax.init(); //加载数据列表
+            $('#m_form_status').selectpicker();
+            var $projectSelector = $("#project_id").select2({
+                language:'zh-CN',
+                placeholder: "输入项目编号、名称等关键字搜索，选择项目",
+                allowClear: true,
+                width:'100%',
+                ajax: {
+                    url: "{{route('projects.selector.data')}}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            per_page: {{config('common.page.per_page')}}
+                        };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (params.page * data.per_page) < data.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 0,
+                templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
+                templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
+            });
             $('.m_datatable').on('click', 'a.action-show,a.action-reply', function (event) {
                 event.preventDefault();
                 var url = $(this).attr('href');
