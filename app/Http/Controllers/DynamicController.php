@@ -20,7 +20,7 @@ class DynamicController extends Controller
      */
     public function index(Request $request)
     {
-        if(Agent::isMobile()){
+        if(!Agent::isMobile()){
             if ($request->ajax()) {
                 $sort_field = $request->input('datatable.sort.field')
                     ? $request->input('datatable.sort.field') : 'id';
