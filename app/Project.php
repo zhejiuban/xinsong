@@ -172,12 +172,6 @@ class Project extends Model
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|static[]
      */
     public function getUnAddUserTaskDynamic(){
-        return$this->tasks()->where('status',0)->whereDate(
-            'start_at', '<=', Carbon::now()->toDateString()
-        )->whereDoesntHave('dynamics',function ($query){
-            return $query->whereBetween('created_at', [
-                date_start_end(), date_start_end(null, 'end')
-            ]);
-        })->get();
+        return $this->tasks()->doesntHaveDynamic(current_date())->get();
     }
 }

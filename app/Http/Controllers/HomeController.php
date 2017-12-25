@@ -132,13 +132,8 @@ class HomeController extends Controller
         }else{
             //获取当前用户未上传日志的任务
             $user = get_current_login_user_info(true);
-            $needAddDynamicTask = $user->leaderTasks()->where('status',0)->whereDate(
-                'start_at', '<=', Carbon::now()->toDateString()
-            )->whereDoesntHave('dynamics',function ($query){
-                return $query->whereBetween('created_at', [
-                    date_start_end(), date_start_end(null, 'end')
-                ]);
-            })->get();
+            $needAddDynamicTask = $user->leaderTasks()
+                ->needAddDynamic(current_date())->doesntHaveDynamic(current_date())->get();
             set_redirect_url();
             return view('home',compact(['user','needAddDynamicTask']));
         }

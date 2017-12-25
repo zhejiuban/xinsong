@@ -42,7 +42,13 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control m-input m-date"
+                                           placeholder="上传日期" name="date" id="date"
+                                           readonly value=""/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -128,15 +134,6 @@
                         sortable: false,
                         selector: {class: 'm-checkbox--solid m-checkbox--brand'}
                     }, {
-                        field: "project_no",
-                        width: 100,
-                        title: "项目编号", sortable: false,
-                        template: function (row) {
-                            if (row.project) {
-                                return row.project.no;
-                            }
-                        }
-                    }, {
                         field: "project_id",
                         width: 240,
                         title: "所属项目", sortable: false,
@@ -196,6 +193,10 @@
                 $('#project_id').on('change', function () {
                     datatable.search($(this).val(), 'project_id');
                 }).val(typeof query.project_id !== 'undefined' ? query.project_id : '');
+
+                $('#date').on('change', function () {
+                    datatable.search($(this).val(), 'date');
+                }).val(typeof query.date !== 'undefined' ? query.date : '');
 
             };
 

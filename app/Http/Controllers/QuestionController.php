@@ -176,9 +176,11 @@ class QuestionController extends Controller
             'category', 'receiveUser', 'project'
         ])->find($id);
         if ($question) {
-            if (!check_project_owner($question->project, 'edit')
+            if (!is_administrator()
                 && $question->user_id != get_current_login_user_info()) {
                 return _error('无权操作');
+            }elseif(!is_administrator() && $question->status){
+                return _error('问题已提交，不可修改');
             }
             return view('question.default.edit', compact('question'));
         } else {
@@ -198,9 +200,11 @@ class QuestionController extends Controller
         $question = Question::find($id);
         if ($question) {
             //判断信息是否可编辑
-            if (!check_project_owner($question->project, 'edit')
+            if (!is_administrator()
                 && $question->user_id != get_current_login_user_info()) {
                 return _error('无权操作');
+            }elseif(!is_administrator() && $question->status){
+                return _error('问题已提交，不可修改');
             }
             //修改数据
             $question->title = $request->title;
@@ -243,18 +247,8 @@ class QuestionController extends Controller
             return _404('请选择要操作的数据');
         }
         //删除操作
-        if (check_user_role(null, '总部管理员')) {
+        if (is_administrator()) {
             $res = Question::whereIn('id', $id)->delete();
-        } elseif (check_company_admin()) {
-            //获取分部所有用户
-            $user = get_company_user(null, 'id');
-            if ($user) {
-                $res = Question::whereIn('id', $id)->whereIn(
-                    'user_id', $user
-                )->delete();
-            } else {
-                return _404('删除失败');
-            }
         } else {
             $res = Question::whereIn('id', $id)->where(
                 'user_id', get_current_login_user_info()
@@ -368,10 +362,10 @@ class QuestionController extends Controller
         }
         $info = Question::find($request->question);
         //获取问题详情
-        if(!$info || $info->status >= 2){
+        if(!$info || $info->status > 2){
             return _404('无权操作！');
         }
-        if(!check_project_owner($info->project, 'del')
+        if(!check_user_role(null,'总部管理员')
             && $info->receive_user_id != get_current_login_user_info()){
             return _404('无权操作！');
         }
@@ -417,7 +411,7 @@ class QuestionController extends Controller
         if (!count($question) || !current($question)) {
             return _error('请选择要操作的数据');
         }
-        if (check_user_role(null,'总部管理员')) {
+        if (is_administrator()) {
             $update = Question::whereIn('id', $question)->update([
                 'status' => 3, 'finished_at' => Carbon::now()
             ]);

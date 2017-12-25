@@ -14,7 +14,8 @@ class DynamicCountController extends Controller
     }
 
     public function needAddDynamicCount(Request $request){
-        $start = $request->start;
+        $start = $request->input('start',current_date());
+        $start = $start ? $start : current_date();
         $project_id = $request->input('project_id');
         //获取分部所有用户
         $user = get_company_user(null,'id');
@@ -27,7 +28,8 @@ class DynamicCountController extends Controller
         ]));
     }
     public function needAddDynamicUser(Request $request){
-        $start = $request->start;
+        $start = $request->input('start',current_date());
+        $start = $start ? $start : current_date();
         $project_id = $request->input('project_id');
         //获取分部所有用户
         $user = get_company_user(null,'id');

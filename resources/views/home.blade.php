@@ -50,7 +50,9 @@
                             <div class="row m-row--no-padding align-items-center">
                                 <div class="col">
                                     <h3 class="m-widget1__title">
-                                        任务
+                                        <a href="{{url('project/task/personal?mid=8a77a93cf98062ddc53a30a5383c4d88')}}">
+                                            任务
+                                        </a>
                                     </h3>
                                     <span class="m-widget1__desc">
                                         进行中：
@@ -70,7 +72,9 @@
                             <div class="row m-row--no-padding align-items-center">
                                 <div class="col">
                                     <h3 class="m-widget1__title">
-                                        日志
+                                        <a href="{{url('project/dynamic/personal?mid=9609eb5f4cae930f15d2deb1061fbe0d')}}">
+                                            日志
+                                        </a>
                                     </h3>
                                     <span class="m-widget1__desc">
                                         今日日志：
@@ -138,7 +142,9 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                我发布的问题
+                                <a href="{{url('question/personal?mid=c41b512b04286cc8f479176a466d23ac')}}">
+                                    我发布的问题
+                                </a>
                             </h3>
                         </div>
                         <div class="row  align-items-center">
@@ -186,7 +192,9 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                我参与的项目
+                                <a href="{{url('project/personal?mid=2083c82948c9226afa0026c2ff3933b3')}}">
+                                    我参与的项目
+                                </a>
                             </h3>
                         </div>
                         <div class="row  align-items-center">

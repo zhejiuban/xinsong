@@ -9,6 +9,7 @@ use App\ProjectPhase;
 use App\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Facades\Agent;
 
 class DynamicController extends Controller
 {
@@ -19,18 +20,90 @@ class DynamicController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $sort_field = $request->input('datatable.sort.field')
-                ? $request->input('datatable.sort.field') : 'id';
-            $sort = $request->input('datatable.sort.sort')
-                ? $request->input('datatable.sort.sort') : 'desc';
-            $prepage = $request->input('datatable.pagination.perpage')
-                ? (int)$request->input('datatable.pagination.perpage') : 20;
-            $project_id = $request->input('datatable.query.project_id');
-            $search = $request->input('datatable.query.search');
+        if(Agent::isMobile()){
+            if ($request->ajax()) {
+                $sort_field = $request->input('datatable.sort.field')
+                    ? $request->input('datatable.sort.field') : 'id';
+                $sort = $request->input('datatable.sort.sort')
+                    ? $request->input('datatable.sort.sort') : 'desc';
+                $prepage = $request->input('datatable.pagination.perpage')
+                    ? (int)$request->input('datatable.pagination.perpage') : 20;
+                $project_id = $request->input('datatable.query.project_id');
+                $search = $request->input('datatable.query.search');
+                $date = $request->input('datatable.query.date');
+                //管理员或总部管理员获取所有
+                if (check_user_role(null, '总部管理员')) {
+                    $task = Dynamic::with([
+                        'user', 'project'
+                    ])->when($search, function ($query) use ($search) {
+                        return $query->where(function ($query) use ($search) {
+                            $query->where(
+                                'content', 'like',
+                                "%{$search}%"
+                            );
+                        });
+                    })->when($date,function ($query) use ($date) {
+                        return $query->whereBetween('created_at', [
+                            date_start_end($date),date_start_end($date,'end')
+                        ]);
+                    })->when($project_id,function ($query) use ($project_id) {
+                        return $query->where('project_id', $project_id);
+                    })->orderBy(
+                        $sort_field
+                        , $sort)->paginate(
+                        $prepage
+                        , ['*']
+                        , 'datatable.pagination.page'
+                    );
+                } elseif (check_company_admin()) {
+                    //分部管理员获取分部所有项目
+                    //获取分部所有用户
+                    $user = get_company_user(null,'id');
+                    $task = Dynamic::with([
+                        'user',  'project'
+                    ])->whereIn('user_id',$user)->when($search, function ($query) use ($search) {
+                        return $query->where(function ($query) use ($search) {
+                            $query->where(
+                                'content', 'like',
+                                "%{$search}%"
+                            );
+                        });
+                    })->when($date,function ($query) use ($date) {
+                        return $query->whereBetween('created_at', [
+                            date_start_end($date),date_start_end($date,'end')
+                        ]);
+                    })->when($project_id,function ($query) use ($project_id) {
+                        return $query->where('project_id', $project_id);
+                    })->orderBy(
+                        $sort_field
+                        , $sort)->paginate(
+                        $prepage
+                        , ['*']
+                        , 'datatable.pagination.page'
+                    );
+                }
+
+                $meta = [
+                    'field' => $sort_field,
+                    'sort' => $sort,
+                    'page' => $task->currentPage(),
+                    'pages' => $task->hasMorePages(),
+                    'perpage' => $prepage,
+                    'total' => $task->total()
+                ];
+                $data = $task->toArray();
+                $data['meta'] = $meta;
+                return response()->json($data);
+            }
+            set_redirect_url();
+            return view('dynamic.default.index');
+        }else{
+            $project_id = $request->input('project_id');
+            $search = $request->input('search');
+            $date = $request->input('date');
             //管理员或总部管理员获取所有
             if (check_user_role(null, '总部管理员')) {
-                $task = Dynamic::with([
+                $list = Dynamic::with([
                     'user', 'project'
                 ])->when($search, function ($query) use ($search) {
                     return $query->where(function ($query) use ($search) {
@@ -41,18 +114,18 @@ class DynamicController extends Controller
                     });
                 })->when($project_id,function ($query) use ($project_id) {
                     return $query->where('project_id', $project_id);
+                })->when($date,function ($query) use ($date) {
+                    return $query->whereBetween('created_at', [
+                        date_start_end($date),date_start_end($date,'end')
+                    ]);
                 })->orderBy(
-                    $sort_field
-                    , $sort)->paginate(
-                    $prepage
-                    , ['*']
-                    , 'datatable.pagination.page'
-                );
+                    'id'
+                    , 'desc')->paginate(config('common.page.per_page'));
             } elseif (check_company_admin()) {
                 //分部管理员获取分部所有项目
                 //获取分部所有用户
                 $user = get_company_user(null,'id');
-                $task = Dynamic::with([
+                $list = Dynamic::with([
                     'user',  'project'
                 ])->whereIn('user_id',$user)->when($search, function ($query) use ($search) {
                     return $query->where(function ($query) use ($search) {
@@ -61,31 +134,19 @@ class DynamicController extends Controller
                             "%{$search}%"
                         );
                     });
+                })->when($date,function ($query) use ($date) {
+                    return $query->whereBetween('created_at', [
+                        date_start_end($date),date_start_end($date,'end')
+                    ]);
                 })->when($project_id,function ($query) use ($project_id) {
                     return $query->where('project_id', $project_id);
                 })->orderBy(
-                    $sort_field
-                    , $sort)->paginate(
-                    $prepage
-                    , ['*']
-                    , 'datatable.pagination.page'
-                );
+                    'id'
+                    , 'desc')->paginate(config('common.page.per_page'));
             }
-
-            $meta = [
-                'field' => $sort_field,
-                'sort' => $sort,
-                'page' => $task->currentPage(),
-                'pages' => $task->hasMorePages(),
-                'perpage' => $prepage,
-                'total' => $task->total()
-            ];
-            $data = $task->toArray();
-            $data['meta'] = $meta;
-            return response()->json($data);
+            set_redirect_url();
+            return view('dynamic.default.mobile',compact('list'));
         }
-        set_redirect_url();
-        return view('dynamic.default.index');
     }
 
     /**
@@ -180,7 +241,8 @@ class DynamicController extends Controller
     }
 
     public function show($id){
-        echo $id;
+        $dynamic = Dynamic::find($id);
+        return view('dynamic.default.show',compact('dynamic'));
     }
 
     /**
@@ -260,7 +322,7 @@ class DynamicController extends Controller
     public function destroy($id)
     {
         $dynamic = Dynamic::find($id);
-        if(!check_project_owner($dynamic->project,'del')){
+        if(!is_administrator()){
             return _404('无权操作');
         }
         if ($dynamic->delete($id)) {
@@ -281,8 +343,13 @@ class DynamicController extends Controller
     public function personal(Request $request){
         $user = get_current_login_user_info(true);
         $project_id = $request->input('project_id');
+        $date = $request->input('date');
         $list = $user->dynamics()->when($project_id, function ($query) use ($project_id) {
             return $query->where('project_id', $project_id);
+        })->when($date,function ($query) use ($date){
+            return $query->whereBetween('created_at', [
+                date_start_end($date),date_start_end($date,'end')
+            ]);
         })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
         set_redirect_url();
         return view('dynamic.default.personal', compact('list'));

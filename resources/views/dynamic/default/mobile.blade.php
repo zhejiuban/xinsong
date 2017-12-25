@@ -1,24 +1,32 @@
 @extends('layouts.app')
 @section('content')
     <div class="m-portlet">
-        <form method="get" action="{{route('dynamic.personal',['mid'=>request('mid')])}}"
+        <form method="get" action="{{route('project.dynamic.dynamics',['mid'=>request('mid')])}}"
               class="m-form m-form--fit m-form--group-seperator-dashed m-form-group-padding-bottom-10">
             <div class="m-portlet__body ">
                 <div class=" m-form__group row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <div class="form-group">
                         <select name="project_id" class="form-control" id="project_id">
+
                         </select>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <div class="form-group">
                             <input type="text" class="form-control m-input m-date"
                                    placeholder="上传日期" name="date" id="date"
-                                   readonly value=""/>
+                                   readonly value="{{request('date')}}"/>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <input type="text" class="form-control m-input"
+                                   placeholder="关键字" name="search" id="search"
+                                    value="{{request('search')}}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
                         <div class="form-group">
                         <input type="hidden" name="mid" value="{{request('mid')}}">
                         <button type="submit" class="btn btn-brand  m-btn--pill">
@@ -31,16 +39,24 @@
         </form>
     </div>
     @foreach($list as $task)
-        <div class="m-portlet">
+        <div class="m-portlet" id="dynamic-{{$task->id}}">
             <div class="m-portlet__body">
                 <div class="m-widget">
                     <div class="m-widget-body">
                         <div class="m-section m-section-none">
                             <h3 class="m-section__heading m-line-height-25">
-                                {{$task->content}}
+                                <a class="action-show" href="{{route('dynamics.show',['dynamic'=>$task->id,'mid'=>request('mid')])}}">
+                                {{str_limit($task->content,50,'...')}}
+                                </a>
+                                @if(is_administrator())
+                                <a href="{{route("dynamics.destroy",['dynamic'=>$task->id,'mid'=>request('mid')])}}"
+                                   class="btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only
+                                  m-btn--pill pull-right action-del" data-dynamic-id="{{$task->id}}"><i class="la la-trash"></i></a>
+                                @endif
                             </h3>
                             <span class="m-section__sub m-section__sub-margin-bottom-none">
                                 所属项目：{{$task->project ? $task->project->title : null}} <br>
+                                上报人：{{$task->user?$task->user->name : null}} <br>
                                 上传日期：{{$task->created_at}}
                             </span>
                         </div>
@@ -52,8 +68,8 @@
     {{ $list->appends([
         'mid' => request('mid'),
         'project_id' => request('project_id'),
-        'search' => request('search'),
         'date' => request('date'),
+        'search' => request('search'),
     ])->links('vendor.pagination.bootstrap-4') }}
     <!--begin::Modal-->
     <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true">
@@ -134,6 +150,22 @@
                 minimumInputLength: 0,
                 templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
                 templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
+            });
+            $('a.action-show').click(function (event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                ActionModal(url,'show')
+            });
+            $('a.action-del').click(function (event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                var id = $(this).data('dynamic-id');
+                mAppExtend.deleteData({
+                    'url': url,
+                    'callback': function () {
+                        $("#dynamic-"+id).remove();
+                    }
+                });
             });
         });
     </script>

@@ -21,7 +21,7 @@
                         </span>
 
                         <a href="javascript:;" class=" btn btn-secondary  m-btn  m-btn--icon m-btn--icon-only m-btn--pill"
-                           data-toggle="m-tooltip" title="更多查询" data-html="true" data-skin="dark">
+                           data-toggle="modal" data-target="#_needmodal" title="更多查询">
                             <i class="la la-ellipsis-h"></i>
                         </a>
                         <div class="row  align-items-center min-height-200" id="dynamic-need-count">
@@ -45,7 +45,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                项目统计
+                                <a href="{{url('project/projects?mid=bd128edbfd250c9c5eff5396329011cd')}}">项目统计</a>
                             </h3>
                             <span class="m-widget14__desc">
                                 今日项目：+{{$project['day_add']}}
@@ -90,7 +90,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                任务统计
+                                <a href="{{url('project/tasks?mid=da448943e7f05e99593248d4c86b7565')}}">任务统计</a>
                             </h3>
                             <span class="m-widget14__desc">
                                 今日进行中任务：{{$task['day_processing']}}
@@ -128,7 +128,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                问题统计
+                                <a href="{{url('question/questions?mid=3affc334d19fc914c4d667a01848f55d')}}">问题统计</a>
                             </h3>
                             <span class="m-widget14__desc">
                                 今日问题：+{{$question['day_add']}}
@@ -178,48 +178,48 @@
     </div>
     <!--End::Main Portlet-->
 
-    <!--begin:: Widgets/Audit Log-->
-    <div class="m-portlet m-portlet--full-height">
-        <div class="m-portlet__head">
-            <div class="m-portlet__head-caption">
-                <div class="m-portlet__head-title">
-                    <h3 class="m-portlet__head-text">
-                        日志统计
-                    </h3>
-                </div>
-            </div>
-            <div class="m-portlet__head-tools">
-                <ul class="nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm" role="tablist">
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link active" >
-                            日
-                        </a>
-                    </li>
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link">
-                            周
-                        </a>
-                    </li>
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link" >
-                            月
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="m-portlet__body">
-            <div id="dynamics" style="width: 100%;height:400px;">
-
-            </div>
-        </div>
-    </div>
-    <!--end:: Widgets/Audit Log-->
-
     <!--begin::Modal-->
-    <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" id="_needmodal" tabindex="-1" role="dialog" aria-labelledby="_NeedModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="_NeedModalLabel">
+                        日志统计查询
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="m-form" action="{{route('dynamic.need.add.user')}}" method="get" id="need-dynamic-form">
+                        <div class="form-group">
+                            <label for="name" class="form-control-label">
+                                查询日期:
+                            </label>
+                            <input type="text" class="form-control m-input m-dates"
+                                   placeholder="开始日期" name="start" id="start" readonly value="{{current_date()}}"/>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                所属项目:
+                            </label>
+                            <div class="">
+                                <select class="form-control m-input select2" id="project_id" name="project_id">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="dynamic-search-button">
+                        查询
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -229,8 +229,60 @@
 @section('js')
 
     <script type="text/javascript">
+        function formatProjectRepo(repo) {
+            if (repo.loading) return repo.text;
+            var markup = "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" + repo.title + "</div>";
+            markup += "<div class='select2-result-repository__description'>项目编号：" + repo.no + "</div>";
+            markup += "</div></div>";
+            return markup;
+        }
+
+        function formatProjectRepoSelection(repo) {
+            return repo.title || repo.text;
+        }
 
         $(document).ready(function(){
+            mAppExtend.datePickerInstance('.m-dates',{
+                endDate : new Date(),
+                clearBtn : false
+            });
+            var $projectSelector = $("#project_id").select2({
+                language: 'zh-CN',
+                placeholder: "输入项目编号、名称等关键字搜索，选择项目",
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{route('projects.selector.data')}}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            per_page: {{config('common.page.per_page')}}
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (params.page * data.per_page) < data.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 0,
+                templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
+                templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
+            });
+
             var daterangepickerInit = function() {
                 if ($('#m_dashboard_daterangepicker').length == 0) {
                     return;
@@ -266,7 +318,6 @@
                         "#dynamic-need-user",null,null,
                         false
                     );
-
                 }
 
                 picker.daterangepicker({
@@ -301,7 +352,34 @@
                 cb(start, end, '');
             };
             daterangepickerInit();
-
+            $("#dynamic-search-button").click(function () {
+                var start = $('#start').val();
+                var project_id = $('#project_id').val();
+                mAppExtend.ajaxGetHtml(
+                    '#dynamic-need-count',
+                    "{{route('dynamic.need.add.count')}}",
+                    {
+                        'start':start,
+                        'project_id':project_id
+                    },
+                    "#dynamic-need-count",null,null,
+                    false
+                );
+                mAppExtend.ajaxGetHtml(
+                    '#dynamic-need-user',
+                    "{{route('dynamic.need.add.user')}}",
+                    {
+                        'start':start,
+                        'project_id':project_id
+                    },
+                    "#dynamic-need-user",null,null,
+                    false
+                );
+                $("#_needmodal").modal('hide');
+                $('#m_dashboard_daterangepicker')
+                    .find('.m-subheader__daterange-date')
+                    .html(start);
+            });
 
             var project = function() {
                 if ($('#m_chart_project').length == 0) {
