@@ -20,8 +20,11 @@
         @if(check_project_leader($project,1) || check_project_leader($project,2))
             @if($phase = $project->phases()->where('status','<',2)->orderBy('id','asc')->first())
                 <div class="form-group">
+                    <div class="m--margin-bottom-15">
+                        项目名称：{{$project->title ? $project->title : null}}
+                    </div>
                     <label class="form-control-label">
-                        项目状态-{{$phase->name}}:<span class="required">*</span>
+                        项目状态<span class="required">*</span>: {{$phase->name}}
                     </label>
                     <div>
                         @if($phase->status)
