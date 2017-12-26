@@ -65,12 +65,12 @@
                 </label>
                 <div class="input-daterange input-group ">
                     <input type="text" class="form-control m-input m-date"
-                           placeholder="去现场日期" name="task_builded_at" value="{{$task->builded_at ? $task->builded_at : current_date()}}"/>
+                           placeholder="去现场日期" name="task_builded_at" readonly value="{{$task->builded_at ? $task->builded_at : current_date()}}"/>
                     <span class="input-group-addon">
                     <i class="la la-ellipsis-h"></i>
                     </span>
                     <input type="text" class="form-control m-date" placeholder="离开现场日期"
-                           name="task_leaved_at" value="{{$task->leaved_at ? $task->leaved_at : current_date()}}"/>
+                           name="task_leaved_at" readonly value="{{$task->leaved_at ? $task->leaved_at : current_date()}}"/>
                 </div>
                 <span class="m-form__help"></span>
             </div>
