@@ -45,7 +45,7 @@
 </div>
 @php $dy_users = $project->getUnAddUserTaskDynamic(request('date'));@endphp
 @if(check_project_owner($project,'edit') && $dy_users->isNotEmpty())
-    <div class="m-section">
+    <div class="m-section m--margin-top-15">
         <div class="m-section__content">
             <div class="m-demo">
                 <div class="m-demo__preview m--padding-15">
