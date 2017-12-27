@@ -39,7 +39,7 @@ var mAppExtend = function () {
      * @return {[type]} [description]
      */
     var handleReloadHtml = function () {
-        $('body').on('click', 'a[data-toggle="relaodHtml"],button[data-toggle="relaodHtml"],a[data-toggle="loadHtml"],button[data-toggle="loadHtml"]', function (e) {
+        $('body').on('click', 'a[data-load-html="true"],a[data-toggle="relaodHtml"],button[data-toggle="relaodHtml"],a[data-toggle="loadHtml"],button[data-toggle="loadHtml"]', function (e) {
             e.preventDefault();
             var el = $(this).data('target');
             var url = $(this).attr('href') ? $(this).attr('href') : $(this).data('href');

@@ -151,15 +151,17 @@
                             return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
                         }
                     }, {
-                        field: "project_no",
-                        width: 100,
-                        title: "项目编号", sortable: false,
-                        template: function (row) {
-                            if (row.project) {
-                                return row.project.no;
-                            }
+                        width: 340,
+                        field: "content", sortable: false,
+                        title: "任务内容", template: function (row) {
+                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("tasks.show")}}', {
+                                    task: row.id,
+                                    mid: "{{request('mid')}}"
+                                }) + '" class="action-show m-portlet__nav-link" title="详情">' +
+                                (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
+                                + '</a>';
                         }
-                    },  {
+                    },{
                         field: "project_id",
                         width: 240,
                         title: "所属项目", sortable: false,
@@ -175,18 +177,7 @@
                                 return row.leader_user.name;
                             }
                         }
-                    }, {
-                        width: 340,
-                        field: "content", sortable: false,
-                        title: "任务内容", template: function (row) {
-                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("tasks.show")}}', {
-                                task: row.id,
-                                mid: "{{request('mid')}}"
-                            }) + '" class="action-show m-portlet__nav-link" title="详情">' +
-                                (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
-                                + '</a>';
-                        }
-                    }, {
+                    },  {
                         field: "start_at",
                         title: "开始时间"
                     }, {

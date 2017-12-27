@@ -29,9 +29,12 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                         <input type="hidden" name="mid" value="{{request('mid')}}">
-                        <button type="submit" class="btn btn-brand  m-btn--pill">
-                            查询
-                        </button>
+                            <button type="submit" class="btn btn-brand  m-btn m-btn--pill m-btn--icon">
+                                <span>
+                                    <i class="la la-search"></i>
+                                    <span>搜索</span>
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -43,19 +46,29 @@
             <div class="m-portlet__body  m-portlet__body--no-padding">
                 <div class="row m-row--no-padding m-row--col-separator-xl">
                     <div class="col-xl-11">
-                        <div class="m-widget1">
-                            @if($task->status)
-                                <s><a class="look-task m-line-height-25"  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a></s>
-                            @else
-                                <a class="look-task m-line-height-25" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">{{$task->content}}</a>
-                            @endif
-                            {{--<span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">--}}
-                            {{--{{tasks_status($task->status)}}--}}
-                            {{--</span>--}}
-                            <div class="m-section__sub">
-                                所属项目：{{$task->project->title}} <br>
-                                开始时间：{{$task->start_at}}
-                                    {{$task->finished_at ?'，完成时间：'.$task->finished_at : null}}
+                        <div class="m-widget m--padding-20">
+                            <div class="m-widget-body">
+                                <div class="m-section m-section-none">
+                                    <h3 class="m-section__heading m-line-height-25">
+                                        @if($task->status)
+                                            <s><a class="look-task "  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">
+                                                    {{str_limit($task->content,50,'...')}}
+                                                </a></s>
+                                        @else
+                                            <a class="look-task" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">
+                                                {{str_limit($task->content,50,'...')}}
+                                            </a>
+                                        @endif
+                                            {{--<span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">--}}
+                                            {{--{{tasks_status($task->status)}}--}}
+                                            {{--</span>--}}
+                                    </h3>
+                                    <span class="m-section__sub m-section__sub-margin-bottom-none">
+                                        所属项目：{{$task->project->title}} <br>
+                                        开始时间：{{$task->start_at}}
+                                        {{$task->finished_at ?'，完成时间：'.$task->finished_at : null}}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

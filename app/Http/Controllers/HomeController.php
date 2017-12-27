@@ -79,13 +79,6 @@ class HomeController extends Controller
             $all = Task::whereIn('leader',$user)->where('status',0)->whereDate(
                 'start_at', '<=', Carbon::now()->toDateString()
             )->get();
-            $needAddDynamicTask = Task::whereIn('leader',$user)->where('status',0)->whereDate(
-                'start_at', '<=', Carbon::now()->toDateString()
-            )->whereDoesntHave('dynamics',function ($query){
-                return $query->whereBetween('created_at', [
-                    date_start_end(), date_start_end(null, 'end')
-                ]);
-            })->get();
 
             //获取所有分部项目
             $company = get_user_company_id();
@@ -114,19 +107,9 @@ class HomeController extends Controller
                     date_start_end(), date_start_end(null, 'end')
                 ])->count()
             ];
-            $dy = Dynamic::whereIn('user_id',$user)
-                ->groupBy('date')
-                ->orderBy('date', 'asc')
-                ->get([
-                    DB::raw('Date(created_at) as date'),
-                    DB::raw('COUNT(*) as count')
-                ]);
-            $dynamic = [
-                'date'=>$dy->pluck('date')->all(),
-                'data'=>$dy->pluck('count')->all()
-            ];
+
             return view('company',compact([
-                'user','all','needAddDynamicTask'
+                'user','all'
                 ,'project','task','question','dynamic'
             ]));
         }else{

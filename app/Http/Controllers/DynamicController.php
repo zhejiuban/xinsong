@@ -256,7 +256,7 @@ class DynamicController extends Controller
         $dynamic = Dynamic::find($id);
         if ($dynamic) {
             $project  = $dynamic->project;
-            if(!check_project_owner($project,'edit')
+            if(!check_project_owner($project,'company')
                 && $dynamic->user->id != get_current_login_user_info()){
                 return _404('无权操作');
             }
@@ -277,7 +277,7 @@ class DynamicController extends Controller
     {
         $dynamic = Dynamic::find($id);
         $project = $dynamic->project;
-        if(!check_project_owner($project,'edit')
+        if(!check_project_owner($project,'company')
             && $dynamic->user->id != get_current_login_user_info()){
             return _404('无权操作');
         }
@@ -322,7 +322,7 @@ class DynamicController extends Controller
     public function destroy($id)
     {
         $dynamic = Dynamic::find($id);
-        if(!is_administrator()){
+        if(!check_project_owner($dynamic->project,'company')){
             return _404('无权操作');
         }
         if ($dynamic->delete($id)) {

@@ -28,7 +28,9 @@ class ProjectSelectorController extends Controller
                     $query->where('title', 'like', "%$search%")
                         ->orWhere('no', 'like', "%$search%");
                 });
-            })->where('status', '=', 1)->paginate(config('common.page.per_page'));
+            })->where('status', '=', 1)
+                ->orderBy('id','desc')
+                ->paginate(config('common.page.per_page'));
         } elseif (check_company_admin()) {
             $list = Project::when($search, function ($query) use ($search) {
                 return $query->where(function ($query) use($search){
@@ -37,13 +39,15 @@ class ProjectSelectorController extends Controller
                 });
             })->where('status', '=', 1)
                 ->where('department_id', get_user_company_id())
-                ->paginate(config('common.page.per_page'));
+                ->orderBy('id','desc')->paginate(config('common.page.per_page'));
         }else{
             $user = get_current_login_user_info(true);
             $list = $user->projects()->when($search, function ($query) use ($search) {
                 return $query->where('title', 'like', "%$search%")
                     ->orWhere('no', 'like', "%$search%");
-            })->where('status', '=', 1)->paginate(config('common.page.per_page'));
+            })->where('status', '=', 1)
+                ->orderBy('id','desc')
+                ->paginate(config('common.page.per_page'));
         }
         return $list;
     }

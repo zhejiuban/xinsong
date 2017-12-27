@@ -150,17 +150,18 @@ class Project extends Model
         return $this->tasks()->whereDate(
             'start_at', '<=', Carbon::now()->toDateString()
         )->where('leader', $user)->where(
-            'status','=',0
+            'status', '=', 0
         )->first();
     }
 
-    public function checkUserTaskDayDynamic($user=null){
+    public function checkUserTaskDayDynamic($user = null)
+    {
         if (!$user) {
             $user = get_current_login_user_info();
         }
-        return$this->tasks()->where('status',0)->whereDate(
+        return $this->tasks()->where('status', 0)->whereDate(
             'start_at', '<=', Carbon::now()->toDateString()
-        )->where('leader', $user)->whereDoesntHave('dynamics',function ($query){
+        )->where('leader', $user)->whereDoesntHave('dynamics', function ($query) {
             return $query->whereBetween('created_at', [
                 date_start_end(), date_start_end(null, 'end')
             ]);
@@ -171,8 +172,9 @@ class Project extends Model
      * 获取当日未上传日志的任务
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection|static[]
      */
-    public function getUnAddUserTaskDynamic(){
-        $date = current_date();
+    public function getUnAddUserTaskDynamic($date = null)
+    {
+        $date = $date ? $date : current_date();
         return $this->tasks()->needAddDynamic($date)->doesntHaveDynamic($date)->get();
     }
 

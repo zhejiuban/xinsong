@@ -112,7 +112,7 @@ class TaskController extends Controller
     {
         $project = Project::find($request->project_id);
         //检测项目权限
-        if(!check_project_owner($project,'del')){
+        if(!check_project_leader($project)){
             return _404('无权操作');
         }
         $data = [];
@@ -171,7 +171,7 @@ class TaskController extends Controller
         if ($task) {
             //检测项目权限
             $project = $task->project;
-            if(!check_project_owner($project,'del')){
+            if(!check_project_leader($project)){
                 return _404('无权操作');
             }
             return view('task.default.edit', compact('task'));
@@ -192,7 +192,7 @@ class TaskController extends Controller
         $task = Task::find($id);
         if ($task) {
             $project = $task->project;
-            if(!check_project_owner($project,'del')){
+            if(!check_project_leader($project)){
                 return _404('无权操作');
             }
             $task->project_phase_id = $request->project_phase_id;
@@ -223,8 +223,11 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
         $project = $task->project;
+        if($task->dynamics->isNotEmpty() || $task->status){
+            return _404('存在关联数据，不能删除');
+        }
         //判断任务删除权限
-        if (!check_project_owner($project, 'del')) {
+        if (!check_project_leader($project)) {
             return _404('无权操作');
         }
         if ($task->delete($id)) {
@@ -240,8 +243,15 @@ class TaskController extends Controller
     //任务完成情况
     public function finish(Request $request, $id)
     {
-        $task = Task::find($id);
+        $task = Task::where('status',0)->find($id);
         if ($task) {
+            $project = $task->project;
+            //判断权限
+            if($task->leader != get_current_login_user_info()){
+                if (!check_project_leader($project)) {
+                    return _404('无权操作');
+                }
+            }
             if ($request->isMethod('post')) {
                 $this->validate($request, [
                     'builded_at' => 'bail|required',
@@ -259,8 +269,8 @@ class TaskController extends Controller
                 $task->finished_at = Carbon::now();
                 $task->status = 1;
                 if ($task->save()) {
-                    activity('项目日志')->performedOn(Project::find($task->project_id))
-                        ->withProperties($task->toArray())
+                    activity('项目日志')->performedOn($project)
+                        ->withProperties($task)
                         ->log('任务完成');
                     return _success('操作成功', $task->toArray(), get_redirect_url());
                 } else {

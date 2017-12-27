@@ -12,7 +12,7 @@
                     <div class="m-widget14">
                         <span class="m-subheader__daterange m--bg-brand " style="padding: 0;" id="m_dashboard_daterangepicker">
                             <span class="m-subheader__daterange-label">
-                                <span class="m-subheader__daterange-title m--font-light"></span>
+                                <span class="m-subheader__daterange-title m--font-light">今日</span>
                                 <span class="m-subheader__daterange-date m--font-light">{{current_date()}}</span>
                             </span>
                             <a href="javascript:;" class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
@@ -301,6 +301,9 @@
                 function cb(start, end, label) {
                     var title = '';
                     range = start.format('YYYY-MM-DD');
+                    if (range == '{{current_date()}}') {
+                        title = '今日';
+                    }
                     picker.find('.m-subheader__daterange-date').html(range);
                     picker.find('.m-subheader__daterange-title').html(title);
 

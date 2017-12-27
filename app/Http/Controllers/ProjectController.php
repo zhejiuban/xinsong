@@ -347,7 +347,7 @@ class ProjectController extends Controller
 //        }
         $project = Project::find($id);
         //检测项目权限
-        if (!check_project_owner($project, 'del')) {
+        if (!check_project_owner($project, 'company')) {
             return _404('无权操作');
         }
 
@@ -402,6 +402,18 @@ class ProjectController extends Controller
             return _error();
         }
     }*/
+    //项目看板
+    public function board(Request $request, $id){
+        if ($project = Project::find($id)) {
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
+            set_redirect_url();
+            return view('project.default.board', compact(['project']));
+        } else {
+            return _404();
+        }
+    }
 
     //获取某个项目的所有任务
     public function tasks(Request $request, $id)
@@ -422,7 +434,7 @@ class ProjectController extends Controller
                     ]);
                 }
             })->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
-            set_redirect_url();
+            set_redirect_url(null,'board_ajax_url');
             return view('project.default.task', compact(['project', 'tasks']));
         } else {
             return _404();
@@ -437,18 +449,19 @@ class ProjectController extends Controller
                 return _404('无权操作');
             }
             $only = $request->input('only');
-            $date = $request->input('date');
+            $date = $request->input('date') ? $request->input('date') : current_date();
+            if($request->input('all')){
+                $date = null;
+            }
             $dynamics = $project->dynamics()->when(
                 $only, function ($query) {
                 return $query->where('user_id', get_current_login_user_info());
             })->when($date, function ($query) use ($date) {
-                if ($date == 'day') {
-                    return $query->whereBetween('created_at', [
-                        date_start_end(), date_start_end(null, 'end')
-                    ]);
-                }
+                return $query->whereBetween('created_at', [
+                    date_start_end($date), date_start_end($date, 'end')
+                ]);
             })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
-            set_redirect_url();
+            set_redirect_url(null,'board_ajax_url');
             return view('project.default.dynamic', compact(['project', 'dynamics']));
         } else {
             return _404();
@@ -474,19 +487,24 @@ class ProjectController extends Controller
                     ]);
                 }
             })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
-            set_redirect_url();
+            set_redirect_url(null,'board_ajax_url');
             return view('project.default.question', compact(['project', 'questions']));
         } else {
             return _404();
         }
     }
 
-
+    /**
+     * 获取项目参与用户
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
     public function users(Request $request, $id)
     {
         if ($project = Project::find($id)) {
             $users = $project->users()->paginate(config('common.page.per_page'));
-            set_redirect_url();
+            set_redirect_url(null,'board_ajax_url');
             return view('project.default.user', compact(['project', 'users']));
         } else {
             return _404();
@@ -498,7 +516,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
         if ($project) {
             //检测权限
-            if (!check_project_owner($project, 'del')) {
+            if (!check_project_owner($project, 'company')) {
                 return _404('无权操作');
             }
             if ($request->isMethod('post')) {
@@ -536,7 +554,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
-            if (!check_project_owner($project, 'del')) {
+            if (!check_project_owner($project, 'company')) {
                 return _404('无权操作');
             }
             if ($project->users()->detach($user) !== false) {
@@ -586,7 +604,7 @@ class ProjectController extends Controller
                 })->when($only, function ($query) {
                     return $query->where('user_id', get_current_login_user_info());
                 })->orderBy('id', 'desc')->get();
-            set_redirect_url();
+            set_redirect_url(null,'board_ajax_url');
             return view('project.default.file', compact(['project', 'folders', 'files']));
         } else {
             return _404();
@@ -631,7 +649,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
-            if (!check_project_owner($project, 'del')) {
+            if (!check_project_owner($project, 'company')) {
                 return _404('无权操作');
             }
             if ($project->files()->detach($file) !== false) {
@@ -679,7 +697,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
-            if (!check_project_owner($project, 'edit')) {
+            if (!check_project_owner($project, 'company')) {
                 return _404('无权操作');
             }
             if ($request->isMethod('post')) {
@@ -712,7 +730,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
         $folder = $project->folders()->find($folder);
         if ($project && $folder) {
-            if (!check_project_owner($project, 'edit')) {
+            if (!check_project_owner($project, 'company')) {
                 return _404('无权操作');
             }
             if ($request->isMethod('put')) {
@@ -739,7 +757,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
-            if (!check_project_owner($project, 'del')) {
+            if (!check_project_owner($project, 'company')) {
                 return _404('无权操作');
             }
             $folders = ProjectFolder::find($folder);
@@ -773,7 +791,7 @@ class ProjectController extends Controller
         $phase = ProjectPhase::find($id);
         $project = $phase->project;
         //检测项目权限
-        if (!check_project_owner($project, 'del')) {
+        if (!check_project_owner($project, 'company')) {
             return _404('无权操作');
         }
         if ($phase) {
@@ -843,7 +861,7 @@ class ProjectController extends Controller
             return _404();
         }
         //检测项目权限
-        if (!check_project_owner($project, 'del')) {
+        if (!check_project_owner($project, 'company')) {
             return _404('无权操作');
         }
         if ($request->isMethod('put')) {

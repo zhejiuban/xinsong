@@ -85,11 +85,17 @@
                     },
                     success: function(response, status, xhr, $form) {
                         if(response.status == 'success'){
-                            mAppExtend.notification(response.message,'success','toastr',function() {
-                                mAppExtend.backUrl(response.url);
-                            });
-                            //$('#_editModal').modal('hide');
-                            //lookTask("{{ route('tasks.show',['task'=>$task->id]) }}",'handleUpdate');
+                            var $board = "{{request('board')}}";
+                            if($board == '1'){
+                                $("#_modal").modal('hide');$('#_modal,#_editModal').modal('hide');
+                                mAppExtend.ajaxGetHtml(
+                                    "#project-body","{!! get_redirect_url('board_ajax_url') !!}"
+                                    , {}, "#project-body");
+                            }else{
+                                mAppExtend.notification(response.message,'success','toastr',function() {
+                                    mAppExtend.backUrl(response.url);
+                                });
+                            }
                         }else{
                             mAppExtend.notification(response.message,'error');
                         }

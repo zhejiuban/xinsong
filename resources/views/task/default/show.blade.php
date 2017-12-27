@@ -113,56 +113,7 @@
     </form>
 </div>
 <div class="modal-footer">
-  @if(!$task->status && $task->leaderUser->id == get_current_login_user_info() )
-  <button type="button" class="btn btn-primary"  href="{{ route('tasks.finish',['task'=>$task->id]) }}" id="finish-task">
-    完成此任务
-  </button>
-  @endif
-  @if($task->is_need_plan)
-  <button type="button" class="btn btn-primary"  href="{{ route('tasks.edit',['task'=>$task->id]) }}" id="task-plan">
-    相关计划
-  </button>
-  @endif
-  @if(check_project_owner($task->project,'del'))
-  @if(!$task->status)
-  <button type="button" class="btn btn-primary" href="{{ route('tasks.edit',['task'=>$task->id]) }}" id="edit-task">
-    编辑
-  </button>
-  @endif
-  <button type="button" class="btn btn-danger" href="{{ route('tasks.destroy',['task'=>$task->id]) }}" id="del-task" >
-    删除
-  </button>
-  @endif
   <button type="button" class="btn btn-secondary" data-dismiss="modal"  >
     关闭
   </button>
 </div>
-<script type="text/javascript">
-  jQuery(document).ready(function () {
-    $('#edit-task,#finish-task').click(function(event) {
-        event.preventDefault();
-        var url = $(this).attr('href');
-        $('#_editModal').modal('show');
-        mAppExtend.ajaxGetHtml(
-            '#_editModal .modal-content',
-            url,
-            {},true);
-    });
-    $("#task-plan").click(function(event) {
-        event.preventDefault();
-        var url = $(this).attr('href');
-        $('#_planModal').modal('show');
-        mAppExtend.ajaxGetHtml(
-            '#_planModal .modal-content',
-            url,
-            {},true);
-    });
-    $('#del-task').click(function(event) {
-        event.preventDefault();
-        var url = $(this).attr('href');
-        mAppExtend.deleteData({
-            'url':url
-        });
-    });
-  });
-</script>

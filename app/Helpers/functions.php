@@ -561,7 +561,8 @@ function set_redirect_url($url = '', $name = '_redirect_url_')
     if (!$url) {
         $url = url()->full();
     }
-    Cookie::queue($name, $url, 30);
+    session([$name=>$url]);
+//    Cookie::queue($name, $url, 30);
 }
 
 /**
@@ -570,7 +571,8 @@ function set_redirect_url($url = '', $name = '_redirect_url_')
  */
 function get_redirect_url($name = '_redirect_url_')
 {
-    $url = Cookie::get($name);
+//    $url = Cookie::get($name);
+    $url = session($name);
     return $url ? $url : url()->previous();
 }
 
@@ -1012,6 +1014,13 @@ function check_project_owner($project, $power)
         if (check_company_admin() && get_user_company_id() == $project->department_id) {//分部管理员
             return true;
         }
+    }elseif ($power == 'company'){
+        if(is_administrator()){
+            return true;
+        }
+        if (check_company_admin() && get_user_company_id() == $project->department_id) {//分部管理员
+            return true;
+        }
     }
     return false;
 }
@@ -1031,6 +1040,9 @@ function check_project_leader($project, $type = 1, $user = null)
     if (is_numeric($project)) {
         $project = \App\Project::find($project);
     }
+    if(is_administrator() || (check_company_admin() && get_user_company_id($user) == $project->department_id)){
+        return true;
+    }
     if ($type == 1) {
         if ($user->id == $project->subcompany_leader) {
             return true;
@@ -1046,7 +1058,6 @@ function check_project_leader($project, $type = 1, $user = null)
     }
     return false;
 }
-
 /**
  * 项目状态
  * @param $status

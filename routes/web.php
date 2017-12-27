@@ -32,7 +32,7 @@ Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
-    Route::post("start_or_finish/{project}", 'ProjectController@startedAndFinished')->name('project.start_or_finish');
+    Route::get('projects/{project}/board', 'ProjectController@board')->name('project.board');
     Route::get('projects/{project}/tasks', 'ProjectController@tasks')->name('project.tasks');
     Route::get('projects/{project}/dynamics', 'ProjectController@dynamics')->name('project.dynamics');
     Route::get('projects/{project}/questions', 'ProjectController@questions')->name('project.questions');

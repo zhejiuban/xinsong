@@ -21,8 +21,11 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                         <input type="hidden" name="mid" value="{{request('mid')}}">
-                        <button type="submit" class="btn btn-brand  m-btn--pill">
-                            查询
+                        <button type="submit" class="btn btn-brand  m-btn m-btn--pill m-btn--icon">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>搜索</span>
+                            </span>
                         </button>
                         </div>
                     </div>
@@ -32,12 +35,14 @@
     </div>
     @foreach($list as $task)
         <div class="m-portlet">
-            <div class="m-portlet__body">
-                <div class="m-widget">
+            <div class="m-portlet__body  m-portlet__body--no-padding">
+                <div class="m-widget  m--padding-20">
                     <div class="m-widget-body">
                         <div class="m-section m-section-none">
                             <h3 class="m-section__heading m-line-height-25">
-                                {{$task->content}}
+                                <a class="action-show" href="{{route('dynamics.show',['dynamic'=>$task->id,'mid'=>request('mid')])}}">
+                                    {{str_limit($task->content,50,'...')}}
+                                </a>
                             </h3>
                             <span class="m-section__sub m-section__sub-margin-bottom-none">
                                 所属项目：{{$task->project ? $task->project->title : null}} <br>
@@ -134,6 +139,11 @@
                 minimumInputLength: 0,
                 templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
                 templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
+            });
+            $('a.action-show').click(function (event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                ActionModal(url,'show')
             });
         });
     </script>

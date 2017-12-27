@@ -1,37 +1,17 @@
-@extends('layouts.app')
-
-@section('content')
-    <div class="m-portlet m-portlet--mobile m--margin-bottom-0">
-        <div class="m-portlet__head">
-            <div class="m-portlet__head-caption">
-                <div class="m-portlet__head-title">
-                <span class="m-portlet__head-icon">
-                    <i class="flaticon-info"></i>
-                </span>
-                    <h3 class="m-portlet__head-text m--font-primary">
-                        新增问题
-                    </h3>
-                </div>
-            </div>
-            <div class="m-portlet__head-tools">
-                <ul class="m-portlet__nav">
-                    <li class="m-portlet__nav-item">
-                        <a href="{{ get_redirect_url() }}"
-                           class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
-                        <span>
-                            <i class="fa fa-reply"></i>
-                            <span>
-                                返回
-                            </span>
-                        </span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<div class="modal-header">
+    <h5 class="modal-title" id="_ModalLabel">
+        编辑问题
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">
+			&times;
+		</span>
+    </button>
+</div>
+<div class="modal-body">
         <!--begin::Form-->
-        <form action="{{route('questions.store',['back'=>$back])}}" id="project-form" method="post"
-              class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
+        <form action="{{route('questions.update',['question'=>$question->id])}}" id="question-form" method="post"
+              class="m-form  m-form--label-align-right ">
             <div class="m-portlet__body">
                 <div class="row m-form__group ">
                     <div class="col-md-12">
@@ -39,7 +19,7 @@
                             <label>
                                 问题名称:
                             </label>
-                            <input type="text" name="title" class="form-control m-input"
+                            <input type="text" name="title" class="form-control m-input" value="{{$question->title}}"
                                    data-error-container="#titles-error" placeholder="请输入问题名称">
                             <div id="titles-error" class=""></div>
                             <span class="m-form__help"></span>
@@ -53,6 +33,8 @@
                             <div class="">
                                 <select class="form-control m-input" id="user_select" name="receive_user_id"
                                         data-error-container="#receive_user_ids-error">
+                                    <option value="{{$question->receive_user_id}}"
+                                            selected>{{$question->receiveUser->name}}</option>
                                 </select>
                             </div>
                             <div id="receive_user_ids-error" class=""></div>
@@ -65,8 +47,9 @@
                                 所属分类:
                             </label>
                             <select class="form-control m-input select2" name="question_category_id"
+                                    id="question_category_id"
                                     data-error-container="#question_category_ids-error">
-                                {!! question_category_select() !!}
+                                {!! question_category_select($question->question_category_id) !!}
                             </select>
                             <div id="question_category_ids-error" class=""></div>
                             <span class="m-form__help"></span>
@@ -77,12 +60,14 @@
                             <label class="">
                                 所属项目:
                             </label>
-                            <select class="form-control m-input select2" id="project_select" name="project_id">
-                                @if(request('project_id'))
-                                    <option value="{{request('project_id')}}"
-                                            selected>{{get_project_info(request('project_id'))}}</option>
-                                @endif
-                            </select>
+                            <div class="">
+                                <select class="form-control m-input select2" id="project_select" name="project_id">
+                                    @if ($question->project)
+                                        <option value="{{$question->project->id}}"
+                                                selected>{{$question->project->title}}</option>
+                                    @endif
+                                </select>
+                            </div>
                             <span class="m-form__help"></span>
                         </div>
                     </div>
@@ -92,7 +77,8 @@
                                 问题描述:
                             </label>
                             <textarea name="content" class="form-control m-input" rows="8"
-                                      data-error-container="#contents-error" placeholder="请输入问题描述"></textarea>
+                                      data-error-container="#contents-error"
+                                      placeholder="请输入问题描述">{{$question->content}}</textarea>
                             <div id="contents-error" class=""></div>
                             <span class="m-form__help"></span>
                         </div>
@@ -103,6 +89,54 @@
                                 相关附件:
                             </label>
                             <div id="file-upload-instance" class="clearfix multi-image-upload">
+                                @if ($question->file and $question->file->isNotEmpty())
+                                    @foreach ($question->file as $key => $value)
+                                        @if(is_image($value->suffix))
+                                        <div id="uploaded-file-{{$value->id}}" title="{{$value->old_name}}"
+                                             data-container="body" data-toggle="m-tooltip" data-placement="top"
+                                             data-original-title="{{$value->old_name}}"
+                                             class="file-item tooltips pull-left">
+                                            <div class="file-preview">
+                                                <span class="preview">
+                                                  <a href="{{asset($value->path)}}" data-lightbox="roadtrip">
+                                                  <img class="hide" src="{{asset($value->path)}}">
+                                                  </a>
+                                                </span>
+                                            </div>
+                                            <div class="file-item-bg ">
+                                                <div class="text-right file-delete">
+                                                    <a href="javascript:;" title="删除"
+                                                       data-file-id="uploaded-file-{{$value->id}}"
+                                                       class="m--font-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="files[]" value="{{$value->id}}">
+                                        </div>
+                                        @else
+                                            <div id="uploaded-file-{{$value->id}}" title="{{$value->old_name}}" data-container="body"
+                                                 data-toggle="m-tooltip" data-placement="top"
+                                                 data-original-title="FILE_{{$value->old_name}}"
+                                                 class="file-item tooltips pull-left">
+                                                <div class="file-item-bg bg-grey-cararra full-height">
+                                                    <div class="text-right file-delete">
+                                                        <a href="javascript:;" title="删除"
+                                                           data-file-id="uploaded-file-{{$value->id}}"
+                                                           class="m--font-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="file-progress text-center "></div>
+                                                    <div class="file-state text-center">10.04K</div>
+                                                    <div class="file-info text-center"
+                                                         title="{{$value->old_name}}">{{$value->old_name}}</div>
+                                                </div>
+                                                <input type="hidden" name="files[]" value="{{$value->id}}">
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                @endif
                                 <div id="file-upload-instance-picker"
                                      class="pull-left m-b-sm p-xxs b-r-sm tooltips uploader-picker"
                                      data-container="body" data-html=true data-toggle="m-tooltip"
@@ -116,29 +150,19 @@
                     </div>
                 </div>
             </div>
-            <div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
-                <div class="m-form__actions m-form__actions--solid">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            {{ csrf_field() }}
-                            <button type="submit" id="submit-button" class="btn btn-primary">
-                                提交
-                            </button>
-                            <button type="reset" class="btn btn-secondary">
-                                重置
-                            </button>
-                        </div>
-                        {{--<div class="col-lg-6 m--align-right">
-                          <a href="{{ get_redirect_url() }}"  class="btn btn-secondary "><i class="fa fa-reply"></i> 返回</a>
-                        </div>--}}
-                    </div>
-                </div>
-            </div>
+            {{ csrf_field() }}
+            {{ method_field('PUT') }}
         </form>
         <!--end::Form-->
-    </div>
-@endsection
-@section('js')
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        关闭
+    </button>
+    <button type="button" class="btn btn-primary" id="question-submit-button">
+        提交
+    </button>
+</div>
     <script type="text/javascript">
         //异步加载用户选择框
         function formatRepo(repo) {
@@ -172,6 +196,7 @@
         }
 
         jQuery(document).ready(function () {
+            mAppExtend.select2Instance("#question_category_id");
             //异步加载用户选择框
             var $userSelector = $("#user_select").select2({
                 language: 'zh-CN',
@@ -179,7 +204,7 @@
                 allowClear: true,
                 width: '100%',
                 ajax: {
-                    url: "{{route('users.selector.data',['type'=>'sub_and_headquarters'])}}",
+                    url: "{{route('users.selector.data')}}",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -267,8 +292,8 @@
                 }
             });
 
-            var form = $('#project-form');
-            var submitButton = $("#submit-button");
+            var form = $('#question-form');
+            var submitButton = $("#question-submit-button");
             form.validate({
                 // define validation rules
                 rules: {
@@ -301,10 +326,17 @@
                         },
                         success: function (response, status, xhr, $form) {
                             if (response.status == 'success') {
-                                mAppExtend.notification(response.message
-                                    , 'success', 'toastr', function () {
+                                var $board = "{{request('board')}}";
+                                if($board == '1'){
+                                    $("#_modal").modal('hide');$('#_modal,#_editModal').modal('hide');
+                                    mAppExtend.ajaxGetHtml(
+                                        "#project-body","{!! get_redirect_url('board_ajax_url') !!}"
+                                        , {}, "#project-body");
+                                }else{
+                                    mAppExtend.notification(response.message,'success','toastr',function() {
                                         mAppExtend.backUrl(response.url);
                                     });
+                                }
                             } else {
                                 mAppExtend.notification(response.message
                                     , 'error');
@@ -325,6 +357,8 @@
                     });
                 }
             });
+            submitButton.click(function(event) {
+              form.submit();
+            });
         });
     </script>
-@endsection

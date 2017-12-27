@@ -96,12 +96,16 @@ class QuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         if (!check_permission('question/questions/create')) {
             return _404('无权操作！');
         }
-        return view('question.default.create', ['back' => null]);
+        if($request->ajax()){
+            return view('question.default.create_ajax', ['back' => null]);
+        }else{
+            return view('question.default.create', ['back' => null]);
+        }
     }
 
     /**
@@ -188,7 +192,7 @@ class QuestionController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
         $question = Question::with([
             'category', 'receiveUser', 'project'
@@ -200,7 +204,11 @@ class QuestionController extends Controller
             }elseif(!is_administrator() && $question->status){
                 return _error('问题已提交，不可修改');
             }
-            return view('question.default.edit', compact('question'));
+            if($request->ajax()){
+                return view('question.default.edit_ajax', compact('question'));
+            }else{
+                return view('question.default.edit', compact('question'));
+            }
         } else {
             return _404();
         }

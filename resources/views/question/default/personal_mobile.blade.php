@@ -41,7 +41,7 @@
                             <button type="submit" class="btn btn-brand  m-btn m-btn--pill m-btn--icon">
                                 <span>
                                     <i class="la la-search"></i>
-                                    <span>搜索</span>
+                                    <span>查询</span>
                                 </span>
                             </button>
                             <a href="{{ route('question.personal.create',['back'=>'personal','mid'=>'5e5fa7160f2d8bf507f11ac18455f61e']) }}"

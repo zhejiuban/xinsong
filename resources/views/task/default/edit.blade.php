@@ -124,10 +124,18 @@
                                     datatable.load();
                                 });
                         }else{
-                            mAppExtend.notification(response.message
-                                ,'success','toastr',function() {
-                                    mAppExtend.backUrl(response.url);
-                                });
+                            var $board = "{{request('board')}}";
+                            if($board == '1'){
+                                $('#_modal,#_editModal').modal('hide');
+                                mAppExtend.ajaxGetHtml(
+                                    "#project-body","{!! get_redirect_url('board_ajax_url') !!}"
+                                    , {}, "#project-body");
+                            }else {
+                                mAppExtend.notification(response.message
+                                    , 'success', 'toastr', function () {
+                                        mAppExtend.backUrl(response.url);
+                                    });
+                            }
                         }
                     }else{
                         mAppExtend.notification(response.message,'error');
