@@ -7,7 +7,7 @@
  */
 return [
     'page' => [
-        'per_page' => 2
+        'per_page' => 10
     ],
     'question_status' => [
         0 => ['title' => '待接收', 'class' => ' m-badge--danger'],
