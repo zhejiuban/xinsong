@@ -84,7 +84,7 @@
                             m-btn--square btn btn-secondary col m-btn--icon
                             m-btn--icon-center dynamic-add @if(!$task) disabled @endif">
                             <span>
-                                <i class="la la-edit"></i>
+                                <i class="la la-plus"></i>
                                 <span>
                                     上传日志
                                     @if($task) <span class="m-badge m-badge--danger m-badge--dot"></span>@endif
@@ -96,6 +96,12 @@
                             m-btn--square m-btn--icon btn btn-secondary
                             col m-btn--icon-center task-add"
                                href="{{ route('tasks.create',['project_id'=>$project->id]) }}">
+                                <span>
+                                <i class="la la-edit"></i>
+                                    <span>
+                                        发布任务
+                                    </span>
+                                </span>
                             </a>
                         @endif
                         <a href="{{ route('project.board',['project'=>$project->id,'mid'=>request('mid')]) }}"
