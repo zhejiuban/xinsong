@@ -44,6 +44,7 @@
                 <span class="m-widget5__info-author-name">
                     {{$question->user ? $question->user->name : null}}
                 </span>
+                <br>
                 <span class="m-widget5__info-label">
                     时间:
                 </span>
