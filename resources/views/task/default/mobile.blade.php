@@ -79,12 +79,13 @@
                     </div>
                 </div>
             </div>
+            @php $check = check_project_leader($task->project) @endphp
+            @if($check)
             <div class="m-portlet-action row">
                 <div class="btn-group m-btn-group col" role="group" aria-label="">
-                    @php $check = check_project_leader($task->project) @endphp
                     <a href="{{ route('tasks.edit',['task'=>$task->id,'mid'=>request('mid')]) }}"
                        class="m-btn--square m-btn--icon btn btn-secondary
-                                col m-btn--icon-center task-edit @if(!$check || $task->status == 1) disabled @endif m-btn-left-bottom-border-none"  >
+                                col m-btn--icon-center task-edit @if($task->status == 1) disabled @endif m-btn-left-bottom-border-none"  >
                             <span>
                                 <i class="la la-edit"></i>
                                 <span>编辑</span>
@@ -92,7 +93,7 @@
                     </a>
                     <a href="{{ route('tasks.destroy',['task'=>$task->id,'mid'=>request('mid')]) }}"
                        class="m-btn--square m-btn--icon btn btn-secondary
-                                col m-btn--icon-center action-delete   @if(!$check || $task->status == 1) disabled @endif   m-btn-bottom-border-none"  >
+                                col m-btn--icon-center action-delete   @if($task->status == 1) disabled @endif   m-btn-bottom-border-none"  >
                         <span>
                             <i class="la la-trash"></i>
                             <span>删除</span>
@@ -108,6 +109,7 @@
                     </a>
                 </div>
             </div>
+            @endif
         </div>
     @endforeach
     {{ $list->appends([
