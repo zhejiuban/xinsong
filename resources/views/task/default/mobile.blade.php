@@ -92,7 +92,7 @@
                     </a>
                     <a href="{{ route('tasks.destroy',['task'=>$task->id,'mid'=>request('mid')]) }}"
                        class="m-btn--square m-btn--icon btn btn-secondary
-                                col m-btn--icon-center action-delete   @if(!$check) disabled @endif   m-btn-bottom-border-none"  >
+                                col m-btn--icon-center action-delete   @if(!$check || $task->status == 1) disabled @endif   m-btn-bottom-border-none"  >
                         <span>
                             <i class="la la-trash"></i>
                             <span>删除</span>
