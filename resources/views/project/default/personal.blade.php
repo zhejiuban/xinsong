@@ -44,6 +44,24 @@
             </div>
         </form>
     </div>
+
+    @if(get_current_login_user_info(true)->leaderTasks()
+                ->needAddDynamic(current_date())->doesntHaveDynamic(current_date())->get()->isNotEmpty())
+        <div class="m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible fade show alert-warning" role="alert">
+            <div class="m-alert__icon">
+                <i class="la la-warning"></i>
+            </div>
+            <div class="m-alert__text">
+                <strong>
+                    警告：
+                </strong>
+                您今日有日志未上传，请尽快上传
+            </div>
+            <div class="m-alert__close">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    @endif
     <div class="row">
         @foreach($list as $project)
         <div class="col-xl-6">
