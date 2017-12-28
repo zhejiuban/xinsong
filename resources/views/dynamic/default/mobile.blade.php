@@ -48,7 +48,7 @@
                                 <a class="action-show" href="{{route('dynamics.show',['dynamic'=>$task->id,'mid'=>request('mid')])}}">
                                 {{str_limit($task->content,50,'...')}}
                                 </a>
-                                @if(is_administrator())
+                                @if(check_project_owner($task->project,'company'))
                                 <a href="{{route("dynamics.destroy",['dynamic'=>$task->id,'mid'=>request('mid')])}}"
                                    class="btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only
                                   m-btn--pill pull-right action-del" data-dynamic-id="{{$task->id}}"><i class="la la-trash"></i></a>
