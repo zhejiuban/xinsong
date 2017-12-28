@@ -17,10 +17,10 @@
                             <option value="">
                                 所有状态
                             </option>
-                            <option value="0">
+                            <option value="0" @if(request('status','') == 0 && request('status','') !== '') selected @endif>
                                 进行中
                             </option>
-                            <option value="1">
+                            <option value="1" @if(request('status') == 1) selected @endif>
                                 已完成
                             </option>
                         </select>
