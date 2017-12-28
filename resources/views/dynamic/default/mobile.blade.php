@@ -130,6 +130,7 @@
                         return {
                             q: params.term, // search term
                             page: params.page,
+                            all:'company',
                             per_page: {{config('common.page.per_page')}}
                         };
                     },
