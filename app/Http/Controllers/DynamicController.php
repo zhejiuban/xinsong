@@ -55,7 +55,7 @@ class DynamicController extends Controller
                         , ['*']
                         , 'datatable.pagination.page'
                     );
-                } elseif (check_company_admin()) {
+                } else{
                     //分部管理员获取分部所有项目
                     //获取分部所有用户
                     $user = get_company_user(null,'id');
@@ -121,7 +121,7 @@ class DynamicController extends Controller
                 })->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
-            } elseif (check_company_admin()) {
+            } else{
                 //分部管理员获取分部所有项目
                 //获取分部所有用户
                 $user = get_company_user(null,'id');

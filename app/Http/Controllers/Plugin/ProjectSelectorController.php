@@ -22,31 +22,33 @@ class ProjectSelectorController extends Controller
     public function data(Request $request)
     {
         $search = $request->input('q');
-        if (check_user_role(null, '总部管理员')) {
+        $status = $request->input('status', '0,1,2');
+        $all = $request->input('all');
+        if (check_user_role(null, '总部管理员') || $all == 'all') {
             $list = Project::when($search, function ($query) use ($search) {
-                return $query->where(function ($query) use($search){
+                return $query->where(function ($query) use ($search) {
                     $query->where('title', 'like', "%$search%")
                         ->orWhere('no', 'like', "%$search%");
                 });
-            })->where('status', '=', 1)
-                ->orderBy('id','desc')
+            })->whereIn('status', str2arr($status))
+                ->orderBy('id', 'desc')
                 ->paginate(config('common.page.per_page'));
-        } elseif (check_company_admin()) {
+        } elseif (check_company_admin() || $all == 'company') {
             $list = Project::when($search, function ($query) use ($search) {
-                return $query->where(function ($query) use($search){
+                return $query->where(function ($query) use ($search) {
                     $query->where('title', 'like', "%$search%")
                         ->orWhere('no', 'like', "%$search%");
                 });
-            })->where('status', '=', 1)
+            })->whereIn('status', str2arr($status))
                 ->where('department_id', get_user_company_id())
-                ->orderBy('id','desc')->paginate(config('common.page.per_page'));
-        }else{
+                ->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+        } else {
             $user = get_current_login_user_info(true);
             $list = $user->projects()->when($search, function ($query) use ($search) {
                 return $query->where('title', 'like', "%$search%")
                     ->orWhere('no', 'like', "%$search%");
-            })->where('status', '=', 1)
-                ->orderBy('id','desc')
+            })->whereIn('status', str2arr($status))
+                ->orderBy('id', 'desc')
                 ->paginate(config('common.page.per_page'));
         }
         return $list;

@@ -132,4 +132,24 @@ class Task extends Model
             ]);
         });
     }
+
+    public function scopeBaseSearch($query, $status = null, $search = null, $project_id = null)
+    {
+        return $query->when($status, function ($query) use ($status) {
+            return $query->where('status', $status);
+        }, function ($query) use ($status) {
+            if ($status !== null) {
+                return $query->where('status', $status);
+            }
+        })->when($search, function ($query) use ($search) {
+            return $query->where(function ($query) use ($search) {
+                $query->where(
+                    'content', 'like',
+                    "%{$search}%"
+                );
+            });
+        })->when($project_id, function ($query) use ($project_id) {
+            return $query->where('project_id', $project_id);
+        });
+    }
 }

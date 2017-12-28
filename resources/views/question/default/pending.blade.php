@@ -32,7 +32,7 @@
 		<!--begin: Search Form -->
 		<div class="m-form m-form--label-align-right  m--margin-bottom-20">
             <div class="m-form__group row align-items-center">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <div class="m-input-icon m-input-icon--left">
                             <input type="text" class="form-control m-input" placeholder="关键字..."
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <input type="text" class="form-control m-input m-date"
                                placeholder="上传日期" name="date" id="date"
@@ -54,13 +54,13 @@
                 </div>
             </div>
             <div class="row align-items-center">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <select name="project_id" class="form-control m-input" id="project_id">
                         </select>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <select class="form-control m-bootstrap-select" id="m_form_status">
                             {!! question_status_select() !!}

@@ -221,6 +221,7 @@
                         return {
                             q: params.term, // search term
                             page: params.page,
+                            status:1,
                             per_page: {{config('common.page.per_page')}}
                         };
                     },

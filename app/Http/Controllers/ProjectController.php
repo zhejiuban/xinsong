@@ -838,13 +838,15 @@ class ProjectController extends Controller
                 return $query->where('status', $status);
             }
         })->when($search, function ($query) use ($search) {
-            return $query->where(
-                'title', 'like',
-                "%{$search}%"
-            )->orWhere('no', 'like',
-                "%{$search}%")
-                ->orWhere('customers', 'like',
-                    "%{$search}%");
+            return $query->where(function ($query) use ($search) {
+                $query->where(
+                    'title', 'like',
+                    "%{$search}%"
+                )->orWhere('no', 'like',
+                    "%{$search}%")
+                    ->orWhere('customers', 'like',
+                        "%{$search}%");
+            });
         })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
         set_redirect_url();
         return view('project.default.personal', compact('list'));

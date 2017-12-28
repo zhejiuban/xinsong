@@ -178,8 +178,9 @@ class Project extends Model
         return $this->tasks()->needAddDynamic($date)->doesntHaveDynamic($date)->get();
     }
 
-    public function scopeBaseSearch($query,$status,$search,$department_id){
-        return $query->when($department_id,function ($query) use ($department_id) {
+    public function scopeBaseSearch($query, $status = null, $search = null, $department_id = null)
+    {
+        return $query->when($department_id, function ($query) use ($department_id) {
             return $query->where('department_id', $department_id);
         })->when($status, function ($query) use ($status) {
             return $query->where('status', $status);
@@ -198,7 +199,8 @@ class Project extends Model
         });
     }
 
-    public function scopeCompanySearch($query,$company){
+    public function scopeCompanySearch($query, $company)
+    {
         return $query->where('department_id', $company);
     }
 }

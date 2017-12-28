@@ -8,17 +8,17 @@
                     <div class="col-lg-3">
                         <div class="form-group ">
                         <select name="status" class="form-control m-bootstrap-select" id="status">
-                            {!! project_status_select() !!}
+                            {!! project_status_select(request('status','')) !!}
                         </select>
                         </div>
                     </div>
                     <div class="col-lg-3">
                         <div class="form-group ">
                         <select name="type" class="form-control m-bootstrap-select" id="type">
-                            <option value="0">
+                            <option value="0" @if(!request('type')) selected @endif >
                                 我参与的项目
                             </option>
-                            <option value="1">
+                            <option value="1"  @if(request('type')) selected @endif>
                                 我负责的项目
                             </option>
                         </select>
@@ -26,7 +26,7 @@
                     </div>
                     <div class="col-lg-3">
                         <div class="form-group ">
-                        <input type="text" name="search" class="form-control m-input" placeholder="关键字如编号、名称、客户联系人">
+                        <input type="text" name="search" value="{{request('search','')}}" class="form-control m-input" placeholder="关键字如编号、名称、客户联系人">
                         </div>
                     </div>
                     <div class="col-lg-3">
