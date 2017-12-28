@@ -860,7 +860,7 @@ class ProjectController extends Controller
             return _404();
         }
         //检测项目权限
-        if (!check_project_owner($project, 'company')) {
+        if (!check_project_leader($project)) {
             return _404('无权操作');
         }
         if ($request->isMethod('put')) {
