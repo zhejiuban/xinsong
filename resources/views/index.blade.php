@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
     <!--Begin::Main Portlet-->
     <div class="m-portlet">
         <div class="m-portlet__body  m-portlet__body--no-padding">
@@ -10,7 +11,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                项目统计
+                                <a href="{{url('project/projects?mid=bd128edbfd250c9c5eff5396329011cd')}}">项目统计</a>
                             </h3>
                             <span class="m-widget14__desc">
                                 今日项目：+{{$project['day_add']}}
@@ -55,7 +56,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                任务统计
+                                <a href="{{url('project/tasks?mid=da448943e7f05e99593248d4c86b7565')}}">任务统计</a>
                             </h3>
                             <span class="m-widget14__desc">
                                 今日进行中任务：{{$task['day_processing']}}
@@ -93,7 +94,7 @@
                     <div class="m-widget14">
                         <div class="m-widget14__header">
                             <h3 class="m-widget14__title">
-                                问题统计
+                                <a href="{{url('question/questions?mid=3affc334d19fc914c4d667a01848f55d')}}">问题统计</a>
                             </h3>
                             <span class="m-widget14__desc">
                                 今日问题：+{{$question['day_add']}}
@@ -142,45 +143,83 @@
         </div>
     </div>
     <!--End::Main Portlet-->
-
-    <!--begin:: Widgets/Audit Log-->
-    <div class="m-portlet m-portlet--full-height">
-        <div class="m-portlet__head">
-            <div class="m-portlet__head-caption">
-                <div class="m-portlet__head-title">
-                    <h3 class="m-portlet__head-text">
-                        日志统计
-                    </h3>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="m-portlet m-portlet--full-height">
+                <div class="m-portlet__head">
+                    <div class="m-portlet__head-caption">
+                        <div class="m-portlet__head-title">
+                            <span class="m-portlet__head-icon">
+                                <i class="flaticon-info"></i>
+                            </span>
+                            <h3 class="m-portlet__head-text m--font-primary">
+                                待我回复问题
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="m-portlet__head-tools">
+                        <ul class="m-portlet__nav">
+                            <li class="m-portlet__nav-item">
+                                <a href="{{url('question/create?direct=1&mid=5e5fa7160f2d8bf507f11ac18455f61e')}}" class="m-portlet__nav-link btn btn-secondary m-btn m-btn--hover-brand m-btn--icon m-btn--icon-only m-btn--pill">
+                                    <i class="la la-plus"></i>
+                                </a>
+                            </li>
+                            <li class="m-portlet__nav-item">
+                                <a href="{{url('question/pending?mid=8053529e293f7baef9b15cad1fa80eb6')}}" class="m-portlet__nav-link btn btn-secondary m-btn m-btn--hover-brand m-btn--icon m-btn--icon-only m-btn--pill">
+                                    <i class="la la-ellipsis-v"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="m-scrollable" data-scrollable="true" data-max-height="250" data-mobile-max-height="200" data-scrollbar-shown="true">
+                        <div class="m-widget4">
+                            @if($question['need_reply']->isNotEmpty())
+                                @foreach($question['need_reply'] as $q)
+                                    <div class="m-widget4__item" style="padding: 5px 0;">
+                                        <div class="m-widget4__info m--padding-left-0">
+                                    <span class="m-widget4__text">
+                                        <a href="{{ route('questions.reply',['question'=>$q->id,'mid'=>request('mid')]) }}" title="查看并回复"
+                                           class="m--font-default question-reply">
+                                            {{$q->title}}
+                                        </a>
+                                    </span>
+                                        </div>
+                                        <div class="m-widget4__ext">
+                                            <a href="{{ route('questions.reply',['question'=>$q->id,'mid'=>request('mid')]) }}" title="查看并回复"
+                                               class="m-widget4__icon question-reply">
+                                                <i class="la la-reply"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="success-info text-center">
+                                    暂无要回复的问题
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="m-portlet__head-tools">
-                <ul class="nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm" role="tablist">
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link active" >
-                            日
-                        </a>
-                    </li>
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link">
-                            周
-                        </a>
-                    </li>
-                    <li class="nav-item m-tabs__item">
-                        <a class="nav-link m-tabs__link" >
-                            月
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </div>
-        <div class="m-portlet__body">
-            <div id="dynamics" style="width: 100%;height:400px;">
+        {{--<div class="col-xl-6">
+            <div class="m-portlet m-portlet--full-height">
+                <div class="m-portlet__head">
+                    <div class="m-portlet__head-caption">
+                        <div class="m-portlet__head-title">
+                            <h3 class="m-portlet__head-text">
 
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                </div>
             </div>
-        </div>
+        </div>--}}
     </div>
-    <!--end:: Widgets/Audit Log-->
-
     <!--begin::Modal-->
     <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -428,6 +467,20 @@
                 });
             };
             question();
+
+            var lookQuestion = function(url,type){
+                $('#_modal').modal(type?type:'show');
+                mAppExtend.ajaxGetHtml(
+                    '#_modal .modal-content',
+                    url,
+                    {},true);
+            }
+            $('.question-reply').click(function(event){
+                event.preventDefault();
+                var url = $(this).attr('href');
+                lookQuestion(url);
+            });
+
         });
     </script>
 @endsection

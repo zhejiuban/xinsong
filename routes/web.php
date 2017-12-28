@@ -70,6 +70,7 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
 
     Route::get('tasks','TaskController@index')->name('project.task.tasks');
     Route::get('dynamics','DynamicController@index')->name('project.dynamic.dynamics');
+    Route::get('malfunctions','MalfunctionController@index')->name('project.malfunction.malfunctions');
 });
 
 Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
@@ -110,4 +111,7 @@ Route::group(['prefix' => 'dynamic', 'middleware' => 'auth'], function () {
 });
 Route::group(['prefix' => 'plan', 'middleware' => 'auth'], function () {
     Route::resource('plans', 'PlanController');
+});
+Route::group(['prefix' => 'malfunction', 'middleware' => 'auth'], function () {
+    Route::resource('malfunctions', 'MalfunctionController');
 });

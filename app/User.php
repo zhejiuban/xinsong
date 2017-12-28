@@ -66,6 +66,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Question','receive_user_id');
     }
 
+    public function malfunctions(){
+        return $this->hasMany('App\Malfunction');
+    }
+
     /**
      * 获取某个用户所在公司
      * @return null

@@ -67,7 +67,7 @@
 									<a href="{{url('project/dynamics?mid=a70ebe696b17f962d6271b83eee22c7c')}}" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-list"></i>
 										<span class="m-nav__link-text">
-											工作日志汇总
+											日志汇总
 										</span>
 									</a>
 								</li>

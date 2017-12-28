@@ -134,6 +134,14 @@
                         sortable: false,
                         selector: {class: 'm-checkbox--solid m-checkbox--brand'}
                     }, {
+                        width: 340,
+                        field: "content", sortable: false,
+                        title: "日志内容", template: function (row) {
+                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' +
+                                (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
+                                + '</a>';
+                        }
+                    }, {
                         field: "project_id",
                         width: 240,
                         title: "所属项目", sortable: false,
@@ -141,14 +149,6 @@
                             if (row.project) {
                                 return row.project.title;
                             }
-                        }
-                    }, {
-                        width: 340,
-                        field: "content", sortable: false,
-                        title: "日志内容", template: function (row) {
-                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' +
-                                (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
-                                + '</a>';
                         }
                     }, {
                         field: "user_id", sortable: false,

@@ -31,7 +31,7 @@ class HomeController extends Controller
     public function index()
     {
         if(check_user_role(null,'总部管理员')){
-            //获取所有分部项目
+            //获取所有项目
             $project = [
                 'all'=>Project::count(),
                 'finished' => Project::where('status',2)->count(),
@@ -57,20 +57,12 @@ class HomeController extends Controller
                 'close'=>Question::where('status',3)->count(),
                 'day_add'=>Question::whereBetween('created_at', [
                     date_start_end(), date_start_end(null, 'end')
-                ])->count()
-            ];
-            $dy = Dynamic::groupBy('date')
-                ->orderBy('date', 'asc')
-                ->get([
-                    DB::raw('Date(created_at) as date'),
-                    DB::raw('COUNT(*) as count')
-                ]);
-            $dynamic = [
-                'date'=>$dy->pluck('date')->all(),
-                'data'=>$dy->pluck('count')->all()
+                ])->count(),
+                'need_reply'=>Question::whereIn('status',[0,1])
+                    ->receiveQuestion()->get()
             ];
             return view('index',compact([
-                'project','task','question','dynamic'
+                'project','task','question'
             ]));
         }elseif(check_company_admin()){
             //获取分部所有用户
@@ -105,20 +97,26 @@ class HomeController extends Controller
                 'close'=>Question::whereIn('user_id',$user)->where('status',3)->count(),
                 'day_add'=>Question::whereIn('user_id',$user)->whereBetween('created_at', [
                     date_start_end(), date_start_end(null, 'end')
-                ])->count()
+                ])->count(),
+                'need_reply'=>Question::whereIn('status',[0,1])
+                    ->receiveQuestion()->get()
             ];
 
             return view('company',compact([
                 'user','all'
-                ,'project','task','question','dynamic'
+                ,'project','task','question'
             ]));
         }else{
             //获取当前用户未上传日志的任务
             $user = get_current_login_user_info(true);
             $needAddDynamicTask = $user->leaderTasks()
                 ->needAddDynamic(current_date())->doesntHaveDynamic(current_date())->get();
+            $question = [
+                'need_reply'=>Question::whereIn('status',[0,1])
+                    ->receiveQuestion()->get()
+            ];
             set_redirect_url();
-            return view('home',compact(['user','needAddDynamicTask']));
+            return view('home',compact(['user','needAddDynamicTask','question']));
         }
     }
 }

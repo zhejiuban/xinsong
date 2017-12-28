@@ -183,7 +183,83 @@
         </div>
     </div>
     <!--End::Main Portlet-->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="m-portlet m-portlet--full-height">
+                <div class="m-portlet__head">
+                    <div class="m-portlet__head-caption">
+                        <div class="m-portlet__head-title">
+                            <span class="m-portlet__head-icon">
+                                <i class="flaticon-info"></i>
+                            </span>
+                            <h3 class="m-portlet__head-text m--font-primary">
+                                待我回复问题
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="m-portlet__head-tools">
+                        <ul class="m-portlet__nav">
+                            <li class="m-portlet__nav-item">
+                                <a href="{{url('question/create?direct=1&mid=5e5fa7160f2d8bf507f11ac18455f61e')}}" class="m-portlet__nav-link btn btn-secondary m-btn m-btn--hover-brand m-btn--icon m-btn--icon-only m-btn--pill">
+                                    <i class="la la-plus"></i>
+                                </a>
+                            </li>
+                            <li class="m-portlet__nav-item">
+                                <a href="{{url('question/pending?mid=8053529e293f7baef9b15cad1fa80eb6')}}" class="m-portlet__nav-link btn btn-secondary m-btn m-btn--hover-brand m-btn--icon m-btn--icon-only m-btn--pill">
+                                    <i class="la la-ellipsis-v"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                    <div class="m-scrollable" data-scrollable="true" data-max-height="250" data-mobile-max-height="200" data-scrollbar-shown="true">
+                        <div class="m-widget4">
+                            @if($question['need_reply']->isNotEmpty())
+                                @foreach($question['need_reply'] as $q)
+                                    <div class="m-widget4__item" style="padding: 5px 0;">
+                                        <div class="m-widget4__info m--padding-left-0">
+                                    <span class="m-widget4__text">
+                                        <a href="{{ route('questions.reply',['question'=>$q->id,'mid'=>request('mid')]) }}" title="查看并回复"
+                                           class="m--font-default question-reply">
+                                            {{$q->title}}
+                                        </a>
+                                    </span>
+                                        </div>
+                                        <div class="m-widget4__ext">
+                                            <a href="{{ route('questions.reply',['question'=>$q->id,'mid'=>request('mid')]) }}" title="查看并回复"
+                                               class="m-widget4__icon question-reply">
+                                                <i class="la la-reply"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="success-info text-center">
+                                    暂无要回复的问题
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{--<div class="col-xl-6">
+            <div class="m-portlet m-portlet--full-height">
+                <div class="m-portlet__head">
+                    <div class="m-portlet__head-caption">
+                        <div class="m-portlet__head-title">
+                            <h3 class="m-portlet__head-text">
 
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-portlet__body">
+                </div>
+            </div>
+        </div>--}}
+    </div>
     <!--begin::Modal-->
     <div class="modal fade" id="_needmodal" tabindex="-1" role="dialog" aria-labelledby="_NeedModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -230,7 +306,14 @@
         </div>
     </div>
     <!--end::Modal-->
-
+    <!--begin::Modal-->
+    <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <!--end::Modal-->
 @endsection
 @section('js')
 
@@ -621,6 +704,19 @@
                 });
             };
             question();
+
+            var lookQuestion = function(url,type){
+                $('#_modal').modal(type?type:'show');
+                mAppExtend.ajaxGetHtml(
+                    '#_modal .modal-content',
+                    url,
+                    {},true);
+            }
+            $('.question-reply').click(function(event){
+                event.preventDefault();
+                var url = $(this).attr('href');
+                lookQuestion(url);
+            });
         });
     </script>
 @endsection

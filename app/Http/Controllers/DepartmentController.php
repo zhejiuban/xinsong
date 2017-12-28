@@ -20,7 +20,7 @@ class DepartmentController extends Controller
             return _404('无权操作');
         }
         //获取部门信息
-        if (is_administrator()) {
+        if (check_user_role(null,'总部管理员')) {
             $menu = Department::get()->toArray();
             $list = formatTreeData($menu);
         } else {
@@ -149,6 +149,9 @@ class DepartmentController extends Controller
             return _404('不能删除，请先删除部门人员信息');
         }
         $menu = Department::find($id);
+        if (!is_administrator() && $menu->company_id != get_user_company_id()) {
+            return  _404('无权操作');
+        }
         if ($menu->delete()) {
             activity('系统日志')->performedOn($menu)
                 ->withProperties($menu)->log('删除部门信息');
