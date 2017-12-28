@@ -43,7 +43,7 @@ class QuestionController extends Controller
                         , ['*']
                         , 'datatable.pagination.page'
                     );
-                } elseif (check_company_admin()) {
+                } else{
                     $role = Question::with([
                         'category', 'project', 'user', 'receiveUser'
                     ])->baseQuestion($status,$search,$date,$project_id)->companyQuestion()->orderBy(
@@ -79,7 +79,7 @@ class QuestionController extends Controller
                 ])->baseQuestion($status,$search,$date,$project_id)->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
-            } elseif (check_company_admin()) {
+            } else {
                 $list = Question::with([
                     'category', 'project', 'user', 'receiveUser'
                 ])->baseQuestion($status,$search,$date,$project_id)->companyQuestion()->orderBy(

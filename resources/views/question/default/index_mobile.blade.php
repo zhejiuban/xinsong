@@ -16,13 +16,13 @@
                         <div class="form-group">
                             <input type="text" class="form-control m-input m-date"
                                    placeholder="发布日期" name="date" id="date"
-                                   readonly value=""/>
+                                   readonly value="{{request('date')}}"/>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <input type="text" class="form-control m-input" name="search" placeholder="关键字..."
-                                   id="m_form_search">
+                                   id="m_form_search" value="{{request('search')}}">
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <select name="status" class="form-control" id="status">
-                                {!! question_status_select() !!}
+                                {!! question_status_select(request('status','')) !!}
                             </select>
                         </div>
                     </div>
@@ -191,6 +191,7 @@
                         return {
                             q: params.term, // search term
                             page: params.page,
+                            all:'company',
                             per_page: {{config('common.page.per_page')}}
                         };
                     },

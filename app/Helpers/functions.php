@@ -1169,7 +1169,7 @@ function question_status_select($selected=''){
     $data = config('common.question_status');
     $str = '<option value="">所有状态</option>';
     foreach ($data as $key=>$val){
-        if($selected === $key){
+        if($selected != '' && $selected == $key){
             $str .= '<option value="'.$key.'" selected="selected">'.$val['title'].'</option>';
         }else{
             $str .= '<option value="'.$key.'" >'.$val['title'].'</option>';

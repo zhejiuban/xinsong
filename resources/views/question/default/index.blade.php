@@ -184,7 +184,7 @@
                         }
                     }, {
                         field: "question_category_id",
-                        title: "所属版块",
+                        title: "所属分类",
                         sortable: false,
                         template: function (row) {
                             return row.category ? row.category.name : null;
@@ -299,6 +299,7 @@
                         return {
                             q: params.term, // search term
                             page: params.page,
+                            all:'company',
                             per_page: {{config('common.page.per_page')}}
                         };
                     },

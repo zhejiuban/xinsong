@@ -274,7 +274,6 @@
                             q: params.term, // search term
                             page: params.page,
                             all:'company',
-                            status:'0,1,2',
                             per_page: {{config('common.page.per_page')}}
                         };
                     },
