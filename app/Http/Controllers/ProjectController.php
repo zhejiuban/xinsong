@@ -694,7 +694,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         if ($project) {
-            if (!check_project_owner($project, 'company')) {
+            if (!check_project_leader($project)) {
                 return _404('无权操作');
             }
             if ($request->isMethod('post')) {
@@ -727,7 +727,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
         $folder = $project->folders()->find($folder);
         if ($project && $folder) {
-            if (!check_project_owner($project, 'company')) {
+            if (!check_project_leader($project)) {
                 return _404('无权操作');
             }
             if ($request->isMethod('put')) {
