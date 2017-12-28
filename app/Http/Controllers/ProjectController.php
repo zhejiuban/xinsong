@@ -9,6 +9,7 @@ use App\ProjectFolder;
 use App\ProjectPhase;
 use App\User;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Facades\Agent;
 
 class ProjectController extends Controller
 {
@@ -23,86 +24,84 @@ class ProjectController extends Controller
             return _404('无权操作！');
         }
 
-        if ($request->ajax()) {
-            $sort_field = $request->input('datatable.sort.field')
-                ? $request->input('datatable.sort.field') : 'id';
-            $sort = $request->input('datatable.sort.sort')
-                ? $request->input('datatable.sort.sort') : 'desc';
-            $prepage = $request->input('datatable.pagination.perpage')
-                ? (int)$request->input('datatable.pagination.perpage') : 20;
-            $status = $request->input('datatable.query.status');
-            $search = $request->input('datatable.query.search');
-            $department_id = $request->input('datatable.query.department_id');
-            //管理员或总部管理员获取所有项目
+        if (!Agent::isMobile()) {
+            if ($request->ajax()) {
+                $sort_field = $request->input('datatable.sort.field')
+                    ? $request->input('datatable.sort.field') : 'id';
+                $sort = $request->input('datatable.sort.sort')
+                    ? $request->input('datatable.sort.sort') : 'desc';
+                $prepage = $request->input('datatable.pagination.perpage')
+                    ? (int)$request->input('datatable.pagination.perpage') : 20;
+                $status = $request->input('datatable.query.status');
+                $search = $request->input('datatable.query.search');
+                $department_id = $request->input('datatable.query.department_id');
+                //管理员或总部管理员获取所有项目
+                if (check_user_role(null, '总部管理员')) {
+                    $project = Project::with([
+                        'department', 'leaderUser', 'agentUser', 'companyUser'
+                        , 'phases'
+                    ])->baseSearch($status, $search, $department_id)->orderBy(
+                        $sort_field
+                        , $sort)->paginate(
+                        $prepage
+                        , ['*']
+                        , 'datatable.pagination.page'
+                    );
+                } elseif (check_company_admin()) {
+                    //分部管理员获取分部所有项目
+                    $project = Project::with([
+                        'department', 'leaderUser', 'agentUser', 'companyUser'
+                        , 'phases'
+                    ])->baseSearch($status, $search, null)
+                        ->companySearch(get_user_company_id())
+                        ->orderBy(
+                            $sort_field
+                            , $sort)->paginate(
+                            $prepage
+                            , ['*']
+                            , 'datatable.pagination.page'
+                        );
+                }
+
+                $meta = [
+                    'field' => $sort_field,
+                    'sort' => $sort,
+                    'page' => $project->currentPage(),
+                    'pages' => $project->hasMorePages(),
+                    'perpage' => $prepage,
+                    'total' => $project->total()
+                ];
+                $data = $project->toArray();
+                $data['meta'] = $meta;
+                return response()->json($data);
+            }
+            set_redirect_url();
+            return view('project.default.index');
+        } else {
+            $status = $request->input('status');
+            $search = $request->input('search');
+            $department_id = $request->input('department_id');
+
             if (check_user_role(null, '总部管理员')) {
-                $project = Project::with([
+                $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
-                    ,'phases'
-                ])->when($department_id,function ($query) use ($department_id) {
-                    return $query->where('department_id', $department_id);
-                })->when($status, function ($query) use ($status) {
-                    return $query->where('status', $status);
-                }, function ($query) use ($status) {
-                    if ($status !== null) {
-                        return $query->where('status', $status);
-                    }
-                })->when($search, function ($query) use ($search) {
-                    return $query->where(function ($query) use ($search) {
-                        $query->where(
-                            'title', 'like',
-                            "%{$search}%"
-                        )->orWhere('no', 'like',
-                            "%{$search}%");
-                    });
-                })->orderBy(
-                    $sort_field
-                    , $sort)->paginate(
-                    $prepage
-                    , ['*']
-                    , 'datatable.pagination.page'
-                );
+                    , 'phases'
+                ])->baseSearch($status, $search, $department_id)->orderBy(
+                    'id'
+                    , 'desc')->paginate(config('common.page.per_page'));
             } elseif (check_company_admin()) {
                 //分部管理员获取分部所有项目
-                $project = Project::with([
+                $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
-                    ,'phases'
-                ])->when($status, function ($query) use ($status) {
-                    return $query->where('status', $status);
-                }, function ($query) use ($status) {
-                    if ($status !== null) {
-                        return $query->where('status', $status);
-                    }
-                })->when($search, function ($query) use ($search) {
-                    return $query->where(function ($query) use ($search) {
-                        $query->where(
-                            'title', 'like',
-                            "%{$search}%"
-                        )->orWhere('no', 'like',
-                            "%{$search}%");
-                    });
-                })->where('department_id', get_user_company_id())->orderBy(
-                    $sort_field
-                    , $sort)->paginate(
-                    $prepage
-                    , ['*']
-                    , 'datatable.pagination.page'
-                );
+                    , 'phases'
+                ])->baseSearch($status, $search, null)->companySearch(get_user_company_id())->orderBy(
+                    'id'
+                    , 'desc')->paginate(config('common.page.per_page'));
             }
 
-            $meta = [
-                'field' => $sort_field,
-                'sort' => $sort,
-                'page' => $project->currentPage(),
-                'pages' => $project->hasMorePages(),
-                'perpage' => $prepage,
-                'total' => $project->total()
-            ];
-            $data = $project->toArray();
-            $data['meta'] = $meta;
-            return response()->json($data);
+            set_redirect_url();
+            return view('project.default.mobile', compact('list'));
         }
-        set_redirect_url();
-        return view('project.default.index');
     }
 
     /**
@@ -167,7 +166,7 @@ class ProjectController extends Controller
                     $phases[$key]['status'] = 0;
                 } elseif ($phase['started_at'] && !$phase['finished_at']) {
                     $phases[$key]['status'] = 1;
-                }elseif ($phase['started_at'] && $phase['finished_at']) {
+                } elseif ($phase['started_at'] && $phase['finished_at']) {
                     $phases[$key]['status'] = 2;
                 }
             }
@@ -195,9 +194,6 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-//        if (!check_permission('project/projects/show')) {
-//            return _404('无权操作！');
-//        }
         $project = Project::find($id);
         if (!$project) {
             return _404();
@@ -228,7 +224,7 @@ class ProjectController extends Controller
             return _404('无权操作');
         }
         //检测项目权限
-        if (!check_project_owner($project, 'edit')) {
+        if (!check_project_owner($project, 'company')) {
             return _404('无权操作');
         }
         return view('project.default.edit', compact('project'));
@@ -249,7 +245,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
         if ($project) {
             //检测项目权限
-            if ($project->status == 2 || !check_project_owner($project, 'edit')) {
+            if ($project->status == 2 || !check_project_owner($project, 'company')) {
                 return _404('无权操作');
             }
 
@@ -301,7 +297,7 @@ class ProjectController extends Controller
                         $phase['status'] = 0;
                     } elseif ($phase['started_at'] && !$phase['finished_at']) {
                         $phase['status'] = 1;
-                    }elseif ($phase['started_at'] && $phase['finished_at']) {
+                    } elseif ($phase['started_at'] && $phase['finished_at']) {
                         $phase['status'] = 2;
                     }
                     if (!isset($phase['id'])) {
@@ -356,13 +352,13 @@ class ProjectController extends Controller
         }
         //检测关联信息
         //检测项目是否有下发任务
-        if($project->tasks()->first()){
+        if ($project->tasks()->first()) {
             return _error('请先删除相关任务');
         }
-        if($project->dynamics()->first()){
+        if ($project->dynamics()->first()) {
             return _error('请先删除相关日志');
         }
-        if($project->users()->first()){
+        if ($project->users()->first()) {
             return _error('请先删除参与人员');
         }
 
@@ -403,7 +399,8 @@ class ProjectController extends Controller
         }
     }*/
     //项目看板
-    public function board(Request $request, $id){
+    public function board(Request $request, $id)
+    {
         if ($project = Project::find($id)) {
             if (!check_project_owner($project, 'look')) {
                 return _404('无权操作');
@@ -434,7 +431,7 @@ class ProjectController extends Controller
                     ]);
                 }
             })->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
-            set_redirect_url(null,'board_ajax_url');
+            set_redirect_url(null, 'board_ajax_url');
             return view('project.default.task', compact(['project', 'tasks']));
         } else {
             return _404();
@@ -450,7 +447,7 @@ class ProjectController extends Controller
             }
             $only = $request->input('only');
             $date = $request->input('date') ? $request->input('date') : current_date();
-            if($request->input('all')){
+            if ($request->input('all')) {
                 $date = null;
             }
             $dynamics = $project->dynamics()->when(
@@ -461,7 +458,7 @@ class ProjectController extends Controller
                     date_start_end($date), date_start_end($date, 'end')
                 ]);
             })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
-            set_redirect_url(null,'board_ajax_url');
+            set_redirect_url(null, 'board_ajax_url');
             return view('project.default.dynamic', compact(['project', 'dynamics']));
         } else {
             return _404();
@@ -487,7 +484,7 @@ class ProjectController extends Controller
                     ]);
                 }
             })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
-            set_redirect_url(null,'board_ajax_url');
+            set_redirect_url(null, 'board_ajax_url');
             return view('project.default.question', compact(['project', 'questions']));
         } else {
             return _404();
@@ -504,7 +501,7 @@ class ProjectController extends Controller
     {
         if ($project = Project::find($id)) {
             $users = $project->users()->paginate(config('common.page.per_page'));
-            set_redirect_url(null,'board_ajax_url');
+            set_redirect_url(null, 'board_ajax_url');
             return view('project.default.user', compact(['project', 'users']));
         } else {
             return _404();
@@ -604,7 +601,7 @@ class ProjectController extends Controller
                 })->when($only, function ($query) {
                     return $query->where('user_id', get_current_login_user_info());
                 })->orderBy('id', 'desc')->get();
-            set_redirect_url(null,'board_ajax_url');
+            set_redirect_url(null, 'board_ajax_url');
             return view('project.default.file', compact(['project', 'folders', 'files']));
         } else {
             return _404();
@@ -799,11 +796,11 @@ class ProjectController extends Controller
                 $phase->started_at = $request->started_at;
                 $phase->finished_at = $request->finished_at;
                 $status = $request->status;
-                if(!$phase->started_at){
-                   $status = 0;
-                }elseif($phase->started_at && !$phase->finished_at){
-                   $status = 1;
-                }else{
+                if (!$phase->started_at) {
+                    $status = 0;
+                } elseif ($phase->started_at && !$phase->finished_at) {
+                    $status = 1;
+                } else {
                     $status = 2;
                 }
                 $phase->status = $status;

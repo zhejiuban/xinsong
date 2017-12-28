@@ -159,7 +159,7 @@
                 '#_modal .modal-content',
                 url,
                 {}, true);
-        }
+        };
         $(document).ready(function () {
             $('#type,#status').selectpicker();
             $('.dynamic-add,.task-add').click(function (event) {

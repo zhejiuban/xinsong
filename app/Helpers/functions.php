@@ -1018,7 +1018,7 @@ function check_project_owner($project, $power)
         if(is_administrator()){
             return true;
         }
-        if (check_company_admin() && get_user_company_id() == $project->department_id) {//分部管理员
+        if ((check_company_admin() || check_user_role(null, '总部管理员')) && get_user_company_id() == $project->department_id) {//分部管理员
             return true;
         }
     }
@@ -1181,7 +1181,7 @@ function project_status_select($selected=''){
     $data = config('common.project_status');
     $str = '<option value="">所有状态</option>';
     foreach ($data as $key=>$val){
-        if($selected === $key){
+        if($selected !== '' && $selected == $key){
             $str .= '<option value="'.$key.'" selected="selected">'.$val['title'].'</option>';
         }else{
             $str .= '<option value="'.$key.'" >'.$val['title'].'</option>';
