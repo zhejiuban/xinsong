@@ -100,6 +100,14 @@
 									</a>
 								</li>
 								@endif
+								<li class="m-nav__item">
+									<a href="{{url('malfunction/malfunctions?mid=0bd559bbe15fe3f5b7a2ed3efdd3e901')}}" class="m-nav__link">
+										<i class="m-nav__link-icon flaticon-interface-8"></i>
+										<span class="m-nav__link-text">
+											故障记录
+										</span>
+									</a>
+								</li>
 								{{--<li class="m-nav__item">
 									<a href="" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-lifebuoy"></i>

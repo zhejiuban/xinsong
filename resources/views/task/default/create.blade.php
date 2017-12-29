@@ -10,6 +10,22 @@
 </div>
 <div class="modal-body">
 	<form class="m-form" action="{{ route('tasks.store') }}" method="post" id="task-form">
+
+		<div class="form-group">
+			<label>
+				所处项目:
+			</label>
+			<div class="">
+				<select class="form-control m-input select2"  id="project_select" name="project_id">
+					@if(request('project_id'))
+						<option value="{{request('project_id')}}"
+								selected>{{get_project_info(request('project_id'))}}</option>
+					@endif
+				</select>
+			</div>
+			<span class="m-form__help"></span>
+		</div>
+
 		<div class="form-group">
 			<label for="name" class="form-control-label">
 				开始日期:
@@ -51,7 +67,7 @@
 			</div>
 			<span class="m-form__help"></span>
 		</div>--}}
-		<input type="hidden" name="project_id" value="{{$project_id}}"> {{ csrf_field() }}
+		{{ csrf_field() }}
 	</form>
 </div>
 <div class="modal-footer">
@@ -63,6 +79,19 @@
 	</button>
 </div>
 <script type="text/javascript">
+    function formatProjectRepo(repo) {
+        if (repo.loading) return repo.text;
+        var markup = "<div class='select2-result-repository clearfix'>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" + repo.title + "</div>";
+        markup += "<div class='select2-result-repository__description'>项目编号：" + repo.no + "</div>";
+        markup += "</div></div>";
+        return markup;
+    }
+
+    function formatProjectRepoSelection(repo) {
+        return repo.title || repo.text;
+    }
 	jQuery(document).ready(function () {
     mAppExtend.datePickerInstance();
 	$('#leader').select2({
@@ -70,11 +99,67 @@
 		width: '100%',
         placeholder:'请选择接收人'
 	});
+	var $projectSelector = $("#project_select").select2({
+		language: 'zh-CN',
+		placeholder: "输入项目编号、名称等关键字搜索，选择项目",
+		allowClear: true,
+		width: '100%',
+		ajax: {
+			url: "{{route('projects.selector.data')}}",
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					q: params.term, // search term
+					page: params.page,
+					status:1,
+					per_page: {{config('common.page.per_page')}}
+				};
+			},
+			processResults: function (data, params) {
+				params.page = params.page || 1;
+				return {
+					results: data.data,
+					pagination: {
+						more: (params.page * data.per_page) < data.total
+					}
+				};
+			},
+			cache: true
+		},
+		escapeMarkup: function (markup) {
+			return markup;
+		}, // let our custom formatter work
+		minimumInputLength: 0,
+		templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
+		templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
+	});
+	$("#project_select").on("select2:select", function (e) {
+		var project_id = e.params.data.id;
+        $('#leader').empty();
+		mAppExtend.ajaxPostSubmit({
+			'type': 'get',
+			'showLoading':false,
+			url:"{{route('project.users.selector')}}",
+			query:{'id':project_id},
+            callback:function (data, textStatus, xhr) {
+				var $user = data.data;
+                if($user){
+                    $.each($user, function (i, item) {
+                        $('#leader').append("<option value='" + item.id + "'>" + item.name + "</option>");
+                    });
+				}
+            }
+		})
+	});
     var form = $( "#task-form" );
     var submitButton = $("#submit-button");
     form.validate({
         // define validation rules
         rules: {
+            project_id: {
+                required: true
+            },
             start_at: {
                 required: true
             },

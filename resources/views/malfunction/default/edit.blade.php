@@ -6,10 +6,10 @@
             <div class="m-portlet__head-caption">
                 <div class="m-portlet__head-title">
                 <span class="m-portlet__head-icon">
-                    <i class="flaticon-info"></i>
+                    <i class="flaticon-interface-8"></i>
                 </span>
                     <h3 class="m-portlet__head-text m--font-primary">
-                        新增问题
+                        故障编辑
                     </h3>
                 </div>
             </div>
@@ -30,69 +30,72 @@
             </div>
         </div>
         <!--begin::Form-->
-        <form action="{{route('questions.store',['back'=>$back])}}" id="project-form" method="post"
+        <form action="{{route('malfunctions.update',['malfunction'=>$malfunction->id])}}" id="malfunction-form" method="post"
               class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
             <div class="m-portlet__body">
                 <div class="row m-form__group ">
-                    <div class="col-md-12">
-                        <div class="form-group ">
-                            <label>
-                                问题名称:
-                            </label>
-                            <input type="text" name="title" class="form-control m-input"
-                                   data-error-container="#titles-error" placeholder="请输入问题名称">
-                            <div id="titles-error" class=""></div>
-                            <span class="m-form__help"></span>
-                        </div>
-                    </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label>
-                                问题接收人:
-                            </label>
-                            <div class="">
-                                <select class="form-control m-input" id="user_select" name="receive_user_id"
-                                        data-error-container="#receive_user_ids-error">
-                                </select>
-                            </div>
-                            <div id="receive_user_ids-error" class=""></div>
-                            <span class="m-form__help"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="">
-                                所属分类:
-                            </label>
-                            <select class="form-control m-input select2" name="question_category_id"
-                                    data-error-container="#question_category_ids-error">
-                                {!! question_category_select() !!}
-                            </select>
-                            <div id="question_category_ids-error" class=""></div>
-                            <span class="m-form__help"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
                         <div class="form-group">
                             <label class="">
                                 所属项目:
                             </label>
                             <select class="form-control m-input select2" id="project_select" name="project_id">
-                                @if(request('project_id'))
-                                    <option value="{{request('project_id')}}"
-                                            selected>{{get_project_info(request('project_id'))}}</option>
-                                @endif
+                                <option value="{{$malfunction->project_id}}"
+                                            selected>{{$malfunction->project ? $malfunction->project->title : null}}</option>
                             </select>
+                            <span class="m-form__help"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group ">
+                            <label>
+                                小车编号:
+                            </label>
+                            <input type="text" name="car_no" class="form-control m-input"
+                                   placeholder="请输入小车编号" value="{{$malfunction->car_no}}">
+                            <span class="m-form__help"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="">
+                                设备类型:
+                            </label>
+                            <select class="form-control m-input select2" name="device_id" id="project_device">
+                                {!! project_device_select($malfunction->project_id,$malfunction->device_id) !!}
+                            </select>
+                            <span class="m-form__help"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="">
+                                故障来自:
+                            </label>
+                            <select class="form-control m-input select2" name="project_phase_id" id="project_phase">
+                                {!! project_phase_select($malfunction->project_id,$malfunction->project_phase_id,1,0) !!}
+                            </select>
+                            <span class="m-form__help"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="">
+                                处理时间:
+                            </label>
+                            <input type="text" name="handled_at" class="form-control m-input m-date"
+                                   placeholder="请输入处理时间" value="{{$malfunction->handled_at}}">
                             <span class="m-form__help"></span>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
                             <label class="">
-                                问题描述:
+                                故障现象:
                             </label>
                             <textarea name="content" class="form-control m-input" rows="8"
-                                      data-error-container="#contents-error" placeholder="请输入问题描述"></textarea>
+                                      data-error-container="#contents-error" placeholder="请输入故障现象">{{$malfunction->content}}</textarea>
                             <div id="contents-error" class=""></div>
                             <span class="m-form__help"></span>
                         </div>
@@ -100,18 +103,23 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label class="">
-                                相关附件:
+                                故障原因:
                             </label>
-                            <div id="file-upload-instance" class="clearfix multi-image-upload">
-                                <div id="file-upload-instance-picker"
-                                     class="pull-left m-b-sm p-xxs b-r-sm tooltips uploader-picker"
-                                     data-container="body" data-html=true data-toggle="m-tooltip"
-                                     data-placement="top"
-                                     data-original-title="单个文件大小{{format_bytes(config('filesystems.disks.file.validate.size')*1024)}}以内,允许上传类型：{{arr2str(config('filesystems.disks.file.validate.ext'))}}">
-                                    <p class="m-b-sm"><i class="fa fa-plus-circle m--font-primary fa-2x fa-fw"></i></p>
-                                    选择文件
-                                </div>
-                            </div>
+                            <textarea name="reason" class="form-control m-input" rows="8"
+                                      data-error-container="#reason-error" placeholder="请输入故障原因">{{$malfunction->reason}}</textarea>
+                            <div id="reason-error" class=""></div>
+                            <span class="m-form__help"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="">
+                                故障处理:
+                            </label>
+                            <textarea name="result" class="form-control m-input" rows="8"
+                                      data-error-container="#result-error" placeholder="请输入故障处理结果">{{$malfunction->result}}</textarea>
+                            <div id="result-error" class=""></div>
+                            <span class="m-form__help"></span>
                         </div>
                     </div>
                 </div>
@@ -121,7 +129,8 @@
                     <div class="row">
                         <div class="col-lg-6">
                             {{ csrf_field() }}
-                            <button type="submit" id="submit-button" class="btn btn-primary">
+                            {{method_field('put')}}
+                            <button type="submit" id="malfunction-submit-button" class="btn btn-primary">
                                 提交
                             </button>
                             <button type="reset" class="btn btn-secondary">
@@ -140,23 +149,6 @@
 @endsection
 @section('js')
     <script type="text/javascript">
-        //异步加载用户选择框
-        function formatRepo(repo) {
-            if (repo.loading) return repo.text;
-            var markup = "<div class='select2-result-repository clearfix'>" +
-                "<div class='select2-result-repository__meta'>" +
-                "<div class='select2-result-repository__title'>" + repo.name + "</div>";
-            if (repo.department || repo.company) {
-                markup += "<div class='select2-result-repository__description'>所在部门：" + (repo.company ? repo.company.name : '') + (repo.department && repo.department.level == 3 ? '/' + repo.department.name : '') + "</div>";
-            }
-            markup += "</div></div>";
-            return markup;
-        }
-
-        function formatRepoSelection(repo) {
-            return repo.name || repo.text;
-        }
-
         function formatProjectRepo(repo) {
             if (repo.loading) return repo.text;
             var markup = "<div class='select2-result-repository clearfix'>" +
@@ -166,49 +158,14 @@
             markup += "</div></div>";
             return markup;
         }
-
         function formatProjectRepoSelection(repo) {
             return repo.title || repo.text;
         }
-
         jQuery(document).ready(function () {
-            //异步加载用户选择框
-            var $userSelector = $("#user_select").select2({
-                language: 'zh-CN',
-                placeholder: "输入姓名、用户名等关键字搜索，选择用户",
-                allowClear: true,
-                width: '100%',
-                ajax: {
-                    url: "{{route('users.selector.data',['type'=>'headquarters'])}}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term, // search term
-                            page: params.page,
-                            per_page: {{config('common.page.per_page')}}
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.data,
-                            pagination: {
-                                more: (params.page * data.per_page) < data.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                }, // let our custom formatter work
-                minimumInputLength: 0,
-                templateResult: formatRepo, // omitted for brevity, see the source of this page
-                templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
-            });
-
-            var $projectSelector = $("#project_select").select2({
+            var projectSelector = $("#project_select"),
+                projectDevice = $("#project_device"),
+                projectPhase = $("#project_phase");
+            projectSelector.select2({
                 language: 'zh-CN',
                 placeholder: "输入项目编号、名称等关键字搜索，选择项目",
                 allowClear: true,
@@ -243,46 +200,64 @@
                 templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
                 templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
             });
+            projectSelector.on("select2:select", function (e) {
+                var project_id = e.params.data.id;
+                projectDevice.empty();
+                projectDevice.append("<option value=''>请选择设备类型</option>");
+                mAppExtend.ajaxPostSubmit({
+                    'type': 'get',
+                    'showLoading':false,
+                    url:"{{route('project.devices.selector')}}",
+                    query:{'id':project_id},
+                    callback:function (data, textStatus, xhr) {
+                        var $device = data.data;
+                        if($device){
+                            $.each($device, function (i, item) {
+                                projectDevice.append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                        }
+                    }
+                })
 
-            //多文件上传实例
-            mAppExtend.fileUpload({
-                uploader: 'fileUploadInstance',
-                picker: 'file-upload-instance',
-                swf: '{{ asset("assets/js/plugins/webuploader/Uploader.swf") }}',
-                server: '{{ route("file.upload") }}',
-                formData: {
-                    '_token': '{{ csrf_token() }}'
-                },
-                fileNumLimit: 10,
-                isAutoInsertInput: true,//上传成功是否自动创建input存储区域
-                storageInputName: 'files',//上传成功后input存储区域的name
-                uploadComplete: function (file, uploader) {
-                },
-                uploadError: function (file, uploader) {
-                },
-                uploadSuccess: function (file, response, uploader) {
-                },
-                fileCannel: function (fileId, uploader) {
-                },
-                fileDelete: function (fileId, uploader) {
-                }
+                projectPhase.empty();
+                projectPhase.append("<option value=''>请选择项目阶段</option>");
+                mAppExtend.ajaxPostSubmit({
+                    'type': 'get',
+                    'showLoading':false,
+                    url:"{{route('project.phases.selector')}}",
+                    query:{'id':project_id},
+                    callback:function (data, textStatus, xhr) {
+                        var $phase = data.data;
+                        if($phase){
+                            $.each($phase, function (i, item) {
+                                projectPhase.append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                        }
+                    }
+                })
+
             });
-
-            var form = $('#project-form');
-            var submitButton = $("#submit-button");
+            var form = $('#malfunction-form');
+            var submitButton = $("#malfunction-submit-button");
             form.validate({
                 // define validation rules
                 rules: {
-                    title: {
+                    car_no: {
                         required: true
-                    }, receive_user_id: {
+                    }, device_id: {
                         required: true
-                    }, question_category_id: {
-                        required: true
-                    }, content: {
+                    }, project_phase_id: {
                         required: true
                     }
                     , project_id: {
+                        required: true
+                    }, content: {
+                        required: true
+                    }, reason: {
+                        required: true
+                    }, handled_at: {
+                        required: true
+                    }, result: {
                         required: true
                     }
                 },

@@ -92,8 +92,13 @@ class TaskController extends Controller
 
     public function create()
     {
+        //判断发布任务权限
         $project_id = request('project_id');
-        return view('task.default.create', compact('project_id'));
+        if(request()->ajax()){
+            return view('task.default.create', compact('project_id'));
+        }else{
+            return view('task.default.create_default', compact('project_id'));
+        }
     }
 
     /**

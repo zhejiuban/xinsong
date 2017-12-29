@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Plugin;
 
+use App\Project;
 use App\User;
-use function foo\func;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -73,5 +73,18 @@ class UserSelectorController extends Controller
             }
         }
         return $list;
+    }
+
+    /**
+     * 项目参与人
+     */
+    public function projectUserData(Request $request){
+        $project_id = $request->input('id');
+        return response()->json([
+            'message' => '用户列表'
+            , 'status' => 'success'
+            , 'data' => Project::find($project_id)->users
+            , 'url' => ''
+        ]);
     }
 }

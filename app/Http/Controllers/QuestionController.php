@@ -162,13 +162,12 @@ class QuestionController extends Controller
         if (!check_permission('question/questions/show')) {
             return _404('无权操作！');
         }
-        $user_id = get_current_login_user_info();
         $question = Question::with([
             'user', 'category', 'receiveUser', 'project'
         ])->find($id);
 
         if ($question) {
-            if (!$question->status && $question->receive_user_id == $user_id) {
+            if (!$question->status && $question->receive_user_id == get_current_login_user_info()) {
                 //设置接收时间
                 $question->status = 1;//已接收，待处理
                 $question->received_at = Carbon::now();

@@ -307,9 +307,9 @@ if (!function_exists('department_select')) {
      * @param int $selected
      * @return string
      */
-    function department_select($selected = 0, $type = 1,$is_admin=0)
+    function department_select($selected = 0, $type = 1, $is_admin = 0)
     {
-        $list = \App\Department::getTreeData($type,$is_admin);
+        $list = \App\Department::getTreeData($type, $is_admin);
         $str = '<option value="">' . ($type == 1 ? '请选择部门' : '请选择办事处') . '</option>';
         if ($list) {
             foreach ($list as $key => $val) {
@@ -325,7 +325,7 @@ if (!function_exists('department_select')) {
 if (!function_exists('role_select')) {
     function role_select($selected = '', $type = 0, $vType = 'id')
     {
-        if (!is_administrator() && !check_user_role(null,'总部管理员')) {
+        if (!is_administrator() && !check_user_role(null, '总部管理员')) {
             $list = \Spatie\Permission\Models\Role::where('is_call', 1)->get()->toArray();
         } else {
             $list = \Spatie\Permission\Models\Role::get()->toArray();
@@ -561,7 +561,7 @@ function set_redirect_url($url = '', $name = '_redirect_url_')
     if (!$url) {
         $url = url()->full();
     }
-    session([$name=>$url]);
+    session([$name => $url]);
 //    Cookie::queue($name, $url, 30);
 }
 
@@ -588,10 +588,14 @@ function get_user_company_id($user = null)
     } elseif (!$user) {
         $user = get_current_login_user_info(true);
     }
-    if ($user->department->company_id) {
-        return $user->department->company_id;
+    if ($user->department) {
+        if ($user->department->company_id) {
+            return $user->department->company_id;
+        } else {
+            return $user->department->id;
+        }
     } else {
-        return $user->department->id;
+        return null;
     }
 }
 
@@ -821,23 +825,23 @@ function project_user_select($project, $selected = '', $type = 1)
  * @param string $selected
  * @return string
  */
-function project_phase_select($project, $selected = '', $type = 0)
+function project_phase_select($project, $selected = '', $type = 0, $is_show_status = 1)
 {
     if (is_numeric($project)) {
         $project = \App\Project::find($project)->phases;
     }
     $str = '';
     if ($type) {
-        $str .= '<option value="">请选择阶段</option>';
+        $str .= '<option value="">请选择项目阶段</option>';
     }
     if ($project->isNotEmpty()) {
         foreach ($project as $key => $phase) {
             if ($selected == $phase->id) {
                 $str .= '<option value="' . $phase->id . '" selected="selected">' .
-                    $phase->name . '(' . project_phases_status($phase->status) . ')</option>';
+                    $phase->name . ($is_show_status ? '(' . project_phases_status($phase->status) . ')' : '' ) .'</option>';
             } else {
                 $str .= '<option value="' . $phase->id . '">' .
-                    $phase->name . '(' . project_phases_status($phase->status) . ')</option>';
+                    $phase->name . ($is_show_status ? '(' . project_phases_status($phase->status) . ')' : '' ) .'</option>';
             }
         }
     }
@@ -1014,8 +1018,8 @@ function check_project_owner($project, $power)
         if (check_company_admin() && get_user_company_id() == $project->department_id) {//分部管理员
             return true;
         }
-    }elseif ($power == 'company'){
-        if(is_administrator()){
+    } elseif ($power == 'company') {
+        if (is_administrator()) {
             return true;
         }
         if ((check_company_admin() || check_user_role(null, '总部管理员')) && get_user_company_id() == $project->department_id) {//分部管理员
@@ -1040,7 +1044,7 @@ function check_project_leader($project, $type = 1, $user = null)
     if (is_numeric($project)) {
         $project = \App\Project::find($project);
     }
-    if(is_administrator() || (check_company_admin() && get_user_company_id($user) == $project->department_id)){
+    if (is_administrator() || (check_company_admin() && get_user_company_id($user) == $project->department_id)) {
         return true;
     }
     if ($type == 1) {
@@ -1058,6 +1062,7 @@ function check_project_leader($project, $type = 1, $user = null)
     }
     return false;
 }
+
 /**
  * 项目状态
  * @param $status
@@ -1141,7 +1146,7 @@ function get_project_current_phase($project)
     if (is_object($project)) {
         $current_phase = $project->phases()->where('status', '<', 2)
             ->orderBy('id', 'asc')->first();
-    }else{
+    } else {
         $current_phase = \App\ProjectPhase::where('project_id', $project)->where('status', '<', 2)
             ->orderBy('id', 'asc')->first();
     }
@@ -1157,35 +1162,69 @@ function is_image($ext)
 {
     $ext_arr = config('filesystems.disks.image.validate.ext')
         ? config('filesystems.disks.image.validate.ext')
-        : ['jpg','jpeg','png','gif','bmp'];
-    if (in_array($ext,$ext_arr)) {
+        : ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    if (in_array($ext, $ext_arr)) {
         return true;
     } else {
         return false;
     }
 }
 
-function question_status_select($selected=''){
+function question_status_select($selected = '')
+{
     $data = config('common.question_status');
     $str = '<option value="">所有状态</option>';
-    foreach ($data as $key=>$val){
-        if($selected != '' && $selected == $key){
-            $str .= '<option value="'.$key.'" selected="selected">'.$val['title'].'</option>';
-        }else{
-            $str .= '<option value="'.$key.'" >'.$val['title'].'</option>';
+    foreach ($data as $key => $val) {
+        if ($selected != '' && $selected == $key) {
+            $str .= '<option value="' . $key . '" selected="selected">' . $val['title'] . '</option>';
+        } else {
+            $str .= '<option value="' . $key . '" >' . $val['title'] . '</option>';
         }
     }
     return $str;
 }
-function project_status_select($selected=''){
+
+function project_status_select($selected = '')
+{
     $data = config('common.project_status');
     $str = '<option value="">所有状态</option>';
-    foreach ($data as $key=>$val){
-        if($selected !== '' && $selected == $key){
-            $str .= '<option value="'.$key.'" selected="selected">'.$val['title'].'</option>';
-        }else{
-            $str .= '<option value="'.$key.'" >'.$val['title'].'</option>';
+    foreach ($data as $key => $val) {
+        if ($selected !== '' && $selected == $key) {
+            $str .= '<option value="' . $key . '" selected="selected">' . $val['title'] . '</option>';
+        } else {
+            $str .= '<option value="' . $key . '" >' . $val['title'] . '</option>';
         }
     }
+    return $str;
+}
+
+/**
+ * 项目设备类型select
+ * @param $project
+ * @param string $selected
+ * @param int $type
+ * @return string
+ */
+function project_device_select($project, $selected = '', $type = 1)
+{
+    if (is_numeric($project)) {
+        $project = \App\Project::find($project)->devices;
+    }
+    $str = '';
+    if ($type) {
+        $str .= '<option value="">请选择设备类型</option>';
+    }
+    if ($project->isNotEmpty()) {
+        foreach ($project as $key => $phase) {
+            if ($selected == $phase->id) {
+                $str .= '<option value="' . $phase->id . '" selected="selected">' .
+                    $phase->name . '</option>';
+            } else {
+                $str .= '<option value="' . $phase->id . '">' .
+                    $phase->name . '</option>';
+            }
+        }
+    }
+
     return $str;
 }

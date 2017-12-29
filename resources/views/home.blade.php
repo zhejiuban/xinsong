@@ -94,7 +94,7 @@
                             <div class="row m-row--no-padding align-items-center">
                                 <div class="col">
                                     <h3 class="m-widget1__title">
-                                        <a href="{{url('project/malfunctions?mid=c61c035b6d20678363396bcbf1ab0ff0')}}">
+                                        <a href="{{url('malfunction/malfunctions?mid=0bd559bbe15fe3f5b7a2ed3efdd3e901')}}">
                                             故障记录
                                         </a>
                                     </h3>

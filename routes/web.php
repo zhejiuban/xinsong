@@ -76,9 +76,13 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
     Route::get('users/selector/data', 'Plugin\UserSelectorController@data')->name('users.selector.data');
     Route::get('users/selector', 'Plugin\UserSelectorController@index')->name('users.selector');
+    Route::get('users/selector/project/user', 'Plugin\UserSelectorController@projectUserData')->name('project.users.selector');
     Route::get('projects/selector/data', 'Plugin\ProjectSelectorController@data')->name('projects.selector.data');
     Route::get('projects/selector', 'Plugin\ProjectSelectorController@index')->name('projects.selector');
     Route::get('projects/logs', 'Plugin\ProjectLogController@index')->name('projects.logs');
+    Route::get('projects/selector/project/device', 'Plugin\ProjectSelectorController@devices')->name('project.devices.selector');
+    Route::get('projects/selector/project/phase', 'Plugin\ProjectSelectorController@phases')->name('project.phases.selector');
+
 
     Route::post('image/upload', 'Plugin\FileController@imageUpload')->name('image.upload');
     Route::post('file/upload', 'Plugin\FileController@fileUpload')->name('file.upload');

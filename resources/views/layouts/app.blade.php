@@ -309,7 +309,7 @@
                                                 </div>
                                             </div>
                                         </li>--}}
-                                        {{--<li class="m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light"  data-dropdown-toggle="click">
+                                        <li class="m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light"  data-dropdown-toggle="click">
                                             <a href="#" class="m-nav__link m-dropdown__toggle">
                                                 <span class="m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide"></span>
                                                 <span class="m-nav__link-icon">
@@ -332,30 +332,32 @@
                                                             <div class="m-scrollable" data-scrollable="false" data-max-height="380" data-mobile-max-height="200">
                                                                 <div class="m-nav-grid m-nav-grid--skin-light">
                                                                     <div class="m-nav-grid__row">
-                                                                        <a href="{{url('project/projects/create?mid=bd128edbfd250c9c5eff5396329011cd')}}" class="m-nav-grid__item">
+                                                                        <a href="{{url('project/projects/create?mid=bd128edbfd250c9c5eff5396329011cd')}}"
+                                                                           class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-file"></i>
                                                                             <span class="m-nav-grid__text">
                                                                                 创建项目
                                                                             </span>
                                                                         </a>
-                                                                        <a href="#" class="m-nav-grid__item">
+                                                                        <a href="{{route('tasks.create',['default'=>1,'mid'=>'bd128edbfd250c9c5eff5396329011cd'])}}"
+                                                                           class="m-nav-grid__item  quick-publish-task">
                                                                             <i class="m-nav-grid__icon flaticon-time"></i>
                                                                             <span class="m-nav-grid__text">
-                                                                                创建任务
+                                                                                发布任务
                                                                             </span>
                                                                         </a>
                                                                     </div>
                                                                     <div class="m-nav-grid__row">
-                                                                        <a href="#" class="m-nav-grid__item">
-                                                                            <i class="m-nav-grid__icon flaticon-folder"></i>
+                                                                        <a href="{{route('malfunctions.create',['mid'=>'c61c035b6d20678363396bcbf1ab0ff0'])}}" class="m-nav-grid__item">
+                                                                            <i class="m-nav-grid__icon flaticon-interface-8"></i>
                                                                             <span class="m-nav-grid__text">
-                                                                                创建计划
+                                                                                故障录入
                                                                             </span>
                                                                         </a>
-                                                                        <a href="#" class="m-nav-grid__item">
+                                                                        <a href="{{url('question/create?direct=1&mid=5e5fa7160f2d8bf507f11ac18455f61e')}}" class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-clipboard"></i>
                                                                             <span class="m-nav-grid__text">
-                                                                                创建动态
+                                                                                发布问题
                                                                             </span>
                                                                         </a>
                                                                     </div>
@@ -365,7 +367,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </li>--}}
+                                        </li>
                                         <li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light" data-dropdown-toggle="click">
                                             <?php $login_user = get_current_login_user_info(true); ?>
                                             <a href="javascript:;" class="m-nav__link m-dropdown__toggle">
@@ -495,7 +497,7 @@
                     <div class="m-stack m-stack--flex-tablet-and-mobile m-stack--ver m-stack--desktop">
                         <div class="m-stack__item m-stack__item--left m-stack__item--middle m-stack__item--last">
                             <span class="m-footer__copyright">
-                                {{ date('Y') }} &copy; 这就办
+                                {{ date('Y') }} &copy;
                             </span>
                         </div>
                         {{--<div class="m-stack__item m-stack__item--right m-stack__item--middle m-stack__item--first">
@@ -852,6 +854,7 @@
         </div>
         <!--end::Modal-->
 
+
         <!--begin::Base Scripts -->
         <script src="{{ asset('assets/vendors/base/vendors.bundle.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/theme/default/base/scripts.bundle.js') }}" type="text/javascript"></script>
@@ -880,7 +883,6 @@
                 '.user-profile-form'
                 ,"{{route('user.profile')}}"
                 ,{},false);
-
             mQuickSidebar.init({
                 'trigger':function () {
                     var initProfile = function() {
@@ -904,38 +906,6 @@
                     initProfile();
                 }
             });
-           /* $("#user-profile-form-submit").click(function () {
-                $("#user-profile-form").ajaxSubmit(
-                    {
-                        beforeSend: function () {
-                            mApp.block($('#m_quick_sidebar'));
-                        },
-                        complete: function () {
-                            mApp.unblock($('#m_quick_sidebar'));
-                        },
-                        success: function (response, status, xhr, $form) {
-                            if (response.status == 'success') {
-                                mAppExtend.notification(response.message, 'success', 'toastr', function () {
-                                    mAppExtend.backUrl(response.url);
-                                });
-                            } else {
-                                mAppExtend.notification(response.message, 'error');
-                            }
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            _$error = xhr.responseJSON.errors;
-                            var _err_mes = '未知错误，请重试';
-                            if (_$error != undefined) {
-                                _err_mes = '';
-                                $.each(_$error, function (i, v) {
-                                    _err_mes += v[0] + '<br>';
-                                });
-                            }
-                            mAppExtend.notification(_err_mes, 'error');
-                        }
-                    }
-                );
-            });*/
         });
         </script>
         <!--end::Base Scripts -->

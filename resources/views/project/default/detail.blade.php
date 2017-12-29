@@ -10,7 +10,7 @@
                         <div class="m-widget19__content">
                             <h5 class="m-widget19__title" style="padding:1.1rem 0;">
                                 <a class="look-project" href="{{ route('projects.show',['project'=>$project->id,'mid'=>request('mid')]) }}">
-                                    {{$project->title}}
+                                    {{str_limit($project->title,28,'...')}}
                                 </a>
                             </h5>
                             <div class="m-widget19__body">

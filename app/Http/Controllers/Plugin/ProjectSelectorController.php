@@ -53,4 +53,23 @@ class ProjectSelectorController extends Controller
         }
         return $list;
     }
+
+    public function phases(Request $request){
+        $project_id = $request->input('id');
+        return response()->json([
+            'message' => '用户列表'
+            , 'status' => 'success'
+            , 'data' => Project::find($project_id)->phases
+            , 'url' => ''
+        ]);
+    }
+    public function devices(Request $request){
+        $project_id = $request->input('id');
+        return response()->json([
+            'message' => '用户列表'
+            , 'status' => 'success'
+            , 'data' => Project::find($project_id)->devices
+            , 'url' => ''
+        ]);
+    }
 }

@@ -149,7 +149,7 @@
                 allowClear: true,
                 width: '100%',
                 ajax: {
-                    url: "{{route('users.selector.data',['type'=>'sub_and_headquarters'])}}",
+                    url: "{{route('users.selector.data',['type'=>'headquarters'])}}",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {

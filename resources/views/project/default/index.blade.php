@@ -34,14 +34,14 @@
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
 
                 <div class="m-form__group row align-items-center">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <select class="form-control m-bootstrap-select" id="m_form_status">
                                 {!! project_status_select() !!}
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <select class="form-control m-bootstrap-select" name="department_id" id="departments_id">
                                 @if(check_user_role(null,'总部管理员'))
@@ -52,7 +52,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <div class="m-input-icon m-input-icon--left">
                                 <input type="text" class="form-control m-input" placeholder="关键字..." id="m_form_search">

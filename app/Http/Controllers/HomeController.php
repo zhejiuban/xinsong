@@ -61,6 +61,7 @@ class HomeController extends Controller
                 'need_reply'=>Question::whereIn('status',[0,1])
                     ->receiveQuestion()->get()
             ];
+            set_redirect_url();
             return view('index',compact([
                 'project','task','question'
             ]));
@@ -101,7 +102,7 @@ class HomeController extends Controller
                 'need_reply'=>Question::whereIn('status',[0,1])
                     ->receiveQuestion()->get()
             ];
-
+            set_redirect_url();
             return view('company',compact([
                 'user','all'
                 ,'project','task','question'
