@@ -86,7 +86,7 @@
                     <a href="{{route('questions.edit',['question'=>$question->id,'mid'=>request('mid')])}}"
                        class="m-btn-left-bottom-border-none m-btn
                     m-btn--square btn btn-secondary col m-btn--icon
-                    m-btn--icon-center">
+                    m-btn--icon-center @if($question->status == 3) disabled @endif">
                         <span>
                             <i class="la la-edit"></i>
                             <span>编辑</span>

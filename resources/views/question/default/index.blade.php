@@ -239,6 +239,11 @@
                             var look = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.show")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-show m-portlet__nav-link btn m-btn m-btn--hover-primary m-btn--icon m-btn--icon-only m-btn--pill" title="查看">\
                                 <i class="la la-eye"></i></a>';
                             var admin = '{{is_administrator()}}';
+                            if(row.status = 3){
+                                reply = '';
+                                edit = '';
+                                finish = '';
+                            }
                             if(admin == ''){
                                 var head = "{{check_user_role(null,'总部管理员')}}";
                                 if((row.status <= 1) && head != ''){
