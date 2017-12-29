@@ -2,6 +2,15 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="form-group ">
+                <div class="m-card-user">
+                <div class="m-card-user__pic">
+                    <img src="{{avatar($user->avatar)}}" class="m--img-rounded m--marginless" alt="">
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-group ">
                 <label>
                     用户名<span class="required">*</span>:
                 </label>

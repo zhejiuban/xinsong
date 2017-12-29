@@ -217,7 +217,7 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
         $project = $task->project;
-        if($task->dynamics->isNotEmpty() || $task->status){
+        if($task->dynamics->isNotEmpty()){
             return _404('存在关联数据，不能删除');
         }
         //判断任务删除权限
