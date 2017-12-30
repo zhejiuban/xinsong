@@ -97,7 +97,8 @@
             </div>
             <div class="m-widget3__body">
                 <p class="m-widget3__text">
-                    {{$dynamic->content}}
+                    <a href="{{ route('dynamics.show',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}"
+                    class="dynamic-look m--font-default">{{str_limit($dynamic->content,300)}}</a>
                 </p>
             </div>
         </div>
@@ -119,7 +120,7 @@
             {}, true);
     }
     $(document).ready(function () {
-        $('.dynamic-add,.dynamic-edit').click(function (event) {
+        $('.dynamic-add,.dynamic-edit,.dynamic-look').click(function (event) {
             event.preventDefault();
             var url = $(this).attr('href');
             ActionModal(url);

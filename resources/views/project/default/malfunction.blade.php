@@ -69,7 +69,8 @@
             </div>
             <div class="m-widget3__body">
                 <p class="m-widget3__text">
-                    {{$malfunction->content}}
+                    <a href="{{ route('malfunctions.show',['malfunction'=>$malfunction->id,'mid'=>request('mid')]) }}"
+                       class="malfunction-look m--font-default">{{str_limit($malfunction->content,300)}}</a>
                 </p>
             </div>
         </div>
@@ -91,7 +92,7 @@
             {}, true);
     }
     $(document).ready(function () {
-        $('#malfunction-add,.malfunction-edit').click(function (event) {
+        $('#malfunction-add,.malfunction-edit,.malfunction-look').click(function (event) {
             event.preventDefault();
             var url = $(this).attr('href');
             ActionModal(url);

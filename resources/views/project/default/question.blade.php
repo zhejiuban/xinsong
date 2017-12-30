@@ -32,7 +32,7 @@
     <div id="question-{{$question->id}}" class="m-widget5__item">
         <div class="m-widget5__content m--padding-left-none" style="padding-left: 0;">
             <h4 class="m-widget5__title">
-                {{$question->title}}
+                <a href="{{ route('questions.show',['question'=>$question->id,'mid'=>request('mid')]) }}" class="m--font-default question-look">{{$question->title}}</a>
             </h4>
             {{--<span class="m-widget5__desc">--}}
                 {{--{{str_limit($question->content,150,'...')}}--}}
