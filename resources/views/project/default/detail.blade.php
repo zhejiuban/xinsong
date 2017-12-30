@@ -122,15 +122,15 @@
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
                                 <h3 class="m-widget1__title">
-                                    文档
+                                    故障
                                 </h3>
                                 <span class="m-widget1__desc">
-                                    今日文档数：+{{ $project->files()->whereBetween('created_at',[date_start_end(),date_start_end(null,'end')])->count() }}
+                                    今日故障数：+{{ $project->malfunctions()->whereBetween('created_at',[date_start_end(),date_start_end(null,'end')])->count() }}
                                 </span>
                             </div>
                             <div class="col m--align-right">
                                 <span class="m-widget1__number m--font-success">
-                                    {{$project->files()->count()}}
+                                    {{$project->malfunctions()->count()}}
                                 </span>
                             </div>
                         </div>
