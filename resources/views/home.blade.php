@@ -95,7 +95,7 @@
                                 <div class="col">
                                     <h3 class="m-widget1__title">
                                         <a href="{{url('malfunction/malfunctions?mid=0bd559bbe15fe3f5b7a2ed3efdd3e901')}}">
-                                            故障记录
+                                            我的故障记录
                                         </a>
                                     </h3>
                                     <span class="m-widget1__desc">

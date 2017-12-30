@@ -20,4 +20,8 @@ class Dynamic extends Model
     public function task(){
         return $this->belongsTo('App\Task');
     }
+    public function scopeCompanySearch($query)
+    {
+        return $query->whereIn('user_id', get_company_user(null, 'id'));
+    }
 }
