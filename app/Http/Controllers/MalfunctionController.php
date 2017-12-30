@@ -78,12 +78,12 @@ class MalfunctionController extends Controller
             } else {
                 $list = Malfunction::with([
                     'phase', 'project', 'user', 'device'
-                ])->baseSearch($search, $date, $project_id, $device_id)->companyQuestion()->orderBy(
+                ])->baseSearch($search, $date, $project_id, $device_id)->companySearch()->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             }
             set_redirect_url();
-            return view('malfunction.default.default.index_mobile', compact('list'));
+            return view('malfunction.default.index_mobile', compact('list'));
         }
     }
 
@@ -161,7 +161,8 @@ class MalfunctionController extends Controller
         ])->find($id);
         if ($malfunction) {
             if (!is_administrator()
-                && $malfunction->user_id != get_current_login_user_info()) {
+                && $malfunction->user_id != get_current_login_user_info()
+                && !check_project_owner($malfunction->project,'company')) {
                 return _error('无权操作');
             }
             if($request->ajax()){
@@ -188,7 +189,8 @@ class MalfunctionController extends Controller
             return _error();
         }
         if (!is_administrator()
-            && $result->user_id != get_current_login_user_info()) {
+            && $result->user_id != get_current_login_user_info()
+            && !check_project_owner($result->project,'company')) {
             return _error('无权操作');
         }
         $result->car_no = $request->car_no;
@@ -219,6 +221,24 @@ class MalfunctionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $malfunction  = Malfunction::find($id);
+        if(!$malfunction){
+            return _error();
+        }
+        if (!is_administrator()
+            && $malfunction->user_id != get_current_login_user_info()
+            && !check_project_owner($malfunction->project,'company')) {
+            return _error('无权操作');
+        }
+        if ($malfunction->delete()) {
+            //记录日志
+            activity('项目日志')->performedOn($malfunction->project)
+                ->withProperties($malfunction)->log('删除故障');
+            return _success('删除成功'
+                , $malfunction->toArray()
+                , get_redirect_url());
+        } else {
+            return _error('编辑失败');
+        }
     }
 }

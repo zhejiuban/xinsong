@@ -26,7 +26,9 @@ class MenuRequest extends FormRequest
         $rule = [
             'parent_id' => 'bail|required',
             'title' => 'bail|required',
-            'url' => 'bail|required',
+            'url' => $this->input('menu') ?
+                'bail|required|unique:menus,url,'.request('menu')
+                : 'bail|required|unique:menus,url',
 //                    'gurad_name'=> 'bail|required',
             'hide' => 'bail|required',
             'status' => 'bail|required',
@@ -44,6 +46,7 @@ class MenuRequest extends FormRequest
             'parent_id.different'=>'上级菜单不能为自身',
             'title.required' => '请输入菜单名称',
             'url.required' => '请输入访问地址',
+            'url.unique' => '访问地址已存在',
             'hide.required' => '请选择是否隐藏',
             'target.required' => '请选择是窗口打开方式',
             'status.required' => '请选择菜单状态',

@@ -27,7 +27,7 @@ class Malfunction extends Model
 
     public function phase()
     {
-        return $this->belongsTo('App\ProjectPhase','project_phase_id');
+        return $this->belongsTo('App\ProjectPhase', 'project_phase_id');
     }
 
     public function getHandledAtAttribute($value)
@@ -39,10 +39,10 @@ class Malfunction extends Model
         , $search = null, $date = null, $project_id = null, $device = null)
     {
         return $query->when($search, function ($query) use ($search) {
-            return $query->where(
-                'content', 'like',
-                "%$search%"
-            );
+            return $query->where(function ($query) use ($search) {
+                $query->where('content', 'like',
+                    "%$search%")->orWhere('car_no', $search);
+            });
         })->when($date, function ($query) use ($date) {
             return $query->whereBetween('handled_at', [
                 date_start_end($date), date_start_end($date, 'end')
@@ -64,7 +64,8 @@ class Malfunction extends Model
         return $query->where('user_id', get_current_login_user_info());
     }
 
-    public function scopeCompanySearch($query){
-        return $query->whereIn('user_id',get_company_user(null, 'id'));
+    public function scopeCompanySearch($query)
+    {
+        return $query->whereIn('user_id', get_company_user(null, 'id'));
     }
 }

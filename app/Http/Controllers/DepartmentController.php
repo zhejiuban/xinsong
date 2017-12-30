@@ -243,7 +243,7 @@ class DepartmentController extends Controller
         if ($menu) {
             return view('user.department.sub_edit', compact('menu'));
         } else {
-            return _404('你访问的页面不存在');
+            return _404('无权操作');
         }
     }
 }

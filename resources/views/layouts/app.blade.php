@@ -331,7 +331,11 @@
                                                         <div class="m-dropdown__content">
                                                             <div class="m-scrollable" data-scrollable="false" data-max-height="380" data-mobile-max-height="200">
                                                                 <div class="m-nav-grid m-nav-grid--skin-light">
+                                                                    @php $c_project = check_permission('project/projects/create') @endphp
+                                                                    @php $c_task = check_permission('task/tasks/create') @endphp
+                                                                    @if($c_project || $c_task )
                                                                     <div class="m-nav-grid__row">
+                                                                        @if($c_project)
                                                                         <a href="{{url('project/projects/create?mid=bd128edbfd250c9c5eff5396329011cd')}}"
                                                                            class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-file"></i>
@@ -339,6 +343,8 @@
                                                                                 创建项目
                                                                             </span>
                                                                         </a>
+                                                                        @endif
+                                                                        @if($c_task)
                                                                         <a href="{{route('tasks.create',['default'=>1,'mid'=>'bd128edbfd250c9c5eff5396329011cd'])}}"
                                                                            class="m-nav-grid__item  quick-publish-task">
                                                                             <i class="m-nav-grid__icon flaticon-time"></i>
@@ -346,7 +352,9 @@
                                                                                 发布任务
                                                                             </span>
                                                                         </a>
+                                                                        @endif
                                                                     </div>
+                                                                    @endif
                                                                     <div class="m-nav-grid__row">
                                                                         <a href="{{route('malfunctions.create',['mid'=>'c61c035b6d20678363396bcbf1ab0ff0'])}}" class="m-nav-grid__item">
                                                                             <i class="m-nav-grid__icon flaticon-interface-8"></i>

@@ -47,7 +47,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class="m-input-icon m-input-icon--left">
-                                <input type="text" class="form-control m-input" placeholder="关键字..."
+                                <input type="text" class="form-control m-input" placeholder="关键字、小车编号..."
                                        id="m_form_search">
                                 <span class="m-input-icon__icon m-input-icon__icon--left">
                                     <span>
@@ -170,6 +170,7 @@
                         field: "content",
                         title: "故障现象",
                         sortable: false,
+                        width: 200,
                         template: function (row) {
                             return '<a href="' + mAppExtend.laravelRoute('{{route_uri("malfunctions.show")}}', {malfunction: row.id,mid:"{{request('mid')}}" }) + '" class="action-show m-portlet__nav-link" title="详情">' +
                                 (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
