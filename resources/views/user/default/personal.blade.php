@@ -6,8 +6,17 @@
                     <div class="m-card-user__pic">
                         <img src="{{avatar($user->avatar)}}" class="m--img-rounded m--marginless" alt="">
                     </div>
-                    
                 </div>
+                <div class="">
+                    <div id="avatar-upload" class="btn-upload">
+                        <div id="avatar-upload-picker" class="pickers tooltips avatar-upload-tooltips"
+                             data-toggle="tooltip" data-placement="bottom" data-skin="dark"
+                             data-original-title="最佳尺寸：96*96">
+                            <i class="fa fa-upload"></i> 修改头像</div>
+                        <div id="avatar-upload-file-list"></div>
+                    </div>
+                </div>
+                <input type="hidden" name="avatar" value="{{$user->avatar}}">
             </div>
         </div>
         <div class="col-lg-12">
@@ -99,6 +108,7 @@
 <script type="text/javascript">
     jQuery(document).ready(function () {
         mAppExtend.select2Instance("#department_id");
+        mAppExtend.handleInitTooltips(".avatar-upload-tooltips");
         $("#user-profile-form-submit").click(function () {
             $("#user-profile-form").ajaxSubmit(
                 {

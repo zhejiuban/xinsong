@@ -69,11 +69,14 @@ return [
             'base_path' => 'uploads/image',
             'url' => env('APP_URL') . '/uploads/image',
             'validate' => [
-                'size' => 5*1024, //单位kb
-                'ext' => ['jpg', 'jpeg','png','gif']
+                'size' => 5 * 1024, //单位kb
+                'ext' => ['jpg', 'jpeg', 'png', 'gif']
             ],
             'upload_path_format' => date("Ym", time())
                 . '/' . date("d", time()),
+            'thumbnail' => [
+                'max_width' => 96
+            ]
         ],
         'file' => [
             'driver' => 'local',
@@ -81,11 +84,11 @@ return [
             'base_path' => 'uploads/file',
             'url' => env('APP_URL') . '/uploads/file',
             'validate' => [
-                'size' => 20*1024,//单位kb
+                'size' => 20 * 1024,//单位kb
                 'ext' => [
-                    'jpg', 'jpeg','png','gif','doc', 'docx',
-                    'zip','rar','tar','gz','7z',
-                    'docx','txt','pdf','xls','xlsx'
+                    'jpg', 'jpeg', 'png', 'gif', 'doc', 'docx',
+                    'zip', 'rar', 'tar', 'gz', '7z',
+                    'docx', 'txt', 'pdf', 'xls', 'xlsx'
                 ]
             ],
             'upload_path_format' => date("Ym", time())

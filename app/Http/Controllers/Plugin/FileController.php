@@ -48,6 +48,12 @@ class FileController extends Controller
                 $new_file = $upload_file->move($image_upload_config['root'] . '/'
                     . $save_path, $save_name);
                 $path = $image_upload_config['base_path'] . '/' . $save_path . '/' . $save_name;
+                //缩略图处理
+                if ($ext != 'gif') {
+                    // 此类中封装的函数，用于裁剪图片
+                    $this->reduseSize($path, config('filesystems.disks.image.thumbnail.max_width'));
+                }
+
                 //数据库保存上传文件信息
                 $file_info = new FileModel();
                 $file_info->type = $upload_file->getClientMimeType();
@@ -167,5 +173,24 @@ class FileController extends Controller
         if($file){
             return response()->download(public_path($file->path), $file->old_name);
         }
+    }
+
+    public function reduseSize($path, $max_width)
+    {
+        // 先实例化，传参是文件的磁盘物理路径
+        $image = Image::make($path);
+
+        // 进行大小调整的操作
+        $image->resize($max_width, null, function ($constraint) {
+
+            // 设定宽度是 $max_width，高度等比例双方缩放
+            $constraint->aspectRatio();
+
+            // 防止裁图时图片尺寸变大
+            $constraint->upsize();
+        });
+
+        // 对图片修改后进行保存
+        $image->save();
     }
 }

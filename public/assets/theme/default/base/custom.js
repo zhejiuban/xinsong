@@ -792,6 +792,133 @@ var mAppExtend = function () {
                 }
             });
         },
+        singleImageUpload: function(options){
+            // {
+            //     'uploader':options.uploader
+            //     'picker':options.picker, //必须
+            //     'swf':options.swf,//必须
+            //     'server':options.server,//必须
+            //     'formData':options.formData,
+            //     'showUploadProgress':true,
+            //     'errorMsgHiddenTime':options.errorMsgHiddenTime, #自动隐藏上传出错时间
+            //     'isAutoInsertInput':options.isAutoInsertInput,#是否自动追加上传成功后的input存储框
+            //     'storageInputName':options.storageInputName,#上传成功后的input存储框名称
+            //     'isHiddenResult':options.isHiddenResult,#是否隐藏上传成功后的提示信息
+            //     'uploadSuccess':function
+            //     'uploadError':function
+            //     'uploadComplete':function
+            // }
+            options = $.extend(true, {
+                isAutoInsertInput:true,
+                isHiddenResult:true,
+                showUploadProgress:true,
+                storageInputName:'image',
+                'uploadSuccess':null,
+                'uploadError':null,
+                'uploadComplete':null
+            }, options);
+            //console.log(options);
+            var uploader = options.uploader,
+                isShowProgress = options.showUploadProgress,
+                autoCreateInput = !options.isAutoInsertInput ? options.isAutoInsertInput : true,
+                isHiddenResult = !options.isHiddenResult ? options.isHiddenResult : true,
+                storageInputName = options.storageInputName ? options.storageInputName : 'image';
+            // 初始化Web Uploader
+            uploader = WebUploader.create({
+                // 选完文件后，是否自动上传。
+                auto: options.auto ? options.auto : true,
+                // swf文件路径
+                swf: options.swf,
+                // 文件接收服务端。
+                server: options.server,
+                formData: options.formData ? options.formData : {},
+                // 选择文件的按钮。可选。
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                pick: {
+                    id: '#' + options.picker + '-picker',
+                    multiple:false
+                },
+                fileNumLimit:options.fileNumLimit ? options.fileNumLimit : 1,
+                // 只允许选择图片文件。
+                accept: {
+                    title: 'Images',
+                    extensions: 'gif,jpg,jpeg,bmp,png',
+                    mimeTypes: 'image/jpg,image/jpeg,image/png,image/bmp,image/gif'
+                }
+            });
+            // 当有文件添加进来的时候
+            uploader.on( 'fileQueued', function( file ) {
+                var $li = $(
+                    '<div id="' + file.id + '" class="m--padding-10 m--border m--border-radius-3">' +
+                    '<div class="file-info overflow" title="' + file.name + '" data-file-id="'+file.id+'"> ' + file.name + '</div>' +
+                    '</div>'
+                );
+                $("#" + options.picker + "-file-list").html( $li );
+            });
+            // 文件上传过程中创建进度条实时显示。
+            uploader.on( 'uploadProgress', function( file, percentage) {
+                var $li = $( '#'+file.id ),
+                    $percent = $li.find('.file-info i');
+                $info = $li.find('div.file-info');
+
+                // 避免重复创建
+                if ( !$percent.length ) {
+                    $percent = $('<i class="fa fa-spinner fa-spin m--font-brand"></i>')
+                        .prependTo( $info );
+                }
+            });
+            // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+            uploader.on( 'uploadSuccess', function( file, response ) {
+                var $li = $( '#'+file.id ),
+                    $percent = $li.find('.file-info i');
+                $info = $li.find('.file-info');
+                if(response.status){
+                    $percent.removeClass("fa-spinner fa-spin").addClass("fa-check");
+                    $info.attr('data-response-info',JSON.stringify(response));
+                    if(autoCreateInput){
+                        $li.append('<input type="hidden" name="'+storageInputName+'" value="'+response.data.id+'">');
+                    }
+                    if(isHiddenResult){
+                        window.setTimeout(function () {
+                            $li.hide();
+                        }, options.errorMsgHiddenTime ? options.errorMsgHiddenTime : 1500);
+                    }
+                    if (options.uploadSuccess instanceof Function) {
+                        options.uploadSuccess(file, response, uploader);
+                    }
+                }else{
+                    $info.addClass('m--font-danger').html('<i class="fa fa-exclamation-circle m--font-danger"></i> ' + response.message);
+                    if (options.errorMsgHiddenTime) {
+                        window.setTimeout(function () {
+                            $li.remove();
+                        }, options.errorMsgHiddenTime);
+                    }
+                }
+
+            });
+            // 文件上传失败，显示上传出错。
+            uploader.on( 'uploadError', function( file ) {
+                var $li = $( '#'+file.id ),
+                    $error = $li.find('div.file-info');
+                $error.addClass('m--font-danger').html('<i class="fa fa-exclamation-circle m--font-danger"></i> 上传出错，请重试');
+                if (options.errorMsgHiddenTime) {
+                    window.setTimeout(function () {
+                        $li.remove();
+                    }, options.errorMsgHiddenTime);
+                }
+                if (options.uploadError instanceof Function) {
+                    options.uploadError(file, uploader);
+                }
+            });
+            // 完成上传完了，成功或者失败，先删除进度条。
+            uploader.on( 'uploadComplete', function( file ) {
+                if (options.uploadComplete instanceof Function) {
+                    options.uploadComplete(file, uploader);
+                }
+                uploader.removeFile( file,true);
+            });
+
+        },
         datePickerInstance:function (el,options) { 
             handleDatePicker(el, options);
         },

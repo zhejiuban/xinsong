@@ -6275,19 +6275,15 @@ var mQuickSidebar = function() {
 
         // run once on first time dropdown shown
         topbarAside.mOffcanvas().on('afterShow', function() {
-            // mApp.block(topbarAside);
-
-            // setTimeout(function() {
-            //     mApp.unblock(topbarAside);
-
+             mApp.block(topbarAside);
+             setTimeout(function() {
+                 mApp.unblock(topbarAside);
                 topbarAsideContent.removeClass('m--hide');
-
                 initOffcanvasTabs();
-            // }, 1000);
-
-            if(options.trigger instanceof Function){
-                options.trigger();
-            }
+                 if(options.trigger instanceof Function){
+                     options.trigger();
+                 }
+             }, 1000);
         });
     }
 

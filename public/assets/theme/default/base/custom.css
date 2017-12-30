@@ -46,7 +46,7 @@
 }
 
 .btn-upload .webuploader-pick {
-    background: #0e9aef;
+    background: #5867dd;
     padding: 6px 10px;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .btn-upload .webuploader-pick-hover {
-    background: #0c87d2;
+    background: #716aca;
 }
 
 .multi-file-upload .file-item,
@@ -336,4 +336,13 @@ body .m--padding-left-none {
 }
 .m-btn--icon-center span{
     margin: 0 auto;
+}
+.m--border{
+    border:1px solid #716aca;
+}
+.m--border-radius-5{
+    border-radius: 5px;
+}
+.m--border-radius-3{
+    border-radius: 3px;
 }

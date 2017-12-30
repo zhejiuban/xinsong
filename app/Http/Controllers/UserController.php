@@ -380,6 +380,7 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->tel = $request->tel;
             $user->sex = $request->sex;
+            $user->avatar = $request->avatar;
             if ($request->password) {
                 $user->password = $request->password;
             }

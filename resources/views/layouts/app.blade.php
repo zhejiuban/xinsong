@@ -392,7 +392,7 @@
                                                     <div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/user_profile_bg.jpg') }}); background-size: cover;">
                                                         <div class="m-card-user m-card-user--skin-dark">
                                                             <div class="m-card-user__pic">
-                                                                <img src="{{ asset('assets/app/media/img/users/default.jpg') }}" class="m--img-rounded m--marginless" alt=""/>
+                                                                <img src="{{ avatar($login_user->avatar) }}" class="m--img-rounded m--marginless" alt=""/>
                                                             </div>
                                                             <div class="m-card-user__details">
                                                                 <span class="m-card-user__name m--font-weight-500">
@@ -891,25 +891,58 @@
                 '.user-profile-form'
                 ,"{{route('user.profile')}}"
                 ,{},false);
+            var avatarUploadCreate = 0;
             mQuickSidebar.init({
                 'trigger':function () {
                     var initProfile = function() {
-                        var init = function() {
+                        var init = function () {
                             var profiler = $('#m_quick_sidebar_tabs_profiles');
                             var profileForm = profiler.find('.user-profile-form');
                             var topbarAside = $('#m_quick_sidebar');
                             var topbarAsideTabs = $('#m_quick_sidebar_tabs');
-                            var height =  topbarAside.outerHeight(true)  -
+                            var height = topbarAside.outerHeight(true) -
                                 topbarAsideTabs.outerHeight(true) - 125;
                             // init messages scrollable content
                             profileForm.css('height', height);
                             mApp.initScroller(profileForm, {});
                         };
-
                         init();
-
                         // reinit on window resize
                         mUtil.addResizeHandler(init);
+
+                        if (!avatarUploadCreate){
+                            mAppExtend.singleImageUpload({
+                                uploader: 'avatarUpload',
+                                picker: 'avatar-upload',
+                                swf: '{{ asset("assets/js/plugins/webuploader/Uploader.swf") }}',
+                                server: '{{ route("image.upload") }}',
+                                formData: {
+                                    '_token': '{{ csrf_token() }}'
+                                },
+                                errorMsgHiddenTime: 1000,
+                                isAutoInsertInput: false,//上传成功是否自动创建input存储区域
+                                isHiddenResult: true,
+                                uploadComplete: function (file) {
+                                },
+                                uploadError: function (file) {
+                                },
+                                uploadSuccess: function (file, response) {
+                                    //上传完成触发时间
+                                    $img = $('.m-card-user__pic').find('img');
+                                    if (!$img.length) {
+                                        $img = $('.m-card-user__pic').html('<img src="' + response.data.url + '" class="m--img-rounded m--marginless">');
+                                    } else {
+                                        $img.attr({'src': response.data.url});
+                                        $('.m-topbar__userpic').find('img').attr({'src': response.data.url});
+                                    }
+                                    $('input[name="avatar"]').val(response.data.path);
+                                    window.setTimeout(function () {
+                                        $('#' + file.id).remove();
+                                    }, 1000);
+                                }
+                            });
+                            avatarUploadCreate = 1;
+                        }
                     };
                     initProfile();
                 }

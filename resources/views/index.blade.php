@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
     <!--Begin::Main Portlet-->
     <div class="m-portlet">
         <div class="m-portlet__body  m-portlet__body--no-padding">
@@ -307,7 +306,6 @@
     <script type="text/javascript">
 
         $(document).ready(function(){
-
             var project = function() {
                 if ($('#m_chart_project').length == 0) {
                     return;
