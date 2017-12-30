@@ -491,6 +491,32 @@ class ProjectController extends Controller
         }
     }
 
+    //获取某个项目相关问题
+    public function malfunctions(Request $request, $id)
+    {
+        if ($project = Project::find($id)) {
+            if (!check_project_owner($project, 'look')) {
+                return _404('无权操作');
+            }
+            $only = $request->input('only');
+            $date = $request->input('date');
+            $malfunctions = $project->malfunctions()->when(
+                $only, function ($query) {
+                return $query->where('user_id', get_current_login_user_info());
+            })->when($date, function ($query) use ($date) {
+                if ($date == 'day') {
+                    return $query->whereBetween('created_at', [
+                        date_start_end(), date_start_end(null, 'end')
+                    ]);
+                }
+            })->orderBy('id', 'desc')->paginate(config('common.page.per_page'));
+            set_redirect_url(null, 'board_ajax_url');
+            return view('project.default.malfunction', compact(['project', 'malfunctions']));
+        } else {
+            return _404();
+        }
+    }
+
     /**
      * 获取项目参与用户
      * @param Request $request

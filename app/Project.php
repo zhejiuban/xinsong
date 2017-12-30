@@ -83,6 +83,10 @@ class Project extends Model
         return $this->hasMany('App\ProjectFolder');
     }
 
+    public function malfunctions(){
+        return $this->hasMany('App\Malfunction');
+    }
+
     /**
      * 任务已完成百分比
      * @return float

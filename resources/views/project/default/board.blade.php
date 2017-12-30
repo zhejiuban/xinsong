@@ -34,6 +34,13 @@
                                 </a>
                             </li>
                             <li class="nav-item m-tabs__item">
+                                <a href="{{ route('project.malfunctions',['project'=>$project->id,'mid'=>request('mid')]) }}"
+                                   class="nav-link m-tabs__link"data-toggle="tab" role="tab" aria-expanded="false"
+                                   data-load-html="true" data-target="#project-body" data-loading="#project-body">
+                                    故障
+                                </a>
+                            </li>
+                            <li class="nav-item m-tabs__item">
                                 <a href="{{ route('project.files',['project'=>$project->id,'mid'=>request('mid')]) }}"
                                    class="nav-link m-tabs__link " data-toggle="tab" role="tab" aria-expanded="false"
                                    data-load-html="true" data-target="#project-body" data-loading="#project-body">

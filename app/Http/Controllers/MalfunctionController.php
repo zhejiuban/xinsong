@@ -94,6 +94,9 @@ class MalfunctionController extends Controller
      */
     public function create()
     {
+        if(request()->ajax()){
+            return view('malfunction.default.create_ajax');
+        }
         return view('malfunction.default.create');
     }
 
