@@ -60,11 +60,11 @@
                                             <span></span>
                                         </label>
                                     </div>
-                                    <div class="col m--align-right m-login__form-right">
+                                    {{--<div class="col m--align-right m-login__form-right">
                                         <a href="javascript:;" id="m_login_forget_password" class="m-link">
                                             忘记密码 ?
                                         </a>
-                                    </div>
+                                    </div>--}}
                                 </div>
                                 <div class="m-login__form-action">
                                     <button id="m_login_signin_submit" class="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air  m-login__btn m-login__btn--primary">

@@ -42,11 +42,11 @@
             <table class="table table-responsive  table-hover tree" id="menu_table">
                 <thead class="thead-default">
                     <tr>
-                        <th scope="col" >菜单名称</th>
-                        <th scope="col" width="200">描述</th>
-                        <th scope="col" width="50">显示</th>
-                        <th scope="col" width="80">状态</th>
-                        <th scope="col" width="130">操作</th>
+                        <th scope="col" style="min-width: 300px;">菜单名称</th>
+                        <th scope="col" style="min-width: 150px;" width="150">描述</th>
+                        <th scope="col" style="min-width: 50px;" width="50">显示</th>
+                        <th scope="col" style="min-width: 80px;" width="80">状态</th>
+                        <th scope="col" style="min-width: 130px;" width="130">操作</th>
                     </tr>
                 </thead>
                 <tbody>
