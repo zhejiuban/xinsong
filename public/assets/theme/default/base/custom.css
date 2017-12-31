@@ -346,3 +346,9 @@ body .m--padding-left-none {
 .m--border-radius-3{
     border-radius: 3px;
 }
+@media (max-width: 768px){
+    .m-dropdown.m-dropdown--mobile-full-width.m-dropdown--align-center > .m-dropdown__wrapper-right-10,
+    .m-dropdown.m-dropdown--mobile-full-width > .m-dropdown__wrapper-right-10{
+        right:10px;
+    }
+}

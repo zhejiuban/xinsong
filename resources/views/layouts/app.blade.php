@@ -178,7 +178,7 @@
                                                     {{$login_user->name}}
                                                 </span>
                                             </a>
-                                            <div class="m-dropdown__wrapper">
+                                            <div class="m-dropdown__wrapper m-dropdown__wrapper-right-10">
                                                 <span class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>
                                                 <div class="m-dropdown__inner">
                                                     <div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/user_profile_bg.jpg') }}); background-size: cover;">
