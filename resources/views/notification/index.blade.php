@@ -44,7 +44,7 @@
             </ul>
         </div>
     </div>
-    <div class="m-portlet__body">
+    <div class="m-portlet__body min-height-200">
         <div class="m-widget3">
             @foreach($list as $notification)
             <div class="m-widget3__item">
