@@ -4,11 +4,14 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Carbon;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable{
+        notify as protected laravelNotify;
+    }
     use HasRoles;
 
     /**
@@ -28,6 +31,24 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function notify($instance){
+        $this->increment('notification_count');
+        $this->laravelNotify($instance);
+    }
+    //标记所有未读消息为已读
+    public function markAllAsRead(){
+        $this->notification_count = 0;
+        $this->save();
+        $this->unreadNotifications->markAsRead();
+    }
+    //标记某个未读消息为已读
+    public function markSingleAsRead($id){
+        if($this->notifications()->where('id',$id)
+            ->whereNull('read_at')->update(['read_at' => Carbon::now()])){
+            $this->decrement('notification_count');
+        }
+    }
 
     public function department()
     {
@@ -86,4 +107,6 @@ class User extends Authenticatable
             return null;
         }
     }
+
+
 }

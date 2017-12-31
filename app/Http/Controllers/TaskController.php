@@ -130,10 +130,14 @@ class TaskController extends Controller
                 $data[] = $insert;
             }
         }
-        if (!empty($data) && DB::table('tasks')->insert($data)) {
+        if (!empty($data)) { // && DB::table('tasks')->insert($data)
+            foreach ($data as $insert){
+                Task::create($insert);
+            }
             activity('项目日志')->performedOn(Project::find($request->project_id))
                 ->withProperties($data)
                 ->log('发布任务');
+
             return _success('发布成功', $data, get_redirect_url());
         } else {
             return _error('操作失败');

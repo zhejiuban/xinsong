@@ -121,3 +121,10 @@ Route::group(['prefix' => 'plan', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => 'malfunction', 'middleware' => 'auth'], function () {
     Route::resource('malfunctions', 'MalfunctionController');
 });
+//消息模块
+Route::resource('notifications', 'NotificationController', [
+    'only' => ['index'],'middleware' => 'auth']);
+Route::get('notifications/{notification}/read','NotificationController@read')
+    ->middleware('auth')->name('notifications.read');
+Route::get('notifications/mark_read','NotificationController@markAsRead')
+    ->middleware('auth')->name('notifications.mark_read');

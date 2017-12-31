@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Question;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,6 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        \App\Question::observe(\App\Observers\QuestionObserver::class);
+        \App\Task::observe(\App\Observers\TaskObserver::class);
         \Carbon\Carbon::setLocale('zh');
     }
 
@@ -23,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if (app()->isLocal()) {
+            $this->app->register(\VIACreative\SudoSu\ServiceProvider::class);
+        }
     }
 }

@@ -6109,15 +6109,15 @@ var mLayout = function() {
         });
 
         // Animated Notification Icon
-        setInterval(function() {
-            $('#m_topbar_notification_icon .m-nav__link-icon').addClass('m-animate-shake');
-            $('#m_topbar_notification_icon .m-nav__link-badge').addClass('m-animate-blink');
-        }, 3000);
-
-        setInterval(function() {
-            $('#m_topbar_notification_icon .m-nav__link-icon').removeClass('m-animate-shake');
-            $('#m_topbar_notification_icon .m-nav__link-badge').removeClass('m-animate-blink');
-        }, 6000);
+        // setInterval(function() {
+        //     $('#m_topbar_notification_icon .m-nav__link-icon').addClass('m-animate-shake');
+        //     $('#m_topbar_notification_icon .m-nav__link-badge').addClass('m-animate-blink');
+        // }, 3000);
+        //
+        // setInterval(function() {
+        //     $('#m_topbar_notification_icon .m-nav__link-icon').removeClass('m-animate-shake');
+        //     $('#m_topbar_notification_icon .m-nav__link-badge').removeClass('m-animate-blink');
+        // }, 6000);
     }
 
     // handle quick search

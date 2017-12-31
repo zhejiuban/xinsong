@@ -740,7 +740,7 @@ function format_bytes($size, $delimiter = '')
 function question_category_select($selected = '')
 {
     $list = \App\QuestionCategory::lists()->toArray();
-    $str = '<option value="">请选版块</option>';
+    $str = '<option value="">请选分类</option>';
     if ($list) {
         foreach ($list as $key => $val) {
             $str .= '<option value="' . $val['id'] . '" '
@@ -838,10 +838,10 @@ function project_phase_select($project, $selected = '', $type = 0, $is_show_stat
         foreach ($project as $key => $phase) {
             if ($selected == $phase->id) {
                 $str .= '<option value="' . $phase->id . '" selected="selected">' .
-                    $phase->name . ($is_show_status ? '(' . project_phases_status($phase->status) . ')' : '' ) .'</option>';
+                    $phase->name . ($is_show_status ? '(' . project_phases_status($phase->status) . ')' : '') . '</option>';
             } else {
                 $str .= '<option value="' . $phase->id . '">' .
-                    $phase->name . ($is_show_status ? '(' . project_phases_status($phase->status) . ')' : '' ) .'</option>';
+                    $phase->name . ($is_show_status ? '(' . project_phases_status($phase->status) . ')' : '') . '</option>';
             }
         }
     }
@@ -1227,4 +1227,20 @@ function project_device_select($project, $selected = '', $type = 1)
     }
 
     return $str;
+}
+
+/**
+ * 根据用户id获取用户信息
+ * @param $id
+ * @param string $field
+ * @return mixed
+ */
+function get_user_info($id, $field = 'name')
+{
+    $user = \App\User::find($id);
+    if($field === true){
+        return $user;
+    }else{
+        return $user->$field;
+    }
 }
