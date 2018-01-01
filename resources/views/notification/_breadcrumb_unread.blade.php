@@ -11,7 +11,7 @@
         <div class="m-dropdown__inner">
             <div class="m-dropdown__header m--align-center" style="background: url({{ asset('assets/app/media/img/misc/notification_bg.jpg') }}); background-size: cover;">
                 <span class="m-dropdown__header-title">
-                    {{intval($user->notification_count)}} 个未读消息
+                    {{intval($user->notification_count)}} 条未读消息
                 </span>
                 <span class="m-dropdown__header-subtitle">
                     消息提醒
