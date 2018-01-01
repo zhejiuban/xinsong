@@ -84,7 +84,7 @@ Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
     Route::get('projects/logs', 'Plugin\ProjectLogController@index')->name('projects.logs');
     Route::get('projects/selector/project/device', 'Plugin\ProjectSelectorController@devices')->name('project.devices.selector');
     Route::get('projects/selector/project/phase', 'Plugin\ProjectSelectorController@phases')->name('project.phases.selector');
-
+    Route::get('projects/export','Plugin\ProjectExportController@index')->name('projects.export');
 
     Route::post('image/upload', 'Plugin\FileController@imageUpload')->name('image.upload');
     Route::post('file/upload', 'Plugin\FileController@fileUpload')->name('file.upload');

@@ -26,6 +26,18 @@
                         </span>
                         </a>
                     </li>
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('projects.export'),['mid'=>request('mid')])  }}"
+                           class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                        target="_blank">
+                        <span>
+                            <i class="fa fa-download"></i>
+                            <span>
+                                导出
+                            </span>
+                        </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
