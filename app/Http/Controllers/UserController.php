@@ -40,6 +40,8 @@ class UserController extends Controller
                 })->when($department,function ($query) use ($department){
                     $department_arr = (array) get_company_deparent($department);
                     return $query->whereIn('department_id',array_unique($department_arr));
+                })->when(!is_administrator(),function ($query){
+                    return $query->where('id','!=',config('auth.administrator'));
                 })->orderBy(
                     $sort_field
                     , $sort)->paginate(
@@ -58,6 +60,8 @@ class UserController extends Controller
                 })->when($department,function ($query) use ($department){
                     $department_arr = (array) get_company_deparent($department);
                     return $query->whereIn('department_id',array_unique($department_arr));
+                })->when(!is_administrator(),function ($query){
+                    return $query->where('id','!=',config('auth.administrator'));
                 })->where(function ($query) {
                     //获取用户所属分部所有部门
                     $query->whereIn('department_id', get_company_deparent(get_user_company_id()));
@@ -157,6 +161,9 @@ class UserController extends Controller
                 , get_company_deparent(get_user_company_id()))->find($id);
         }
         if ($user) {
+            if(!is_administrator() && is_administrator_user($user->id)){
+                return  _404('无权操作');
+            }
             return view('user.default.edit', compact('user'));
         } else {
             return _404('无权操作');
@@ -182,6 +189,9 @@ class UserController extends Controller
                 , get_company_deparent(get_user_company_id()))->find($id);
         }
         if ($user) {
+            if(!is_administrator() && is_administrator_user($user->id)){
+                return  _404('无权操作');
+            }
             $user->username = $request->username;
             $user->name = $request->name;
             if ($request->password) {

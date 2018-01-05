@@ -109,7 +109,7 @@
                                 </span>
                             </span>
                         </a>
-                        @if(check_project_leader($project))
+                        @if(check_project_leader($project,3))
                             <a class="m-btn-bottom-border-none m-btn
                             m-btn--square m-btn--icon btn btn-secondary
                             col m-btn--icon-center task-add"

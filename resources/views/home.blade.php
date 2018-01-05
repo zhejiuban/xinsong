@@ -24,7 +24,10 @@
             <div class="row m-row--no-padding m-row--col-separator-xl">
                 <div class="col-xl-11">
                     <div class="m-widget1">
-                        {{$task->content}}
+                        <a href="{{route('tasks.show',['id'=>$task->id])}}"
+                        class="look-task">{{$task->content}}</a>
+                        <br>
+                        所属项目：{{$task->project ? $task->project->title : null }}
                     </div>
                 </div>
                 <div class="col-xl-1 text-center">
@@ -335,7 +338,7 @@
                 {},true);
         }
         $(document).ready(function(){
-            $('.dynamic-add,.question-reply').click(function(event) {
+            $('.dynamic-add,.question-reply,.look-task').click(function(event) {
                 event.preventDefault();
                 var url = $(this).attr('href');
                 ActionModal(url);

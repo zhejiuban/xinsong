@@ -111,7 +111,7 @@ class TaskController extends Controller
     {
         $project = Project::find($request->project_id);
         //检测项目权限
-        if(!check_project_leader($project)){
+        if(!check_project_leader($project,3)){
             return _404('无权操作');
         }
         $data = [];
@@ -174,7 +174,7 @@ class TaskController extends Controller
         if ($task) {
             //检测项目权限
             $project = $task->project;
-            if(!check_project_leader($project)){
+            if(!check_project_leader($project,3)){
                 return _404('无权操作');
             }
             return view('task.default.edit', compact('task'));
@@ -195,7 +195,7 @@ class TaskController extends Controller
         $task = Task::find($id);
         if ($task) {
             $project = $task->project;
-            if(!check_project_leader($project)){
+            if(!check_project_leader($project,3)){
                 return _404('无权操作');
             }
             $task->project_phase_id = $request->project_phase_id;
@@ -230,7 +230,7 @@ class TaskController extends Controller
             return _404('存在关联数据，不能删除');
         }
         //判断任务删除权限
-        if (!check_project_leader($project)) {
+        if (!check_project_leader($project,3)) {
             return _404('无权操作');
         }
         if ($task->delete($id)) {
@@ -251,7 +251,7 @@ class TaskController extends Controller
             $project = $task->project;
             //判断权限
             if($task->leader != get_current_login_user_info()){
-                if (!check_project_leader($project)) {
+                if (!check_project_leader($project,3)) {
                     return _404('无权操作');
                 }
             }

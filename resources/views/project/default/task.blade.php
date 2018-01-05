@@ -1,5 +1,5 @@
 <div class="m-actions">
-    @if(check_project_leader($project,1))
+    @if(check_project_leader($project,3))
         <a href="{{ route('tasks.create',['project_id'=>$project->id,'mid'=>request('mid'),'board'=>1]) }}"
            id="task-add" class="m-nav__link btn btn-sm btn-primary  m--margin-bottom-20 m-btn--pill">
             <i class="m-nav__link-icon flaticon-add"></i>
