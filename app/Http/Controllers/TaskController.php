@@ -26,11 +26,12 @@ class TaskController extends Controller
                 $status = $request->input('datatable.query.status');
                 $search = $request->input('datatable.query.search');
                 $project_id = $request->input('datatable.query.project_id');
+                $user_id = $request->input('datatable.query.user_id');
                 //管理员或总部管理员获取所有
                 if (check_user_role(null, '总部管理员')) {
                     $task = Task::with([
                         'user', 'leaderUser', 'project'
-                    ])->baseSearch($status,$search,$project_id)->orderBy(
+                    ])->baseSearch($status,$search,$project_id,$user_id)->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage
@@ -42,7 +43,7 @@ class TaskController extends Controller
                     $user = get_company_user(null,'id');
                     $task = Task::with([
                         'user', 'leaderUser', 'project'
-                    ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id)->orderBy(
+                    ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage
@@ -69,11 +70,12 @@ class TaskController extends Controller
             $status = $request->input('status');
             $search = $request->input('search');
             $project_id = $request->input('project_id');
+            $user_id = $request->input('user_id');
             //管理员或总部管理员获取所有
             if (check_user_role(null, '总部管理员')) {
                 $list = Task::with([
                     'user', 'leaderUser', 'project'
-                ])->baseSearch($status,$search,$project_id)->orderBy(
+                ])->baseSearch($status,$search,$project_id,$user_id)->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             } else{
@@ -81,7 +83,7 @@ class TaskController extends Controller
                 $user = get_company_user(null,'id');
                 $list = Task::with([
                     'user', 'leaderUser', 'project'
-                ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id)->orderBy(
+                ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             }

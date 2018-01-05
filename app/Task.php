@@ -133,7 +133,7 @@ class Task extends Model
         });
     }
 
-    public function scopeBaseSearch($query, $status = null, $search = null, $project_id = null)
+    public function scopeBaseSearch($query, $status = null, $search = null, $project_id = null, $user = null)
     {
         return $query->when($status, function ($query) use ($status) {
             return $query->where('status', $status);
@@ -150,6 +150,8 @@ class Task extends Model
             });
         })->when($project_id, function ($query) use ($project_id) {
             return $query->where('project_id', $project_id);
+        })->when($user, function ($query) use ($user) {
+            return $query->where('leader', $user);
         });
     }
 }

@@ -23,13 +23,13 @@
                 <div class="row align-items-center">
                     <div class="col-xl-12 order-2 order-xl-1">
                         <div class="m-form__group row align-items-center">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <select name="project_id" class="form-control" id="project_id">
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <select class="form-control m-bootstrap-select" id="m_form_status">
                                         <option value="">
@@ -44,16 +44,22 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select name="user_id" class="form-control" id="user_id">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="m-input-icon m-input-icon--left">
                                         <input type="text" class="form-control m-input" placeholder="关键字..."
                                                id="m_form_search">
                                         <span class="m-input-icon__icon m-input-icon__icon--left">
-  									<span>
-  										<i class="fa fa-search"></i>
-  									</span>
-  								</span>
+                                            <span>
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -228,6 +234,9 @@
                 $('#project_id').on('change', function () {
                     datatable.search($(this).val(), 'project_id');
                 }).val(typeof query.project_id !== 'undefined' ? query.project_id : '');
+                $('#user_id').on('change', function () {
+                    datatable.search($(this).val(), 'user_id');
+                }).val(typeof query.user_id !== 'undefined' ? query.user_id : '');
 
             };
 
@@ -239,7 +248,7 @@
             };
         }();
 
-        function formatRepo(repo) {
+        function formatRepos(repo) {
             if (repo.loading) return repo.text;
             var markup = "<div class='select2-result-repository clearfix'>" +
                 "<div class='select2-result-repository__meta'>" +
@@ -251,11 +260,11 @@
             return markup;
         }
 
-        function formatRepoSelection(repo) {
+        function formatReposSelection(repo) {
             return repo.name || repo.text;
         }
 
-        function formatProjectRepo(repo) {
+        function formatProjectRepos(repo) {
             if (repo.loading) return repo.text;
             var markup = "<div class='select2-result-repository clearfix'>" +
                 "<div class='select2-result-repository__meta'>" +
@@ -265,33 +274,13 @@
             return markup;
         }
 
-        function formatProjectRepoSelection(repo) {
+        function formatProjectReposSelection(repo) {
             return repo.title || repo.text;
         }
 
         jQuery(document).ready(function () {
             $('#m_form_status').selectpicker();
-            DatatableAjax.init();
-            $('.m_datatable').on('click', 'a.action-delete', function (event) {
-                event.preventDefault();
-                var url = $(this).attr('href');
-                mAppExtend.deleteData({
-                    'url': url,
-                    'callback': function () {
-                        datatable.load();
-                    }
-                });
-            });
-            $('.m_datatable').on('click', 'a.action-edit,a.action-show', function (event) {
-                event.preventDefault();
-                var url = $(this).attr('href');
-                $('#_modal').modal('show');
-                mAppExtend.ajaxGetHtml(
-                    '#_modal .modal-content',
-                    url,
-                    {}, true);
-            });
-            var $projectSelector = $("#project_id").select2({
+            $("#project_id").select2({
                 language: 'zh-CN',
                 placeholder: "输入项目编号、名称等关键字搜索，选择项目",
                 allowClear: true,
@@ -322,9 +311,64 @@
                     return markup;
                 }, // let our custom formatter work
                 minimumInputLength: 0,
-                templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
-                templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
+                templateResult: formatProjectRepos, // omitted for brevity, see the source of this page
+                templateSelection: formatProjectReposSelection // omitted for brevity, see the source of this page
             });
+            $("#user_id").select2({
+                language: 'zh-CN',
+                placeholder: "输入姓名、用户名等关键字搜索，选择用户",
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{route('users.selector.data')}}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            per_page: {{config('common.page.per_page')}}
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (params.page * data.per_page) < data.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 0,
+                templateResult: formatRepos, // omitted for brevity, see the source of this page
+                templateSelection: formatReposSelection // omitted for brevity, see the source of this page
+            });
+            DatatableAjax.init();
+            $('.m_datatable').on('click', 'a.action-delete', function (event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                mAppExtend.deleteData({
+                    'url': url,
+                    'callback': function () {
+                        datatable.load();
+                    }
+                });
+            });
+            $('.m_datatable').on('click', 'a.action-edit,a.action-show', function (event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                $('#_modal').modal('show');
+                mAppExtend.ajaxGetHtml(
+                    '#_modal .modal-content',
+                    url,
+                    {}, true);
+            });
+
         });
     </script>
 @endsection

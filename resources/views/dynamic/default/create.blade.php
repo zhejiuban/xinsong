@@ -24,7 +24,7 @@
                         项目名称：{{$project->title ? $project->title : null}}
                     </div>
                     <label class="form-control-label">
-                        项目状态<span class="required">*</span>: {{$phase->name}}
+                        项目状态: {{$phase->name}}
                     </label>
                     <div>
                         @if($phase->status)

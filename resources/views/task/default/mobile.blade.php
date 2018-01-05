@@ -5,13 +5,13 @@
               class="m-form m-form--fit m-form--group-seperator-dashed m-form-group-padding-bottom-10">
             <div class="m-portlet__body ">
                 <div class=" m-form__group row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="form-group">
                             <select name="project_id" class="form-control" id="project_id">
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="form-group">
                             <select name="status" class="form-control m-bootstrap-select" id="status">
                                 <option value="">
@@ -28,12 +28,18 @@
                     </div>
                 </div>
                 <div class=" m-form__group row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <select name="user_id" class="form-control" id="user_id">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
                         <div class="form-group ">
                             <input type="text" value="{{request('search')}}" class="form-control m-input" name="search" placeholder="关键字..." id="m_form_search">
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="form-group">
                             <input type="hidden" name="mid" value="{{request('mid')}}">
                             <button type="submit" class="btn btn-brand  m-btn m-btn--pill m-btn--icon">
@@ -115,6 +121,7 @@
     {{ $list->appends([
         'mid' => request('mid'),
         'project_id' => request('project_id'),
+        'user_id' => request('user_id'),
         'search' => request('search'),
         'status' => request('status') !== null ? 0 : '',
     ])->links('vendor.pagination.bootstrap-4') }}
@@ -138,7 +145,7 @@
 @endsection
 @section('js')
     <script type="text/javascript">
-        function formatRepo(repo) {
+        function formatRepos(repo) {
             if (repo.loading) return repo.text;
             var markup = "<div class='select2-result-repository clearfix'>" +
                 "<div class='select2-result-repository__meta'>" +
@@ -149,10 +156,10 @@
             markup += "</div></div>";
             return markup;
         }
-        function formatRepoSelection(repo) {
+        function formatReposSelection(repo) {
             return repo.name || repo.text;
         }
-        function formatProjectRepo(repo) {
+        function formatProjectRepos(repo) {
             if (repo.loading) return repo.text;
             var markup = "<div class='select2-result-repository clearfix'>" +
                 "<div class='select2-result-repository__meta'>" +
@@ -161,7 +168,7 @@
             markup += "</div></div>";
             return markup;
         }
-        function formatProjectRepoSelection(repo) {
+        function formatProjectReposSelection(repo) {
             return repo.title || repo.text;
         }
 
@@ -179,7 +186,7 @@
                 var url = $(this).attr('href');
                 ActionModal(url);
             });
-            var $projectSelector = $("#project_id").select2({
+            $("#project_id").select2({
                 language:'zh-CN',
                 placeholder: "输入项目编号、名称等关键字搜索，选择项目",
                 allowClear: true,
@@ -210,8 +217,8 @@
                     return markup;
                 }, // let our custom formatter work
                 minimumInputLength: 0,
-                templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
-                templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
+                templateResult: formatProjectRepos, // omitted for brevity, see the source of this page
+                templateSelection: formatProjectReposSelection // omitted for brevity, see the source of this page
             });
             $('a.action-delete').click(function (event) {
                 event.preventDefault();
@@ -219,6 +226,41 @@
                 mAppExtend.deleteData({
                     'url': url
                 });
+            });
+            //异步加载用户选择框
+            $("#user_id").select2({
+                language: 'zh-CN',
+                placeholder: "输入姓名、用户名等关键字搜索，选择用户",
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{route('users.selector.data')}}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            per_page: {{config('common.page.per_page')}}
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (params.page * data.per_page) < data.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 0,
+                templateResult: formatRepos, // omitted for brevity, see the source of this page
+                templateSelection: formatReposSelection // omitted for brevity, see the source of this page
             });
         });
     </script>
