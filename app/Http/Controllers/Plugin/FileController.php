@@ -50,8 +50,12 @@ class FileController extends Controller
                 $path = $image_upload_config['base_path'] . '/' . $save_path . '/' . $save_name;
                 //缩略图处理
                 if ($ext != 'gif') {
-                    // 此类中封装的函数，用于裁剪图片
-                    $this->reduseSize($path, config('filesystems.disks.image.thumbnail.max_width'));
+                    if($request->avatar_upload){
+                        $this->reduseSize($path, 96,96);
+                    }else{
+                        // 此类中封装的函数，用于裁剪图片
+                        $this->reduseSize($path, config('filesystems.disks.image.thumbnail.max_width'));
+                    }
                 }
 
                 //数据库保存上传文件信息
@@ -169,27 +173,29 @@ class FileController extends Controller
      */
     public function download($id)
     {
-        $file = FileModel::where('uniqid',$id)->first();
-        if($file){
+        $file = FileModel::where('uniqid', $id)->first();
+        if ($file) {
             return response()->download(public_path($file->path), $file->old_name);
         }
     }
 
-    public function reduseSize($path, $max_width)
+    public function reduseSize($path, $max_width, $height = null)
     {
         // 先实例化，传参是文件的磁盘物理路径
         $image = Image::make($path);
+        if($max_width && $height){
+            $image->resize($max_width,$height);
+        }else{
+            // 进行大小调整的操作
+            $image->resize($max_width, $height, function ($constraint) {
 
-        // 进行大小调整的操作
-        $image->resize($max_width, null, function ($constraint) {
+                // 设定宽度是 $max_width，高度等比例双方缩放
+                $constraint->aspectRatio();
 
-            // 设定宽度是 $max_width，高度等比例双方缩放
-            $constraint->aspectRatio();
-
-            // 防止裁图时图片尺寸变大
-            $constraint->upsize();
-        });
-
+                // 防止裁图时图片尺寸变大
+                $constraint->upsize();
+            });
+        }
         // 对图片修改后进行保存
         $image->save();
     }

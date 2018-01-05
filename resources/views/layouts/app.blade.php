@@ -711,7 +711,8 @@
                                 swf: '{{ asset("assets/js/plugins/webuploader/Uploader.swf") }}',
                                 server: '{{ route("image.upload") }}',
                                 formData: {
-                                    '_token': '{{ csrf_token() }}'
+                                    '_token': '{{ csrf_token() }}',
+                                    'avatar_upload':1
                                 },
                                 errorMsgHiddenTime: 1000,
                                 isAutoInsertInput: false,//上传成功是否自动创建input存储区域
