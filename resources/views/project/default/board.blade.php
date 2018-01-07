@@ -10,7 +10,7 @@
             <!--begin:: Widgets/Tasks -->
             <div class="m-portlet m-portlet--full-height  m-portlet--tabs">
                 <div class="m-portlet__head">
-                    <div class="m-portlet__head-tools">
+                    <div class="m-portlet__head-tools project-tab">
                         <ul class="nav nav-tabs m-tabs-line m-tabs-line--primary " role="tablist">
                             <li class="nav-item m-tabs__item ">
                                 <a href="{{ route('project.tasks',['project_id'=>$project->id,'mid'=>request('mid')]) }}"
@@ -99,8 +99,8 @@
             mAppExtend.ajaxGetHtml(
                 "#project-body","{{route('project.tasks',['project'=>$project->id,'mid'=>request('mid')])}}"
                 , {}, "#project-body");
-            $(".m-tabs__link").click(function () {
-                $(".m-tabs__link").removeClass('active');
+            $(".project-tab .m-tabs__link").click(function () {
+                $(".project-tab .m-tabs__link").removeClass('active');
                 $(this).addClass('active');
             });
         })
