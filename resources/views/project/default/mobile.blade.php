@@ -5,14 +5,14 @@
               class="m-form m-form--fit m-form--group-seperator-dashed m-form-group-padding-bottom-10">
             <div class="m-portlet__body ">
                 <div class="row m-form__group">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="form-group">
                             <select class="form-control m-bootstrap-select" name="status" id="m_form_status">
                                 {!! project_status_select(request('status','')) !!}
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="form-group ">
                             <select class="form-control m-bootstrap-select" name="department_id" id="departments_id">
                                 @if(check_user_role(null,'总部管理员'))
@@ -23,12 +23,29 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="form-group ">
                             <input type="text" value="{{request('search')}}" class="form-control m-input" name="search" placeholder="关键字..." id="m_form_search">
                         </div>
                     </div>
-                    <div class="col-lg-3">
+
+                </div>
+                <div class="row m-form__group">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control m-bootstrap-select" name="phase_name" id="phase_name">
+                                {!! project_phase_select2(request('phase_name')) !!}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control m-bootstrap-select" name="phase_status" id="phase_status">
+                                {!! project_phases_status_select(request('phase_status',''),1) !!}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
                         <div class="form-group ">
                             <input type="hidden" name="mid" value="{{request('mid')}}">
                             <button type="submit" class="btn btn-brand  m-btn m-btn--pill m-btn--icon">
@@ -49,6 +66,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </form>
     </div>
@@ -136,7 +154,7 @@
 @section('js')
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#departments_id,#m_form_status').selectpicker();
+            $('#departments_id,#m_form_status,#phase_name,#phase_status').selectpicker();
             $('a.action-delete').click(function (event) {
                 event.preventDefault();
                 var url = $(this).attr('href');

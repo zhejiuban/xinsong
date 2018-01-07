@@ -77,7 +77,22 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control m-bootstrap-select" id="phase_name">
+                                {!! project_phase_select2() !!}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control m-bootstrap-select" id="phase_status">
+                                {!! project_phases_status_select('',1) !!}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="m-separator m-separator--dashed"></div>
             <!--end: Search Form -->
@@ -248,6 +263,14 @@
                 $('#departments_id').on('change', function () {
                     datatable.search($(this).val(), 'department_id');
                 }).val(typeof query.department_id !== 'undefined' ? query.department_id : '');
+
+                $('#phase_name').on('change', function () {
+                    datatable.search($(this).val(), 'phase_name');
+                }).val(typeof query.phase_name !== 'undefined' ? query.phase_name : '');
+
+                $('#phase_status').on('change', function () {
+                    datatable.search($(this).val(), 'phase_status');
+                }).val(typeof query.phase_status !== 'undefined' ? query.phase_status : '');
             };
 
             return {
@@ -258,8 +281,8 @@
             };
         }();
         jQuery(document).ready(function () {
-            $('#m_form_status').selectpicker();
-            $('#departments_id').selectpicker();
+            $('#m_form_status,#phase_name').selectpicker();
+            $('#departments_id,#phase_status').selectpicker();
             DatatableAjax.init();
             $('.m_datatable').on('click', 'a.action-delete', function (event) {
                 event.preventDefault();

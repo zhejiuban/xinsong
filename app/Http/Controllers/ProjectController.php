@@ -34,13 +34,16 @@ class ProjectController extends Controller
                     ? (int)$request->input('datatable.pagination.perpage') : 20;
                 $status = $request->input('datatable.query.status');
                 $search = $request->input('datatable.query.search');
+                $phase_name = $request->input('datatable.query.phase_name');
+                $phase_status = $request->input('datatable.query.phase_status');
                 $department_id = $request->input('datatable.query.department_id');
                 //管理员或总部管理员获取所有项目
                 if (check_user_role(null, '总部管理员')) {
                     $project = Project::with([
                         'department', 'leaderUser', 'agentUser', 'companyUser'
                         , 'phases'
-                    ])->baseSearch($status, $search, $department_id)->orderBy(
+                    ])->baseSearch($status, $search, $department_id
+                        , $phase_name, $phase_status)->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage
@@ -52,7 +55,7 @@ class ProjectController extends Controller
                     $project = Project::with([
                         'department', 'leaderUser', 'agentUser', 'companyUser'
                         , 'phases'
-                    ])->baseSearch($status, $search, null)
+                    ])->baseSearch($status, $search, null, $phase_name, $phase_status)
                         ->companySearch(get_user_company_id())
                         ->orderBy(
                             $sort_field
@@ -81,12 +84,15 @@ class ProjectController extends Controller
             $status = $request->input('status');
             $search = $request->input('search');
             $department_id = $request->input('department_id');
+            $phase_name = $request->input('phase_name');
+            $phase_status = $request->input('phase_status');
 
             if (check_user_role(null, '总部管理员')) {
                 $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
                     , 'phases'
-                ])->baseSearch($status, $search, $department_id)->orderBy(
+                ])->baseSearch($status, $search, $department_id
+                    , $phase_name, $phase_status)->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             } elseif (check_company_admin()) {
@@ -94,7 +100,7 @@ class ProjectController extends Controller
                 $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
                     , 'phases'
-                ])->baseSearch($status, $search, null)->companySearch(get_user_company_id())->orderBy(
+                ])->baseSearch($status, $search, null, $phase_name, $phase_status)->companySearch(get_user_company_id())->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             }

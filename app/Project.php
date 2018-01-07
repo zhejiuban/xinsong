@@ -83,7 +83,8 @@ class Project extends Model
         return $this->hasMany('App\ProjectFolder');
     }
 
-    public function malfunctions(){
+    public function malfunctions()
+    {
         return $this->hasMany('App\Malfunction');
     }
 
@@ -182,7 +183,9 @@ class Project extends Model
         return $this->tasks()->needAddDynamic($date)->doesntHaveDynamic($date)->get();
     }
 
-    public function scopeBaseSearch($query, $status = null, $search = null, $department_id = null)
+    public function scopeBaseSearch($query
+        , $status = null, $search = null
+        , $department_id = null, $phase_name = null, $phase_status = null)
     {
         return $query->when($department_id, function ($query) use ($department_id) {
             return $query->where('department_id', $department_id);
@@ -199,6 +202,10 @@ class Project extends Model
                     "%{$search}%"
                 )->orWhere('no', 'like',
                     "%{$search}%");
+            });
+        })->when($phase_name && !is_null($phase_status),function ($query) use ($phase_name,$phase_status){
+            return $query->whereHas('phases', function ($query) use ($phase_name,$phase_status){
+                $query->where('name', $phase_name)->where('status',$phase_status);
             });
         });
     }

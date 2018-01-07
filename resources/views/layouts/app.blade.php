@@ -653,9 +653,9 @@
         </div>
         <!--end::Modal-->
 
-        {{--@if (config('app.debug'))--}}
-            {{--@include('sudosu::user-selector')--}}
-        {{--@endif--}}
+        @if (config('app.debug'))
+            @include('sudosu::user-selector')
+        @endif
 
         <!--begin::Base Scripts -->
         <script src="{{ asset('assets/vendors/base/vendors.bundle.min.js') }}" type="text/javascript"></script>

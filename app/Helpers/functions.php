@@ -860,10 +860,10 @@ function project_phases_status_select($selected = '', $type = 0)
     $data = config('common.project_phases_status');
     $str = '';
     if ($type) {
-        $str = '<option value="">请选择状态</option>';
+        $str = '<option value="">请选择阶段状态</option>';
     }
     foreach ($data as $key => $val) {
-        if ($selected == $key) {
+        if ($selected == $key && $selected !== '') {
             $str .= '<option value="' . $key . '" selected="selected">' . $val['title'] . '</option>';
         } else {
             $str .= '<option value="' . $key . '">' . $val['title'] . '</option>';
@@ -1243,4 +1243,28 @@ function get_user_info($id, $field = 'name')
     }else{
         return $user->$field;
     }
+}
+
+/**
+ * 项目建设阶段名称select
+ * @param string $selected
+ * @return string
+ */
+function project_phase_select2($selected=''){
+    $phase = [
+        '现场装配',
+        '现场调试',
+        '陪产试机',
+        '终验整改',
+        '质保售后',
+    ];
+    $str = '<option value="">选择阶段名称</option>';
+    foreach ($phase as $key=>$val){
+        if($val == $selected){
+            $str .= '<option value="'.$val.'" selected="selected">'.$val.'</option>';
+        }else{
+            $str .= '<option value="'.$val.'">'.$val.'</option>';
+        }
+    }
+    return $str;
 }

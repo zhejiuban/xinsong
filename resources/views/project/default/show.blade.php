@@ -40,7 +40,7 @@
             </label>
             <div class="col-lg-3">
                 <div class="form-static-text">
-                    {{$project->deparment ? $project->deparment->name : null }}
+                    {{$project->department ? $project->department->name : null }}
                 </div>
             </div>
             <label class="col-lg-2 col-form-label">
