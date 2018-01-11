@@ -49,7 +49,7 @@ var mAppExtend = function () {
                 mAppExtend.ajaxGetHtml(el, url, query, loading);
             }
         });
-        $('[data-toggle="autoLoadHtml"]').each(function(i,v) {
+        $('[data-toggle="autoLoadHtml"]').each(function (i, v) {
             var el = $(v).data('target');
             var url = $(v).attr('href') ? $(v).attr('href') : $(v).data('href');
             var query = $(v).data('query');
@@ -68,7 +68,7 @@ var mAppExtend = function () {
             // $.fn.select2.defaults.set("theme", "bootstrap");
             var ele = el ? el : '.select2';
             $(ele).select2({
-                language:'zh-CN',
+                language: 'zh-CN',
                 width: '100%'
             });
         }
@@ -88,26 +88,26 @@ var mAppExtend = function () {
         }
     };
     var initToastr = function () {
-      if(toastr){
-        toastr.options = {
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": true,
-          "progressBar": false,
-          "positionClass": "toast-top-center",
-          "preventDuplicates": true,
-          "showDuration": "300",
-          "hideDuration": "1000",
-          "timeOut": "2000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-        };
-      }
+        if (toastr) {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": false,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": true,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+        }
     };
-    var handleDatePicker = function(el,options){
+    var handleDatePicker = function (el, options) {
         var ele = el ? el : '.m-date';
         var options = $.extend(true, {
             language: "zh-CN",
@@ -168,69 +168,69 @@ var mAppExtend = function () {
             handleDatePicker();
             handleDateTimePicker();
         },
-        notification: function(message,type,notifyType,callback,options){
-          if(notifyType == 'notify'){
-            var option = $.extend(true,{
-              'message':'',
-              'options':{
-                  type: 'success',
-                  placement: {
-                      from: "top",
-                      align: "center"
-                  },
-                  delay:1000,
-                  onClose:null
-              }
-            },options);
-            if(type != undefined){
-              option.options.type = type;
+        notification: function (message, type, notifyType, callback, options) {
+            if (notifyType == 'notify') {
+                var option = $.extend(true, {
+                    'message': '',
+                    'options': {
+                        type: 'success',
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        },
+                        delay: 1000,
+                        onClose: null
+                    }
+                }, options);
+                if (type != undefined) {
+                    option.options.type = type;
+                }
+                if (message != undefined) {
+                    option.message = message;
+                }
+                if (callback != undefined) {
+                    option.options.onClose = callback;
+                }
+                $.notify(option.message, option.options);
+            } else {
+                var option = $.extend(true, {
+                    'message': '',
+                    'title': null,
+                    'options': {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": true,
+                        "progressBar": false,
+                        "positionClass": "toast-top-center",
+                        "preventDuplicates": true,
+                        "showDuration": 300,
+                        "hideDuration": 500,
+                        "timeOut": 2000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                }, options);
+                if (message != undefined) {
+                    option.message = message;
+                }
+                if (type == undefined) {
+                    type = 'info';
+                }
+                toastr.options = option.options;
+                if (option.title) {
+                    toastr[type](option.message, option.title);
+                } else {
+                    toastr[type](option.message);
+                }
+                if (callback instanceof Function) {
+                    window.setTimeout(function () {
+                        callback();
+                    }, option.options.hideDuration);
+                }
             }
-            if(message != undefined){
-              option.message = message;
-            }
-            if(callback != undefined){
-              option.options.onClose = callback;
-            }
-            $.notify(option.message,option.options);
-          }else{
-            var option = $.extend(true,{
-              'message':'',
-              'title':null,
-              'options':{
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": false,
-                "positionClass": "toast-top-center",
-                "preventDuplicates": true,
-                "showDuration": 300,
-                "hideDuration": 500,
-                "timeOut": 2000,
-                "extendedTimeOut": 1000,
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-              }
-            },options);
-            if(message != undefined){
-              option.message = message;
-            }
-            if(type == undefined){
-              type = 'info';
-            }
-            toastr.options = option.options;
-            if(option.title){
-              toastr[type](option.message,option.title);
-            }else{
-              toastr[type](option.message);
-            }
-            if(callback instanceof Function){
-              window.setTimeout(function () {
-                callback();
-              }, option.options.hideDuration);
-            }
-          }
 
         },
         laravelRoute: function (routeUrl, param) {
@@ -239,12 +239,12 @@ var mAppExtend = function () {
         //返回某个url页面
         backUrl: function (url, time) {
             if (url == 'reload') {
-                if(time){
-                  window.setTimeout(function () {
+                if (time) {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, time);
+                } else {
                     location.reload();
-                  }, time);
-                }else{
-                  location.reload();
                 }
                 return;
             }
@@ -258,7 +258,7 @@ var mAppExtend = function () {
             }
         },
         /*ajax加载页面*/
-        ajaxGetHtml: function (el, url, query, isLoading, callback, errorCallback,loadingType) {
+        ajaxGetHtml: function (el, url, query, isLoading, callback, errorCallback, loadingType) {
             var loading = isLoading ? true : false;
             var loadingEl = isLoading != true ? isLoading : 'body';
             var loadingType = loadingType == false ? false : true;
@@ -270,14 +270,14 @@ var mAppExtend = function () {
                 data: query,
                 beforeSend: function () {
                     if (loading) {
-                        if(loadingType){
+                        if (loadingType) {
                             mApp.block(loadingEl, {
                                 overlayColor: '#000000',
                                 type: 'loader',
                                 state: 'primary',
                                 message: '正在加载...'
                             });
-                        }else{
+                        } else {
                             mApp.block(loadingEl);
                         }
                     }
@@ -301,13 +301,13 @@ var mAppExtend = function () {
                         errorCallback(xhr, textStatus, errorThrown);
                     } else {
                         if (xhr.status == 401) { //未认证
-                          mAppExtend.notification('登录超时'
-                            ,'error','toastr',function() {
-                                mAppExtend.backUrl('reload');
-                              });
+                            mAppExtend.notification('登录超时'
+                                , 'error', 'toastr', function () {
+                                    mAppExtend.backUrl('reload');
+                                });
                         } else {
-                          mAppExtend.notification('请求错误，请重试'
-                            ,'error');
+                            mAppExtend.notification('请求错误，请重试'
+                                , 'error');
                         }
                     }
                 }
@@ -352,15 +352,15 @@ var mAppExtend = function () {
                         option.callback(data, textStatus, xhr);
                     } else {
                         if (data.status == 'success') {
-                          mAppExtend.notification(data.message
-                            ,'success','toastr',function() {
-                                if (option.redirect) {
-                                    mAppExtend.backUrl(data.url);
-                                }
-                            });
+                            mAppExtend.notification(data.message
+                                , 'success', 'toastr', function () {
+                                    if (option.redirect) {
+                                        mAppExtend.backUrl(data.url);
+                                    }
+                                });
                         } else {
-                          mAppExtend.notification(data.message
-                            ,'error');
+                            mAppExtend.notification(data.message
+                                , 'error');
                         }
                     }
                 },
@@ -369,96 +369,112 @@ var mAppExtend = function () {
                     if (option.errorCallback instanceof Function) {
                         option.errorCallback(xhr, textStatus, errorThrown);
                     } else {
-                        var _err_mes = '未知错误，请重试';
-                        if (xhr.responseJSON != undefined) {
-                            _$error = xhr.responseJSON.errors;
-                            if (_$error != undefined) {
-                                _err_mes = '';
-                                $.each(_$error, function (i, v) {
-                                    _err_mes += v[0] + '<br>';
+                        if (xhr.status == 401) { //未认证
+                            mAppExtend.notification('登录超时'
+                                , 'error', 'toastr', function () {
+                                    mAppExtend.backUrl('reload');
                                 });
+                        } else {
+                            var _err_mes = '未知错误，请重试';
+                            if (xhr.responseJSON != undefined) {
+                                _$error = xhr.responseJSON.errors;
+                                if (_$error != undefined) {
+                                    _err_mes = '';
+                                    $.each(_$error, function (i, v) {
+                                        _err_mes += v[0] + '<br>';
+                                    });
+                                }
                             }
+                            mAppExtend.notification(_err_mes
+                                , 'error');
                         }
-                        mAppExtend.notification(_err_mes
-                          ,'error');
                     }
                 }
             });
         },
-        deleteData:function(options){
-          var options = $.extend(true, {
-            title:'你确定要执行此操作吗?',
-            text:"此操作的数据无法撤销，请谨慎操作!",
-            url:'',
-            data:{'_method': 'DELETE'},
-            callback:null,
-            successTimer:500,
-            errorTimer:2000
-          }, options);
-          swal({
-            title: options.title,
-            text: options.text,
-            type: "warning",
-            cancelButtonText: '取消',
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "确定",
-            closeOnConfirm: false,
-            showLoaderOnConfirm: true
-          },
-          function(){
-            $.ajax({
-              url: options.url,
-              type: 'POST',
-              dataType: 'json',
-              data: options.data,
-              success:function(response, status, xhr) {
-                if(response.status == 'success'){
-                  swal({
-                    timer: options.successTimer,
-                    title:'操作成功',
-                    text:"您的操作数据已被处理",
-                    type:'success'
-                  });
-                  setTimeout(function () {
-                    if (options.callback instanceof Function) {
-                        options.callback(response, status, xhr);
-                    }else{
-                        mAppExtend.backUrl(response.url);
+        deleteData: function (options) {
+            var options = $.extend(true, {
+                title: '你确定要执行此操作吗?',
+                text: "此操作的数据无法撤销，请谨慎操作!",
+                url: '',
+                data: {'_method': 'DELETE'},
+                callback: null,
+                successTimer: 500,
+                errorTimer: 2000
+            }, options);
+            swal({
+                title: options.title,
+                text: options.text,
+                type: "warning",
+                cancelButtonText: '取消',
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "确定",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+            function () {
+                $.ajax({
+                    url: options.url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: options.data,
+                    success: function (response, status, xhr) {
+                        if (response.status == 'success') {
+                            swal({
+                                timer: options.successTimer,
+                                title: '操作成功',
+                                text: "您的操作数据已被处理",
+                                type: 'success'
+                            });
+                            setTimeout(function () {
+                                if (options.callback instanceof Function) {
+                                    options.callback(response, status, xhr);
+                                } else {
+                                    mAppExtend.backUrl(response.url);
+                                }
+                            }, options.successTimer);
+                        } else {
+                            swal({
+                                timer: options.errorTimer,
+                                title: '操作失败',
+                                text: response.message,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (xhr.status == 401) { //未认证
+                            mAppExtend.notification('登录超时'
+                                , 'error', 'toastr', function () {
+                                    mAppExtend.backUrl('reload');
+                                });
+                        } else {
+                            var _err_mes = '未知错误，请重试';
+                            if (xhr.responseJSON != undefined) {
+                                _$error = xhr.responseJSON.errors;
+                                if (_$error != undefined) {
+                                    _err_mes = '';
+                                    $.each(_$error, function (i, v) {
+                                        _err_mes += v[0] + '<br>';
+                                    });
+                                }
+                            }
+                            swal({
+                                timer: options.errorTimer,
+                                title: '删除失败',
+                                text: _err_mes,
+                                type: 'error'
+                            });
+                        }
                     }
-                  }, options.successTimer);
-                }else{
-                  swal({
-                    timer: options.errorTimer,
-                    title:'操作失败',
-                    text:response.message,
-                    type:'error'
-                  });
-                }
-              },
-              error:function(xhr, textStatus, errorThrown) {
-                _$error = xhr.responseJSON.errors;
-                var _err_mes = '未知错误，请重试';
-                if(_$error != undefined){
-                    _err_mes = '';
-                    $.each(_$error, function (i, v) {
-                        _err_mes += v[0] + '<br>';
-                    });
-                }
-                swal({
-                  timer: options.errorTimer,
-                  title:'删除失败',
-                  text:_err_mes,
-                  type:'error'
                 });
-              }
             });
-          });
         },
-        confirmControllData:function(options){
-          mAppExtend.deleteData(options);
+        confirmControllData: function (options) {
+            mAppExtend.deleteData(options);
         },
-        fileUpload:function(options){
+        fileUpload: function (options) {
             // {
             //     'uploader':options.uploader, //必须
             //     'picker':options.picker, //必须
@@ -476,7 +492,7 @@ var mAppExtend = function () {
             //     'fileCannel':function
             // }
             options = $.extend(true, {
-                'showTooltip':true
+                'showTooltip': true
             }, options);
             var pickers = options.picker,
                 uploaders = options.uploader,
@@ -491,77 +507,77 @@ var mAppExtend = function () {
                 // 文件接收服务端。
                 server: options.server,
                 formData: options.formData ? options.formData : {},
-                fileNumLimit:limit,
+                fileNumLimit: limit,
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: {
-                    id: '#'+pickers+'-picker',
-                    multiple:limit > 1 ? true : false
+                    id: '#' + pickers + '-picker',
+                    multiple: limit > 1 ? true : false
                 }
             });
 
             // 当有文件添加进来的时候
-            uploaders.on( 'fileQueued', function( file ) {
-                var $li = $('<div id="' + file.id + '" title="'+file.name+'"  data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="'+file.name+'"  class="tooltips file-item pull-left">' +
-                                '<div class="file-item-bg bg-grey-cararra full-height">' +
-                                    '<div class="text-right file-cannel">' +
-                                        '<a href="javascript:;" title="删除" data-file-id="' + file.id + '" class="m--font-danger">' +
-                                            '<i class="fa fa-ban"></i>' +
-                                        '</a>' +
-                                    '</div>' +
-                                    '<div class="file-progress text-center ">' +
-                                        '<i class="fa fa-circle-o-notch fa-2x fa-fw m--font-warning"></i>' +
-                                    '</div>' +
-                                    '<div class="file-state text-center">' +
-                                        '等待中...' +
-                                    '</div>' +
-                                    '<div class="file-info text-center" title="'+file.name+'">' +
-                                        file.name +
-                                    '</div>' +
-                                '</div>' +
-                            '</div> '
-                        );
-                  if(uploaders.option('fileNumLimit') == 1){
-                      $('#'+pickers+' .file-item').remove();
-                  }
-                  $('#'+pickers+'-picker').before( $li );
+            uploaders.on('fileQueued', function (file) {
+                var $li = $('<div id="' + file.id + '" title="' + file.name + '"  data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="' + file.name + '"  class="tooltips file-item pull-left">' +
+                    '<div class="file-item-bg bg-grey-cararra full-height">' +
+                    '<div class="text-right file-cannel">' +
+                    '<a href="javascript:;" title="删除" data-file-id="' + file.id + '" class="m--font-danger">' +
+                    '<i class="fa fa-ban"></i>' +
+                    '</a>' +
+                    '</div>' +
+                    '<div class="file-progress text-center ">' +
+                    '<i class="fa fa-circle-o-notch fa-2x fa-fw m--font-warning"></i>' +
+                    '</div>' +
+                    '<div class="file-state text-center">' +
+                    '等待中...' +
+                    '</div>' +
+                    '<div class="file-info text-center" title="' + file.name + '">' +
+                    file.name +
+                    '</div>' +
+                    '</div>' +
+                    '</div> '
+                );
+                if (uploaders.option('fileNumLimit') == 1) {
+                    $('#' + pickers + ' .file-item').remove();
+                }
+                $('#' + pickers + '-picker').before($li);
             });
             // 文件上传过程中创建进度条实时显示。
-            uploaders.on( 'uploadProgress', function( file, percentage ) {
-                var $li = $( '#'+file.id ),
+            uploaders.on('uploadProgress', function (file, percentage) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-progress'),
                     $state = $li.find('.file-state');
-                if(!$percent.find('i.fa-spinner').length){
+                if (!$percent.find('i.fa-spinner').length) {
                     $percent.html('<i class="fa fa-spinner fa-spin m--font-primary fa-2x fa-fw"></i>');
                 }
-                $state.text( parseInt(percentage * 100) + '%' );
+                $state.text(parseInt(percentage * 100) + '%');
             });
 
             // 文件上传成功，给item添加成功class, 用样式标记上传成功。
-            uploaders.on( 'uploadSuccess', function( file,response ) {
-                var $li = $( '#'+file.id ),
+            uploaders.on('uploadSuccess', function (file, response) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-progress'),
                     $info = $li.find('.file-info'),
                     $state = $li.find('.file-state'),
                     $cannel = $li.find('.file-cannel'),
                     $cannelBtn = $cannel.find('a');
-                if(response.status == 1){
+                if (response.status == 1) {
                     $percent.html('<i class="fa fa-check-circle-o m--font-primary fa-2x fa-fw"></i>');
-                    $state.text(WebUploader.formatSize( file.size ));
+                    $state.text(WebUploader.formatSize(file.size));
                     $cannelBtn.html('<i class="fa fa-trash"></i>');
                     $cannel.removeClass('file-cannel').addClass('file-delete');
-                    $cannelBtn.attr('data-response-info',JSON.stringify(response));
-                    if(autoCreateInput){
-                        if(uploaders.option('fileNumLimit') == 1){
-                            $li.append('<input type="hidden" name="'+storageInputName+'" value="'+response.data.id+'">');
-                        }else{
-                            $li.append('<input type="hidden" name="'+storageInputName+'[]" value="'+response.data.id+'">');
+                    $cannelBtn.attr('data-response-info', JSON.stringify(response));
+                    if (autoCreateInput) {
+                        if (uploaders.option('fileNumLimit') == 1) {
+                            $li.append('<input type="hidden" name="' + storageInputName + '" value="' + response.data.id + '">');
+                        } else {
+                            $li.append('<input type="hidden" name="' + storageInputName + '[]" value="' + response.data.id + '">');
                         }
                     }
                     if (options.uploadSuccess instanceof Function) {
                         options.uploadSuccess(file, response, uploaders);
                     }
-                }else{
+                } else {
                     $percent.html('<i class="fa fa-exclamation-circle m--font-danger fa-2x fa-fw"></i>');
                     $state.addClass('m--font-danger').text(response.message);
                     $info.hide();
@@ -569,11 +585,11 @@ var mAppExtend = function () {
             });
 
             // 文件上传失败，显示上传出错。
-            uploaders.on( 'uploadError', function( file ) {
-                var $li = $( '#'+file.id ),
+            uploaders.on('uploadError', function (file) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-progress'),
                     $state = $li.find('.file-state');
-                if(!$percent.find('i.fa-exclamation-circle').length){
+                if (!$percent.find('i.fa-exclamation-circle').length) {
                     $percent.html('<i class="fa fa-exclamation-circle m--font-danger fa-2x fa-fw"></i>');
                 }
                 $state.addClass('m--font-danger').text('上传失败，稍后重试');
@@ -581,40 +597,40 @@ var mAppExtend = function () {
                     options.uploadError(file, uploaders);
                 }
             });
-            uploaders.on( 'uploadComplete', function( file ) {
+            uploaders.on('uploadComplete', function (file) {
                 if (options.uploadComplete instanceof Function) {
                     options.uploadComplete(file, uploaders);
                 }
-                uploaders.removeFile( file,true);
-                if (options.showTooltip){
+                uploaders.removeFile(file, true);
+                if (options.showTooltip) {
                     mAppExtend.handleInitTooltips('#' + pickers + ' .tooltips');
                 }
             });
             //未上传取消文件
-            $('#'+pickers).on('click', ".file-cannel a", function(){
+            $('#' + pickers).on('click', ".file-cannel a", function () {
                 var $fileid = $(this).data('file-id');
-                if(uploaders.getFile($fileid) != undefined){
-                    uploaders.removeFile( $fileid,true);
+                if (uploaders.getFile($fileid) != undefined) {
+                    uploaders.removeFile($fileid, true);
                 }
-                $('#'+pickers).find('#'+$fileid).tooltip('hide');
-                $('#'+pickers).find('#'+$fileid).remove();
+                $('#' + pickers).find('#' + $fileid).tooltip('hide');
+                $('#' + pickers).find('#' + $fileid).remove();
                 if (options.fileCannel instanceof Function) {
                     options.fileCannel($fileid, uploaders);
                 }
             });
-            $('#'+pickers).on('click', ".file-delete a", function(){
+            $('#' + pickers).on('click', ".file-delete a", function () {
                 var $fileid = $(this).data('file-id');
-                if(uploaders.getFile($fileid) != undefined){
-                    uploaders.removeFile( $fileid,true);
+                if (uploaders.getFile($fileid) != undefined) {
+                    uploaders.removeFile($fileid, true);
                 }
-                $('#'+pickers).find('#'+$fileid).tooltip('hide');
-                $('#'+pickers).find('#'+$fileid).remove();
+                $('#' + pickers).find('#' + $fileid).tooltip('hide');
+                $('#' + pickers).find('#' + $fileid).remove();
                 if (options.fileDelete instanceof Function) {
                     options.fileDelete($fileid, uploaders);
                 }
             });
         },
-        imageUpload:function(options){
+        imageUpload: function (options) {
             // {
             //     'uploader':options.uploader, //必须
             //     'picker':options.picker, //必须
@@ -647,12 +663,12 @@ var mAppExtend = function () {
                 // 文件接收服务端。
                 server: options.server,
                 formData: options.formData ? options.formData : {},
-                fileNumLimit:limit,
+                fileNumLimit: limit,
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: {
-                    id: '#'+pickers+'-picker',
-                    multiple:limit > 1 ? true : false
+                    id: '#' + pickers + '-picker',
+                    multiple: limit > 1 ? true : false
                 },
                 // 只允许选择图片文件。
                 accept: {
@@ -663,95 +679,95 @@ var mAppExtend = function () {
             });
 
             // 当有文件添加进来的时候
-            uploaders.on( 'fileQueued', function( file ) {
-                var $li = $('<div id="' + file.id + '" title="'+file.name+'"  data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="'+file.name+'"  class="file-item tooltips pull-left">' +
-                                '<div class="file-preview">'+
-                                    '<span class="preview"><img class="hide" src=""></span>'+
-                                '</div>'+
-                                '<div class="file-item-bg full-height">' +
-                                    '<div class="text-right file-cannel">' +
-                                        '<a href="javascript:;" title="删除" data-file-id="' + file.id + '" class="m--font-danger">' +
-                                            '<i class="fa fa-ban"></i>' +
-                                        '</a>' +
-                                    '</div>' +
-                                    '<div class="file-progress text-center ">' +
-                                        '<i class="fa fa-circle-o-notch fa-2x fa-fw m--font-warning"></i>' +
-                                    '</div>' +
-                                    '<div class="file-state text-center">' +
-                                        '等待中...' +
-                                    '</div>' +
-                                    '<div class="file-info text-center " title="'+file.name+'">' +
-                                        file.name +
-                                    '</div>' +
-                                '</div>' +
-                            '</div> '
-                        );
-                if(uploaders.option('fileNumLimit') == 1){
-                    $('#'+pickers+' .file-item').remove();
+            uploaders.on('fileQueued', function (file) {
+                var $li = $('<div id="' + file.id + '" title="' + file.name + '"  data-container="body" data-toggle="m-tooltip" data-placement="top" data-original-title="' + file.name + '"  class="file-item tooltips pull-left">' +
+                    '<div class="file-preview">' +
+                    '<span class="preview"><img class="hide" src=""></span>' +
+                    '</div>' +
+                    '<div class="file-item-bg full-height">' +
+                    '<div class="text-right file-cannel">' +
+                    '<a href="javascript:;" title="删除" data-file-id="' + file.id + '" class="m--font-danger">' +
+                    '<i class="fa fa-ban"></i>' +
+                    '</a>' +
+                    '</div>' +
+                    '<div class="file-progress text-center ">' +
+                    '<i class="fa fa-circle-o-notch fa-2x fa-fw m--font-warning"></i>' +
+                    '</div>' +
+                    '<div class="file-state text-center">' +
+                    '等待中...' +
+                    '</div>' +
+                    '<div class="file-info text-center " title="' + file.name + '">' +
+                    file.name +
+                    '</div>' +
+                    '</div>' +
+                    '</div> '
+                );
+                if (uploaders.option('fileNumLimit') == 1) {
+                    $('#' + pickers + ' .file-item').remove();
                 }
-                $('#'+pickers+'-picker').before( $li );
+                $('#' + pickers + '-picker').before($li);
                 // 如果为非图片文件，可以不用调用此方法。
                 // thumbnailWidth x thumbnailHeight 为 100 x 100
-                uploaders.makeThumb( file, function( error, src ) {
-                    var $item = $( '#'+file.id ),
+                uploaders.makeThumb(file, function (error, src) {
+                    var $item = $('#' + file.id),
                         $img = $li.find('img');
-                    if ( error ) {
+                    if (error) {
                         $img.replaceWith('<span>不能预览</span>');
                         return;
                     }
-                    $img.attr( 'src', src );
-                }, 1, 1 );
+                    $img.attr('src', src);
+                }, 1, 1);
             });
             // 文件上传过程中创建进度条实时显示。
-            uploaders.on( 'uploadProgress', function( file, percentage ) {
-                var $li = $( '#'+file.id ),
+            uploaders.on('uploadProgress', function (file, percentage) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-progress'),
                     $state = $li.find('.file-state');
-                if(!$percent.find('i.fa-spinner').length){
+                if (!$percent.find('i.fa-spinner').length) {
                     $percent.html('<i class="fa fa-spinner fa-spin m--font-primary fa-2x fa-fw"></i>');
                 }
-                $state.text( parseInt(percentage * 100) + '%' );
+                $state.text(parseInt(percentage * 100) + '%');
             });
 
             // 文件上传成功，给item添加成功class, 用样式标记上传成功。
-            uploaders.on( 'uploadSuccess', function( file,response ) {
-                var $li = $( '#'+file.id ),
+            uploaders.on('uploadSuccess', function (file, response) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-progress'),
                     $state = $li.find('.file-state'),
                     $info = $li.find('.file-info'),
                     $cannel = $li.find('.file-cannel'),
                     $cannelBtn = $cannel.find('a'),
                     $img = $li.find('img');
-                    if(response.status == 1){
-                        $info.hide();
-                        $percent.html('<i class="fa fa-check-circle-o m--font-primary fa-2x fa-fw"></i>').hide();
-                        $state.text(WebUploader.formatSize( file.size )).hide();
-                        $cannelBtn.html('<i class="fa fa-trash"></i>');
-                        $cannel.removeClass('file-cannel').addClass('file-delete');
-                        $cannelBtn.attr('data-response-info',JSON.stringify(response));
-                        $img.removeClass('hide');
-                        if(autoCreateInput){
-                            if(uploaders.option('fileNumLimit') == 1){
-                                $li.append('<input type="hidden" name="'+storageInputName+'" value="'+response.data.id+'">');
-                            }else{
-                                $li.append('<input type="hidden" name="'+storageInputName+'[]" value="'+response.data.id+'">');
-                            }
+                if (response.status == 1) {
+                    $info.hide();
+                    $percent.html('<i class="fa fa-check-circle-o m--font-primary fa-2x fa-fw"></i>').hide();
+                    $state.text(WebUploader.formatSize(file.size)).hide();
+                    $cannelBtn.html('<i class="fa fa-trash"></i>');
+                    $cannel.removeClass('file-cannel').addClass('file-delete');
+                    $cannelBtn.attr('data-response-info', JSON.stringify(response));
+                    $img.removeClass('hide');
+                    if (autoCreateInput) {
+                        if (uploaders.option('fileNumLimit') == 1) {
+                            $li.append('<input type="hidden" name="' + storageInputName + '" value="' + response.data.id + '">');
+                        } else {
+                            $li.append('<input type="hidden" name="' + storageInputName + '[]" value="' + response.data.id + '">');
                         }
-                        if (options.uploadSuccess instanceof Function) {
-                            options.uploadSuccess(file, response, uploaders);
-                        }
-                    }else{
-                        $percent.html('<i class="fa fa-exclamation-circle m--font-danger fa-2x fa-fw"></i>');
-                        $state.addClass('m--font-danger').text(response.message);
                     }
+                    if (options.uploadSuccess instanceof Function) {
+                        options.uploadSuccess(file, response, uploaders);
+                    }
+                } else {
+                    $percent.html('<i class="fa fa-exclamation-circle m--font-danger fa-2x fa-fw"></i>');
+                    $state.addClass('m--font-danger').text(response.message);
+                }
             });
 
             // 文件上传失败，显示上传出错。
-            uploaders.on( 'uploadError', function( file, reason ) {
-                var $li = $( '#'+file.id ),
+            uploaders.on('uploadError', function (file, reason) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-progress'),
                     $state = $li.find('.file-state');
-                if(!$percent.find('i.fa-exclamation-circle').length){
+                if (!$percent.find('i.fa-exclamation-circle').length) {
                     $percent.html('<i class="fa fa-exclamation-circle m--font-danger fa-2x fa-fw"></i>');
                 }
                 $state.addClass('m--font-danger').text('上传失败，稍后重试');
@@ -759,40 +775,40 @@ var mAppExtend = function () {
                     options.uploadError(file, uploaders);
                 }
             });
-            uploaders.on( 'uploadComplete', function( file ) {
+            uploaders.on('uploadComplete', function (file) {
                 if (options.uploadComplete instanceof Function) {
                     options.uploadComplete(file, uploaders);
                 }
-                uploaders.removeFile( file,true);
+                uploaders.removeFile(file, true);
                 if (options.showTooltip) {
                     mAppExtend.handleInitTooltips('#' + pickers + ' .tooltips');
                 }
             });
             //未上传取消文件
-            $('#'+pickers).on('click', ".file-cannel a", function(){
+            $('#' + pickers).on('click', ".file-cannel a", function () {
                 var $fileid = $(this).data('file-id');
-                if(uploaders.getFile($fileid) != undefined){
-                    uploaders.removeFile( $fileid,true);
+                if (uploaders.getFile($fileid) != undefined) {
+                    uploaders.removeFile($fileid, true);
                 }
-                $('#'+pickers).find('#'+$fileid).tooltip('hide');
-                $('#'+pickers).find('#'+$fileid).remove();
+                $('#' + pickers).find('#' + $fileid).tooltip('hide');
+                $('#' + pickers).find('#' + $fileid).remove();
                 if (options.fileCannel instanceof Function) {
                     options.fileCannel($fileid, uploaders);
                 }
             });
-            $('#'+pickers).on('click', ".file-delete a", function(){
+            $('#' + pickers).on('click', ".file-delete a", function () {
                 var $fileid = $(this).data('file-id');
-                if(uploaders.getFile($fileid) != undefined){
-                    uploaders.removeFile( $fileid,true);
+                if (uploaders.getFile($fileid) != undefined) {
+                    uploaders.removeFile($fileid, true);
                 }
-                $('#'+pickers).find('#'+$fileid).tooltip('hide');
-                $('#'+pickers).find('#'+$fileid).remove();
+                $('#' + pickers).find('#' + $fileid).tooltip('hide');
+                $('#' + pickers).find('#' + $fileid).remove();
                 if (options.fileDelete instanceof Function) {
                     options.fileDelete($fileid, uploaders);
                 }
             });
         },
-        singleImageUpload: function(options){
+        singleImageUpload: function (options) {
             // {
             //     'uploader':options.uploader
             //     'picker':options.picker, //必须
@@ -809,13 +825,13 @@ var mAppExtend = function () {
             //     'uploadComplete':function
             // }
             options = $.extend(true, {
-                isAutoInsertInput:true,
-                isHiddenResult:true,
-                showUploadProgress:true,
-                storageInputName:'image',
-                'uploadSuccess':null,
-                'uploadError':null,
-                'uploadComplete':null
+                isAutoInsertInput: true,
+                isHiddenResult: true,
+                showUploadProgress: true,
+                storageInputName: 'image',
+                'uploadSuccess': null,
+                'uploadError': null,
+                'uploadComplete': null
             }, options);
             //console.log(options);
             var uploader = options.uploader,
@@ -836,9 +852,9 @@ var mAppExtend = function () {
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: {
                     id: '#' + options.picker + '-picker',
-                    multiple:false
+                    multiple: false
                 },
-                fileNumLimit:options.fileNumLimit ? options.fileNumLimit : 1,
+                fileNumLimit: options.fileNumLimit ? options.fileNumLimit : 1,
                 // 只允许选择图片文件。
                 accept: {
                     title: 'Images',
@@ -847,38 +863,38 @@ var mAppExtend = function () {
                 }
             });
             // 当有文件添加进来的时候
-            uploader.on( 'fileQueued', function( file ) {
+            uploader.on('fileQueued', function (file) {
                 var $li = $(
                     '<div id="' + file.id + '" class="m--padding-10 m--border m--border-radius-3">' +
-                    '<div class="file-info overflow" title="' + file.name + '" data-file-id="'+file.id+'"> ' + file.name + '</div>' +
+                    '<div class="file-info overflow" title="' + file.name + '" data-file-id="' + file.id + '"> ' + file.name + '</div>' +
                     '</div>'
                 );
-                $("#" + options.picker + "-file-list").html( $li );
+                $("#" + options.picker + "-file-list").html($li);
             });
             // 文件上传过程中创建进度条实时显示。
-            uploader.on( 'uploadProgress', function( file, percentage) {
-                var $li = $( '#'+file.id ),
+            uploader.on('uploadProgress', function (file, percentage) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-info i');
                 $info = $li.find('div.file-info');
 
                 // 避免重复创建
-                if ( !$percent.length ) {
+                if (!$percent.length) {
                     $percent = $('<i class="fa fa-spinner fa-spin m--font-brand"></i>')
-                        .prependTo( $info );
+                        .prependTo($info);
                 }
             });
             // 文件上传成功，给item添加成功class, 用样式标记上传成功。
-            uploader.on( 'uploadSuccess', function( file, response ) {
-                var $li = $( '#'+file.id ),
+            uploader.on('uploadSuccess', function (file, response) {
+                var $li = $('#' + file.id),
                     $percent = $li.find('.file-info i');
                 $info = $li.find('.file-info');
-                if(response.status){
+                if (response.status) {
                     $percent.removeClass("fa-spinner fa-spin").addClass("fa-check");
-                    $info.attr('data-response-info',JSON.stringify(response));
-                    if(autoCreateInput){
-                        $li.append('<input type="hidden" name="'+storageInputName+'" value="'+response.data.id+'">');
+                    $info.attr('data-response-info', JSON.stringify(response));
+                    if (autoCreateInput) {
+                        $li.append('<input type="hidden" name="' + storageInputName + '" value="' + response.data.id + '">');
                     }
-                    if(isHiddenResult){
+                    if (isHiddenResult) {
                         window.setTimeout(function () {
                             $li.hide();
                         }, options.errorMsgHiddenTime ? options.errorMsgHiddenTime : 1500);
@@ -886,7 +902,7 @@ var mAppExtend = function () {
                     if (options.uploadSuccess instanceof Function) {
                         options.uploadSuccess(file, response, uploader);
                     }
-                }else{
+                } else {
                     $info.addClass('m--font-danger').html('<i class="fa fa-exclamation-circle m--font-danger"></i> ' + response.message);
                     if (options.errorMsgHiddenTime) {
                         window.setTimeout(function () {
@@ -897,8 +913,8 @@ var mAppExtend = function () {
 
             });
             // 文件上传失败，显示上传出错。
-            uploader.on( 'uploadError', function( file ) {
-                var $li = $( '#'+file.id ),
+            uploader.on('uploadError', function (file) {
+                var $li = $('#' + file.id),
                     $error = $li.find('div.file-info');
                 $error.addClass('m--font-danger').html('<i class="fa fa-exclamation-circle m--font-danger"></i> 上传出错，请重试');
                 if (options.errorMsgHiddenTime) {
@@ -911,15 +927,15 @@ var mAppExtend = function () {
                 }
             });
             // 完成上传完了，成功或者失败，先删除进度条。
-            uploader.on( 'uploadComplete', function( file ) {
+            uploader.on('uploadComplete', function (file) {
                 if (options.uploadComplete instanceof Function) {
                     options.uploadComplete(file, uploader);
                 }
-                uploader.removeFile( file,true);
+                uploader.removeFile(file, true);
             });
 
         },
-        datePickerInstance:function (el,options) { 
+        datePickerInstance: function (el, options) {
             handleDatePicker(el, options);
         },
         dateTimePickerInstance: function (el, options) {
@@ -928,13 +944,13 @@ var mAppExtend = function () {
         select2Instance: function (el) {
             handleSelect2(el);
         },
-        handleInitTooltips:function (el) {
+        handleInitTooltips: function (el) {
             handleTooltips(el);
         },
-        projectPhases:function(data){
+        projectPhases: function (data) {
             var $return = null;
-            $.each(data,function (i,v) {
-                if(v['status'] < 2){
+            $.each(data, function (i, v) {
+                if (v['status'] < 2) {
                     $return = v;
                     return false;
                 }

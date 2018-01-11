@@ -124,6 +124,15 @@ class FileController extends Controller
                 $path = $file_upload_config['base_path'] . '/' . $save_path . '/' . $save_name;
                 //文件转存
                 $bool = $disk->putFileAs($save_path, $upload_file, $save_name);
+
+                //缩略图处理
+                if(in_array($ext,config('filesystems.disks.image.validate.ext'))){
+                    if ($ext != 'gif') {
+                        // 此类中封装的函数，用于裁剪图片
+                        $this->reduseSize($path, config('filesystems.disks.image.thumbnail.max_width'));
+                    }
+                }
+
                 //数据库保存上传文件信息
                 $file_info = new FileModel();
                 $file_info->type = $upload_file->getClientMimeType();

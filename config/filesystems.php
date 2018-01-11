@@ -75,7 +75,7 @@ return [
             'upload_path_format' => date("Ym", time())
                 . '/' . date("d", time()),
             'thumbnail' => [
-                'max_width' => 96
+                'max_width' => 960
             ]
         ],
         'file' => [
