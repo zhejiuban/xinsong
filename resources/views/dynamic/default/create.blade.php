@@ -17,29 +17,27 @@
             <input class="form-control m-input" name="onsite_user" id="onsite_user" />
             <span class="m-form__help">第三方配合人员请标注</span>
         </div>--}}
-        @if(check_project_leader($project,1) || check_project_leader($project,2))
-            @if($phase = $project->phases()->where('status','<',2)->orderBy('id','asc')->first())
-                <div class="form-group">
-                    <div class="m--margin-bottom-15">
-                        项目名称：{{$project->title ? $project->title : null}}
-                    </div>
-                    <label class="form-control-label">
-                        项目状态: {{$phase->name}}
-                    </label>
-                    <div>
-                        @if($phase->status)
-                            <input data-switch="true" type="checkbox" data-on-text="已完成"
-                                   data-handle-width="60" data-off-text="进行中" data-on-color="success"
-                                   data-off-color="brand" name="phase_status" value="{{$phase->status}}">
-                        @else
-                            <input data-switch="true" type="checkbox" data-on-text="开始"
-                                   data-handle-width="60" data-off-text="未开始" data-on-color="brand"
-                                   name="phase_status" value="{{$phase->status}}">
-                        @endif
-                    </div>
+        @if($phase = $project->phases()->where('status','<',2)->orderBy('id','asc')->first())
+            <div class="form-group">
+                <div class="m--margin-bottom-15">
+                    项目名称：{{$project->title ? $project->title : null}}
                 </div>
-                <input type="hidden" name="phase_id" value="{{$phase->id}}">
-            @endif
+                <label class="form-control-label">
+                    项目状态: {{$phase->name}}
+                </label>
+                <div>
+                    @if($phase->status)
+                        <input data-switch="true" type="checkbox" data-on-text="已完成"
+                               data-handle-width="60" data-off-text="进行中" data-on-color="success"
+                               data-off-color="brand" name="phase_status" value="{{$phase->status}}">
+                    @else
+                        <input data-switch="true" type="checkbox" data-on-text="开始"
+                               data-handle-width="60" data-off-text="未开始" data-on-color="brand"
+                               name="phase_status" value="{{$phase->status}}">
+                    @endif
+                </div>
+            </div>
+            <input type="hidden" name="phase_id" value="{{$phase->id}}">
             <div class="m-separator m-separator--dashed "></div>
         @endif
 
