@@ -173,6 +173,15 @@
                             return '<a href="' + mAppExtend.laravelRoute('{{route_uri("questions.show")}}', {question: row.id}) + '" data-toggle="modal" data-target="#question_modal" class="action-show">' + row.title + '</a>';
                         }
                     }, {
+                        field: "project_id",
+                        width: 240,
+                        title: "所属项目", sortable: false,
+                        template: function (row) {
+                            if (row.project) {
+                                return row.project.title;
+                            }
+                        }
+                    },{
                         field: "question_category_id",
                         title: "所属版块",
                         sortable: false,

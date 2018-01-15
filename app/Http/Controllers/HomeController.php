@@ -30,6 +30,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+        //获取当前用户未上传日志的任务
+        $user = get_current_login_user_info(true);
+        $needAddDynamicTask = $user->leaderTasks()
+            ->needAddDynamic(current_date())->doesntHaveDynamic(current_date())->get();
+
         if(check_user_role(null,'总部管理员')){
             //获取所有项目
             $project = [
@@ -63,7 +68,7 @@ class HomeController extends Controller
             ];
             set_redirect_url();
             return view('index',compact([
-                'project','task','question'
+                'project','task','question','needAddDynamicTask'
             ]));
         }elseif(check_company_admin()){
             //获取分部所有用户
@@ -105,13 +110,9 @@ class HomeController extends Controller
             set_redirect_url();
             return view('company',compact([
                 'user','all'
-                ,'project','task','question'
+                ,'project','task','question','needAddDynamicTask'
             ]));
         }else{
-            //获取当前用户未上传日志的任务
-            $user = get_current_login_user_info(true);
-            $needAddDynamicTask = $user->leaderTasks()
-                ->needAddDynamic(current_date())->doesntHaveDynamic(current_date())->get();
             $question = [
                 'need_reply'=>Question::whereIn('status',[0,1])
                     ->receiveQuestion()->get()

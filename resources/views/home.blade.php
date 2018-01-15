@@ -17,21 +17,21 @@
         </div>
     </div>
     @endif
-    @foreach($needAddDynamicTask as $task)
+    @foreach($needAddDynamicTask as $t)
     <!--Begin::Main Portlet-->
     <div class="m-portlet">
         <div class="m-portlet__body  m-portlet__body--no-padding">
             <div class="row m-row--no-padding m-row--col-separator-xl">
                 <div class="col-xl-11">
                     <div class="m-widget1">
-                        <a href="{{route('tasks.show',['id'=>$task->id])}}"
-                        class="look-task">{{$task->content}}</a>
+                        <a href="{{route('tasks.show',['id'=>$t->id])}}"
+                        class="look-task">{{$t->content}}</a>
                         <br>
-                        所属项目：{{$task->project ? $task->project->title : null }}
+                        所属项目：{{$t->project ? $t->project->title : null }}
                     </div>
                 </div>
                 <div class="col-xl-1 text-center">
-                    <button href="{{ route('dynamics.create',['project_id'=>$task->project_id,'task_id'=>$task->id,'mid'=>request('mid')]) }}"
+                    <button href="{{ route('dynamics.create',['project_id'=>$t->project_id,'task_id'=>$t->id,'mid'=>request('mid')]) }}"
                             class="dynamic-add btn m-btn--square btn-secondary full-width-height btn-border-none m--padding-10 m--border-radius-none">
                         <i class="flaticon-add"></i>
                         <p class="m--margin-0 m--font-default">添加日志</p>
@@ -336,7 +336,7 @@
                 '#_modal .modal-content',
                 url,
                 {},true);
-        }
+        };
         $(document).ready(function(){
             $('.dynamic-add,.question-reply,.look-task').click(function(event) {
                 event.preventDefault();

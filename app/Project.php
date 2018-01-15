@@ -5,7 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
+
 
 class Project extends Model
 {
@@ -203,9 +203,9 @@ class Project extends Model
                 )->orWhere('no', 'like',
                     "%{$search}%");
             });
-        })->when($phase_name && !is_null($phase_status),function ($query) use ($phase_name,$phase_status){
-            return $query->whereHas('phases', function ($query) use ($phase_name,$phase_status){
-                $query->where('name', $phase_name)->where('status',$phase_status);
+        })->when($phase_name && !is_null($phase_status), function ($query) use ($phase_name, $phase_status) {
+            return $query->whereHas('phases', function ($query) use ($phase_name, $phase_status) {
+                $query->where('name', $phase_name)->where('status', $phase_status);
             });
         });
     }
@@ -213,5 +213,34 @@ class Project extends Model
     public function scopeCompanySearch($query, $company)
     {
         return $query->where('department_id', $company);
+    }
+
+    public function addDefaulfolders($project_id = null)
+    {
+        if (!$project_id) {
+            $project_id = $this->id;
+        }
+        $default = config('common.project_default_folder');
+        $user_id = get_current_login_user_info();
+        foreach ($default as $key=>$val){
+            $data = [
+                'name'=>$val['name'],
+                'parent_id'=>0,
+                'project_id'=>$project_id,
+                'user_id'=>$user_id
+            ];
+            $project_folder = ProjectFolder::create($data);
+            if($val['children']){
+                foreach ($val['children'] as $k=>$v){
+                    $child = [
+                        'name'=>$v['name'],
+                        'parent_id'=>$project_folder->id,
+                        'project_id'=>$project_id,
+                        'user_id'=>$user_id
+                    ];
+                    ProjectFolder::create($child);
+                }
+            }
+        }
     }
 }

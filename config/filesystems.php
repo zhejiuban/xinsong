@@ -88,7 +88,8 @@ return [
                 'ext' => [
                     'jpg', 'jpeg', 'png', 'gif', 'doc', 'docx',
                     'zip', 'rar', 'tar', 'gz', '7z',
-                    'docx', 'txt', 'pdf', 'xls', 'xlsx'
+                    'docx', 'txt', 'pdf', 'xls', 'xlsx',
+                    'dwt','dwg','dws','dxf',
                 ]
             ],
             'upload_path_format' => date("Ym", time())

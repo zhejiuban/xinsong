@@ -20,17 +20,50 @@ return [
         1 => ['title' => '可用', 'class' => ' m-badge--success'],
     ],
     'project_status' => [
-        0 => ['title' => '未开始', 'class' => ' m-badge--danger','color'=>'danger'],
-        1 => ['title' => '进行中', 'class' => ' m-badge--primary','color'=>'primary'],
-        2 => ['title' => '已完成', 'class' => ' m-badge--success','color'=>'success'],
+        0 => ['title' => '未开始', 'class' => ' m-badge--danger', 'color' => 'danger'],
+        1 => ['title' => '进行中', 'class' => ' m-badge--primary', 'color' => 'primary'],
+        2 => ['title' => '已完成', 'class' => ' m-badge--success', 'color' => 'success'],
     ],
     'project_phases_status' => [
-        0 => ['title' => '未开始', 'class' => ' m-badge--danger','color'=>'danger'],
-        1 => ['title' => '进行中', 'class' => ' m-badge--primary','color'=>'primary'],
-        2 => ['title' => '已完成', 'class' => ' m-badge--success','color'=>'success'],
+        0 => ['title' => '未开始', 'class' => ' m-badge--danger', 'color' => 'danger'],
+        1 => ['title' => '进行中', 'class' => ' m-badge--primary', 'color' => 'primary'],
+        2 => ['title' => '已完成', 'class' => ' m-badge--success', 'color' => 'success'],
     ],
     'task_status' => [
-        0 => ['title' => '进行中', 'class' => ' m-badge--primary','color'=>'danger'],
-        1 => ['title' => '已完成', 'class' => ' m-badge--success','color'=>'success'],
+        0 => ['title' => '进行中', 'class' => ' m-badge--primary', 'color' => 'danger'],
+        1 => ['title' => '已完成', 'class' => ' m-badge--success', 'color' => 'success'],
+    ],
+    'project_default_folder' => [
+        [
+            'name' => '施工资料',
+            'children' => [
+                ['name' => '技术协议', 'children' => null],
+                ['name' => '平面布置图纸', 'children' => null]
+            ]
+        ],
+        [
+            'name' => '程序备份',
+            'children' => [
+                ['name' => '控制台程序备份', 'children' => null],
+                ['name' => '小车程序备份', 'children' => null],
+                ['name' => 'PLC程序备份', 'children' => null],
+                ['name' => 'I/O表备份', 'children' => null],
+            ]
+        ],
+        [
+            'name' => '验收资料',
+            'children' => [
+                ['name' => '到货验收单年', 'children' => null],
+                ['name' => '电气图纸', 'children' => null],
+                ['name' => '机械图纸', 'children' => null],
+                ['name' => '备件清单', 'children' => null],
+                ['name' => '培训签到表', 'children' => null],
+                ['name' => '陪产记录表', 'children' => null],
+            ]
+        ],
+        [
+            'name' => '其他资料',
+            'children' => null
+        ],
     ],
 ];

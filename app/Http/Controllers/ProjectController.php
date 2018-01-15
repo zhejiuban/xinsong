@@ -182,6 +182,8 @@ class ProjectController extends Controller
             if ($files = $request->input('file_project')) {
                 $project->files()->attach((array)$files);
             }
+            //增加默认项目文档目录
+            $project->addDefaulfolders();
             //记录日志
             activity('项目日志')->performedOn($project)
                 ->withProperties($project->toArray())
