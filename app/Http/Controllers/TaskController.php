@@ -306,4 +306,8 @@ class TaskController extends Controller
         set_redirect_url();
         return view('task.default.personal', compact('list'));
     }
+
+    public function dynamics(){
+
+    }
 }

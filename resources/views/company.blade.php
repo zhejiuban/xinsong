@@ -445,20 +445,8 @@
         function formatProjectRepoSelection(repo) {
             return repo.title || repo.text;
         }
-        var ActionModal = function(url,type){
-            $('#_modal').modal(type?type:'show');
-            mAppExtend.ajaxGetHtml(
-                '#_modal .modal-content',
-                url,
-                {},true);
-        }
-        $(document).ready(function(){
-            $('.dynamic-add,.question-reply,.look-task').click(function(event) {
-                event.preventDefault();
-                var url = $(this).attr('href');
-                ActionModal(url);
-            });
 
+        $(document).ready(function(){
             mAppExtend.datePickerInstance('.m-dates',{
                 endDate : new Date(),
                 clearBtn : false
@@ -838,8 +826,8 @@
                     '#_modal .modal-content',
                     url,
                     {},true);
-            }
-            $('.question-reply').click(function(event){
+            };
+            $('.dynamic-add,.question-reply,.look-task').click(function(event){
                 event.preventDefault();
                 var url = $(this).attr('href');
                 lookQuestion(url);
