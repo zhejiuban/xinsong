@@ -14,7 +14,6 @@
                 </div>
             </div>
             <div class="m-portlet__head-tools">
-
             </div>
         </div>
         <div class="m-portlet__body">
@@ -165,6 +164,16 @@
                                 }) + '" class="action-show m-portlet__nav-link" title="详情">' +
                                 (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
                                 + '</a>';
+                        }
+                    },{
+                        field: "dynamics",
+                        title: "相关日志", sortable: false,
+                        template: function (row) {
+                             return '<a href="'+ mAppExtend.laravelRoute('{{route_uri("task.dynamics")}}', {
+                                 task: row.id,
+                                 mid: "{{request('mid')}}"
+                             }) +'"><span class="m-badge m-badge--brand m-badge--wide">查看</span></a>';
+
                         }
                     },{
                         field: "project_id",

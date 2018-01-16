@@ -9,12 +9,24 @@
                     <i class="flaticon-interface-7"></i>
                 </span>
                     <h3 class="m-portlet__head-text m--font-primary">
-                        日志列表
+                        任务日志详情
                     </h3>
                 </div>
             </div>
             <div class="m-portlet__head-tools">
-
+                <ul class="m-portlet__nav">
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ get_redirect_url() }}"
+                           class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">
+                        <span>
+                            <i class="fa fa-reply"></i>
+                            <span>
+                                返回
+                            </span>
+                        </span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="m-portlet__body">
@@ -22,19 +34,18 @@
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
                 <div class="row align-items-center">
                     <div class="col-xl-12 order-2 order-xl-1">
+                        <div class=" row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <b class=" m--font-brand">
+                                        任务内容：{{$task->content}} <br>
+                                    </b>
+                                    执行人：{{$task->user?$task->user->name : null}} <br>
+                                    所属项目：{{$task->project ? $task->project->title : null}}
+                                </div>
+                            </div>
+                        </div>
                         <div class="m-form__group row align-items-center">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <select name="project_id" class="form-control" id="project_id">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <select name="user_id" class="form-control" id="user_id">
-                                    </select>
-                                </div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="m-input-icon m-input-icon--left">
@@ -74,15 +85,6 @@
         </div>
     </div>
     <!--end::Modal-->
-    <!--begin::Modal-->
-    <div class="modal fade" id="_editModal" tabindex="-1" role="dialog" aria-labelledby="_EditModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div>
-    <!--end::Modal-->
 @endsection
 
 @section('js')
@@ -100,7 +102,7 @@
                         source: {
                             type: 'get',
                             read: {
-                                url: '{{ route("dynamics.index") }}',
+                                url: '{{ route("task.dynamics",['task'=>$task->id]) }}',
                                 param: {}
                             }
                         },
@@ -147,23 +149,7 @@
                                 (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
                                 + '</a>';
                         }
-                    }, {
-                        field: "project_id",
-                        width: 240,
-                        title: "所属项目", sortable: false,
-                        template: function (row) {
-                            if (row.project) {
-                                return row.project.title;
-                            }
-                        }
-                    }, {
-                        field: "user_id", sortable: false,
-                        width: 60, title: "上报人", template: function (row) {
-                            if (row.user) {
-                                return row.user.name;
-                            }
-                        }
-                    }, {
+                    },  {
                         field: "created_at",
                         title: "上报时间",
                         width: 150
@@ -192,21 +178,9 @@
                     datatable.load();
                 }).val(query.search);
 
-                $('#m_form_status').on('change', function () {
-                    datatable.search($(this).val(), 'status');
-                }).val(typeof query.status !== 'undefined' ? query.status : '');
-
-                $('#project_id').on('change', function () {
-                    datatable.search($(this).val(), 'project_id');
-                }).val(typeof query.project_id !== 'undefined' ? query.project_id : '');
-
                 $('#date').on('change', function () {
                     datatable.search($(this).val(), 'date');
                 }).val(typeof query.date !== 'undefined' ? query.date : '');
-
-                $('#user_id').on('change', function () {
-                    datatable.search($(this).val(), 'user_id');
-                }).val(typeof query.user_id !== 'undefined' ? query.user_id : '');
 
             };
 
@@ -218,20 +192,20 @@
             };
         }();
 
-        function formatRepos(repo) {
+        function formatTaskRepo(repo) {
             if (repo.loading) return repo.text;
             var markup = "<div class='select2-result-repository clearfix'>" +
                 "<div class='select2-result-repository__meta'>" +
-                "<div class='select2-result-repository__title'>" + repo.name + "</div>";
-            if (repo.department) {
-                markup += "<div class='select2-result-repository__description'>所在部门：" + repo.department.name + "</div>";
+                "<div class='select2-result-repository__title'>" + repo.content + "</div>";
+            if (repo.project) {
+                markup += "<div class='select2-result-repository__description'>所在项目：" + repo.project.title + "</div>";
             }
             markup += "</div></div>";
             return markup;
         }
 
-        function formatReposSelection(repo) {
-            return repo.name || repo.text;
+        function formatTaskRepoSelection(repo) {
+            return repo.content || repo.text;
         }
 
         function formatProjectRepo(repo) {
@@ -270,75 +244,7 @@
                     url,
                     {}, true);
             });
-            var $projectSelector = $("#project_id").select2({
-                language: 'zh-CN',
-                placeholder: "输入项目编号、名称等关键字搜索，选择项目",
-                allowClear: true,
-                width: '100%',
-                ajax: {
-                    url: "{{route('projects.selector.data')}}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term, // search term
-                            page: params.page,
-                            all:'company',
-                            per_page: {{config('common.page.per_page')}}
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.data,
-                            pagination: {
-                                more: (params.page * data.per_page) < data.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                }, // let our custom formatter work
-                minimumInputLength: 0,
-                templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
-                templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
-            });
-            $("#user_id").select2({
-                language: 'zh-CN',
-                placeholder: "输入姓名、用户名等关键字搜索，选择用户",
-                allowClear: true,
-                width: '100%',
-                ajax: {
-                    url: "{{route('users.selector.data')}}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term, // search term
-                            page: params.page,
-                            per_page: {{config('common.page.per_page')}}
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.data,
-                            pagination: {
-                                more: (params.page * data.per_page) < data.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                }, // let our custom formatter work
-                minimumInputLength: 0,
-                templateResult: formatRepos, // omitted for brevity, see the source of this page
-                templateSelection: formatReposSelection // omitted for brevity, see the source of this page
-            });
+
         });
     </script>
 @endsection

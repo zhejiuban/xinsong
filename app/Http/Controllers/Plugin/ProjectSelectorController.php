@@ -57,7 +57,7 @@ class ProjectSelectorController extends Controller
     public function phases(Request $request){
         $project_id = $request->input('id');
         return response()->json([
-            'message' => '用户列表'
+            'message' => '阶段列表'
             , 'status' => 'success'
             , 'data' => Project::find($project_id)->phases
             , 'url' => ''
@@ -66,7 +66,7 @@ class ProjectSelectorController extends Controller
     public function devices(Request $request){
         $project_id = $request->input('id');
         return response()->json([
-            'message' => '用户列表'
+            'message' => '设备列表'
             , 'status' => 'success'
             , 'data' => Project::find($project_id)->devices
             , 'url' => ''

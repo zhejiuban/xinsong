@@ -29,6 +29,7 @@ class DynamicController extends Controller
                 $prepage = $request->input('datatable.pagination.perpage')
                     ? (int)$request->input('datatable.pagination.perpage') : 20;
                 $project_id = $request->input('datatable.query.project_id');
+                $user_id = $request->input('datatable.query.user_id');
                 $search = $request->input('datatable.query.search');
                 $date = $request->input('datatable.query.date');
                 //管理员或总部管理员获取所有
@@ -48,6 +49,8 @@ class DynamicController extends Controller
                         ]);
                     })->when($project_id,function ($query) use ($project_id) {
                         return $query->where('project_id', $project_id);
+                    })->when($user_id,function ($query) use ($user_id) {
+                        return $query->where('user_id', $user_id);
                     })->orderBy(
                         $sort_field
                         , $sort)->paginate(
@@ -74,6 +77,8 @@ class DynamicController extends Controller
                         ]);
                     })->when($project_id,function ($query) use ($project_id) {
                         return $query->where('project_id', $project_id);
+                    })->when($user_id,function ($query) use ($user_id) {
+                        return $query->where('user_id', $user_id);
                     })->orderBy(
                         $sort_field
                         , $sort)->paginate(
@@ -99,6 +104,7 @@ class DynamicController extends Controller
             return view('dynamic.default.index');
         }else{
             $project_id = $request->input('project_id');
+            $user_id = $request->input('user_id');
             $search = $request->input('search');
             $date = $request->input('date');
             //管理员或总部管理员获取所有
@@ -114,6 +120,8 @@ class DynamicController extends Controller
                     });
                 })->when($project_id,function ($query) use ($project_id) {
                     return $query->where('project_id', $project_id);
+                })->when($user_id,function ($query) use ($user_id) {
+                    return $query->where('user_id', $user_id);
                 })->when($date,function ($query) use ($date) {
                     return $query->whereBetween('created_at', [
                         date_start_end($date),date_start_end($date,'end')
@@ -140,6 +148,8 @@ class DynamicController extends Controller
                     ]);
                 })->when($project_id,function ($query) use ($project_id) {
                     return $query->where('project_id', $project_id);
+                })->when($user_id,function ($query) use ($user_id) {
+                    return $query->where('user_id', $user_id);
                 })->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));

@@ -105,12 +105,12 @@
                             <span>删除</span>
                         </span>
                     </a>
-                    <a href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}"
+                    <a href="{{ route('task.dynamics',['task'=>$task->id,'mid'=>request('mid')]) }}"
                        class="m-btn--square m-btn--icon btn btn-secondary
-                        col m-btn--icon-center look-task m-btn-right-bottom-border-none"  >
+                        col m-btn--icon-center m-btn-right-bottom-border-none"  >
                         <span>
-                            <i class="la la-eye"></i>
-                            <span>详情</span>
+                            <i class="la la-list"></i>
+                            <span>日志</span>
                         </span>
                     </a>
                 </div>

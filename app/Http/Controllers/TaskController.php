@@ -307,7 +307,76 @@ class TaskController extends Controller
         return view('task.default.personal', compact('list'));
     }
 
-    public function dynamics(){
-
+    public function dynamics($id,Request $request)
+    {
+        $task = Task::find($id);
+        if(!$task){
+            return _error('无权操作');
+        }
+        if (!Agent::isMobile()) {
+            if ($request->ajax()) {
+                $sort_field = $request->input('datatable.sort.field')
+                    ? $request->input('datatable.sort.field') : 'id';
+                $sort = $request->input('datatable.sort.sort')
+                    ? $request->input('datatable.sort.sort') : 'desc';
+                $prepage = $request->input('datatable.pagination.perpage')
+                    ? (int)$request->input('datatable.pagination.perpage') : 20;
+                $date = $request->input('datatable.query.date');
+                $search = $request->input('datatable.query.search');
+                //管理员或总部管理员获取所有
+                $list = $task->dynamics()
+                    ->when($search, function ($query) use ($search) {
+                        return $query->where(function ($query) use ($search) {
+                            $query->where(
+                                'content', 'like',
+                                "%{$search}%"
+                            );
+                        });
+                    })->when($date, function ($query) use ($date) {
+                        return $query->whereBetween('created_at', [
+                            date_start_end($date), date_start_end($date, 'end')
+                        ]);
+                    })->orderBy(
+                        $sort_field
+                        , $sort)->paginate(
+                        $prepage
+                        , ['*']
+                        , 'datatable.pagination.page'
+                    );
+                $meta = [
+                    'field' => $sort_field,
+                    'sort' => $sort,
+                    'page' => $list->currentPage(),
+                    'pages' => $list->hasMorePages(),
+                    'perpage' => $prepage,
+                    'total' => $list->total()
+                ];
+                $data = $list->toArray();
+                $data['meta'] = $meta;
+                return response()->json($data);
+            }
+            return view('task.default.dynamic',compact('task'));
+        }else{
+            $user_id = $request->input('user_id');
+            $date = $request->input('date');
+            $search = $request->input('search');
+            $list = $task->dynamics()
+                ->when($search, function ($query) use ($search) {
+                    return $query->where(function ($query) use ($search) {
+                        $query->where(
+                            'content', 'like',
+                            "%{$search}%"
+                        );
+                    });
+                })->when($date, function ($query) use ($date) {
+                    return $query->whereBetween('created_at', [
+                        date_start_end($date), date_start_end($date, 'end')
+                    ]);
+                })
+                ->orderBy('id','desc')
+                ->paginate(config('common.page.per_page'));
+            return view('task.default.dynamic_mobile'
+                , compact(['list', 'task']));
+        }
     }
 }

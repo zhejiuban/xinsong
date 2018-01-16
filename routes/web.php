@@ -71,6 +71,8 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::match(['get', 'put'], 'phases/{phase}', 'ProjectController@phaseUpdate')->name('project.phases.update');
 
     Route::get('tasks', 'TaskController@index')->name('project.task.tasks');
+    Route::get('tasks/{task}/dynamics','TaskController@dynamics')->name('task.dynamics');
+
     Route::get('dynamics', 'DynamicController@index')->name('project.dynamic.dynamics');
     Route::get('malfunctions', 'MalfunctionController@index')->name('project.malfunction.malfunctions');
 });
@@ -85,6 +87,8 @@ Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
     Route::get('projects/selector/project/device', 'Plugin\ProjectSelectorController@devices')->name('project.devices.selector');
     Route::get('projects/selector/project/phase', 'Plugin\ProjectSelectorController@phases')->name('project.phases.selector');
     Route::get('projects/export','Plugin\ProjectExportController@index')->name('projects.export');
+
+//    Route::get('tasks/selector/data', 'Plugin\TaskSelectorController@data')->name('tasks.selector.data');
 
     Route::post('image/upload', 'Plugin\FileController@imageUpload')->name('image.upload');
     Route::post('file/upload', 'Plugin\FileController@fileUpload')->name('file.upload');
@@ -109,7 +113,6 @@ Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'task', 'middleware' => 'auth'], function () {
     Route::match(['get', 'post'], 'finisk/{task}', 'TaskController@finish')->name('tasks.finish');
-
     Route::resource('tasks', 'TaskController');
 });
 Route::group(['prefix' => 'dynamic', 'middleware' => 'auth'], function () {
