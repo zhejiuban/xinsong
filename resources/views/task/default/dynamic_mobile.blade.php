@@ -36,9 +36,12 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <b class=" m--font-brand">
-                                任务内容：{{$task->content}} <br>
+                                任务内容：<a href="{{route('tasks.show',['task'=>$task->id])}}" class="look-task">{{$task->content}} </a><br>
                             </b>
-                            执行人：{{$task->leaderUser?$task->leaderUser->name : null}} ，开始时间：{{$task->start_at}}<br>
+                            执行人：{{$task->leaderUser?$task->leaderUser->name : null}}
+                            ，开始时间：{{$task->start_at}}
+                            ，完成时间：{{$task->finished_at?$task->finished_at:'进行中'}}
+                            <br>
                             所属项目：{{$task->project ? $task->project->title : null}}
                         </div>
                     </div>
@@ -122,7 +125,7 @@
                 {}, true);
         };
         jQuery(document).ready(function () {
-            $('a.action-show').click(function (event) {
+            $('a.action-show,.look-task').click(function (event) {
                 event.preventDefault();
                 var url = $(this).attr('href');
                 ActionModal(url,'show')
