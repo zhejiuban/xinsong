@@ -38,8 +38,8 @@
                             <b class=" m--font-brand">
                                 任务内容：{{$task->content}} <br>
                             </b>
-                                执行人：{{$task->user?$task->user->name : null}} <br>
-                                所属项目：{{$task->project ? $task->project->title : null}}
+                            执行人：{{$task->leaderUser?$task->leaderUser->name : null}} ，开始时间：{{$task->start_at}}<br>
+                            所属项目：{{$task->project ? $task->project->title : null}}
                         </div>
                     </div>
                 </div>
