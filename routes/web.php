@@ -129,4 +129,3 @@ Route::get('notifications/{notification}/read','NotificationController@read')
 Route::get('notifications/mark_read','NotificationController@markAsRead')
     ->middleware('auth')->name('notifications.mark_read');
 
-Route::get('create_default_folder','ProjectController@createDefaultFolder');

@@ -923,10 +923,10 @@ class ProjectController extends Controller
         }
     }
 
-    public function createDefaultFolder(){
+    /*public function createDefaultFolder(){
         $list = Project::all();
         foreach ($list as $val){
             $val->addDefaulfolders();
         }
-    }
+    }*/
 }
