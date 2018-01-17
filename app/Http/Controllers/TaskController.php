@@ -31,9 +31,9 @@ class TaskController extends Controller
                 if (check_user_role(null, '总部管理员')) {
                     $task = Task::with([
                         'user', 'leaderUser', 'project'
-                    ])->baseSearch($status,$search,$project_id,$user_id)->orderBy(
-                        $sort_field
-                        , $sort)->paginate(
+                    ])->baseSearch($status,$search,$project_id,$user_id)
+                        ->orderBy('status', 'asc')
+                        ->orderBy($sort_field, $sort)->paginate(
                         $prepage
                         , ['*']
                         , 'datatable.pagination.page'
@@ -43,7 +43,8 @@ class TaskController extends Controller
                     $user = get_company_user(null,'id');
                     $task = Task::with([
                         'user', 'leaderUser', 'project'
-                    ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)->orderBy(
+                    ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)
+                        ->orderBy('status', 'asc')->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage
@@ -75,7 +76,7 @@ class TaskController extends Controller
             if (check_user_role(null, '总部管理员')) {
                 $list = Task::with([
                     'user', 'leaderUser', 'project'
-                ])->baseSearch($status,$search,$project_id,$user_id)->orderBy(
+                ])->baseSearch($status,$search,$project_id,$user_id)->orderBy('status', 'asc')->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             } else{
@@ -83,7 +84,8 @@ class TaskController extends Controller
                 $user = get_company_user(null,'id');
                 $list = Task::with([
                     'user', 'leaderUser', 'project'
-                ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)->orderBy(
+                ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)
+                    ->orderBy('status', 'asc')->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             }
