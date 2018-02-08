@@ -204,10 +204,10 @@
                         template: function (row) {
                             return row.receive_user ? row.receive_user.name : null;
                         }
-                    }, {
+                    }, /*{
                         field: "received_at",
                         title: "接收时间", width: 150
-                    }, {
+                    },*/ {
                         field: "replied_at",
                         title: "回复时间", width: 150
                     }, {

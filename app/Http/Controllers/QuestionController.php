@@ -127,7 +127,7 @@ class QuestionController extends Controller
         $result->receive_user_id = $request->receive_user_id;
         $result->project_id = $request->project_id;
         $result->file = $request->input('files') ? arr2str($request->input('files')) : null;
-        $result->status = 0;
+        $result->status = 1;
         $result->click = 0;
         if ($result->save()) {
             //记录日志
@@ -200,7 +200,7 @@ class QuestionController extends Controller
             if (!is_administrator()
                 && $question->user_id != get_current_login_user_info()) {
                 return _error('无权操作');
-            }elseif(!is_administrator() && $question->status){
+            }elseif(!is_administrator() && $question->status > 1){
                 return _error('问题已提交，不可修改');
             }
             if($request->ajax()){
@@ -228,7 +228,7 @@ class QuestionController extends Controller
             if (!is_administrator()
                 && $question->user_id != get_current_login_user_info()) {
                 return _error('无权操作');
-            }elseif(!is_administrator() && $question->status){
+            }elseif(!is_administrator() && $question->status > 1){
                 return _error('问题已提交，不可修改');
             }
             //修改数据
@@ -277,7 +277,7 @@ class QuestionController extends Controller
         } else {
             $res = Question::whereIn('id', $id)->where(
                 'user_id', get_current_login_user_info()
-            )->where('status', 0)->delete();
+            )->where('status', '<', 1)->delete();
         }
         if ($res) {
             activity('项目日志')->withProperties($id)->log('删除问题');
@@ -303,7 +303,7 @@ class QuestionController extends Controller
         if (!check_permission('question/personal')) {
             return _404('无权操作！');
         }
-        if (!Agent::isMobile()){
+        if (Agent::isMobile()){
             if ($request->ajax()) {
                 $sort_field = $request->input('datatable.sort.field')
                     ? $request->input('datatable.sort.field') : 'id';

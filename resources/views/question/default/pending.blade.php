@@ -181,10 +181,10 @@
 					template: function (row) {
 						return row.user ? row.user.name : null;
 					}
-        }, {
+        },/* {
           field: "received_at",
           title: "接收时间",width:150
-        }, {
+        },*/ {
           field: "replied_at",
           title: "回复时间",width:150
         }, {
@@ -198,7 +198,7 @@
           // locked: {right: 'xl'},
           overflow: 'visible',
           template: function (row) {
-						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.reply")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-reply m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="接收并回复">\
+						var edit = '<a href="'+mAppExtend.laravelRoute('{{route_uri("questions.reply")}}',{question:row.id,mid:"{{request('mid')}}" })+'" class="action-reply m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="回复">\
                 <i class="la la-reply"></i></a>';
 						if(row.status == 3){
 							edit = '';

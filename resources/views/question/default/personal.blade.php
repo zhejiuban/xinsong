@@ -195,10 +195,10 @@
                         template: function (row) {
                             return row.receive_user ? row.receive_user.name : null;
                         }
-                    }, {
+                    }, /*{
                         field: "received_at",
                         title: "接收时间", width: 150
-                    }, {
+                    },*/ {
                         field: "replied_at",
                         title: "回复时间", width: 150
                     }, {
@@ -228,7 +228,7 @@
                                 mid: "{{request('mid')}}"
                             }) + '" class="action-finished m-portlet__nav-link btn m-btn m-btn--hover-primary m-btn--icon m-btn--icon-only m-btn--pill" title="关闭">\
                 <i class="la la-check"></i></a>';
-                            if (row.status > 0) {
+                            if (row.status > 1) {
                                 del = '';
                                 edit = '';
                             }

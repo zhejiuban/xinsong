@@ -162,16 +162,16 @@
                             </div>
                             <div class="col">
                                 <div class="m-widget14__legends">
+                                    {{--<div class="m-widget14__legend">--}}
+                                        {{--<span class="m-widget14__legend-bullet m--bg-danger"></span>--}}
+                                        {{--<span class="m-widget14__legend-text">--}}
+                                            {{--{{$receive = $user->questions()->where('status',0)->count()}} 待接收--}}
+                                        {{--</span>--}}
+                                    {{--</div>--}}
                                     <div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-danger"></span>
                                         <span class="m-widget14__legend-text">
-                                            {{$receive = $user->questions()->where('status',0)->count()}} 待接收
-                                        </span>
-                                    </div>
-                                    <div class="m-widget14__legend">
-                                        <span class="m-widget14__legend-bullet m--bg-brand"></span>
-                                        <span class="m-widget14__legend-text">
-                                            {{$reply = $user->questions()->where('status',1)->count()}} 待回复
+                                            {{$reply = $user->questions()->where('status',1)->count()}} 未解决
                                         </span>
                                     </div>
                                     <div class="m-widget14__legend">
@@ -183,7 +183,7 @@
                                     <div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-success"></span>
                                         <span class="m-widget14__legend-text">
-                                            {{$close = $user->questions()->where('status',3)->count()}} 已关闭
+                                            {{$close = $user->questions()->where('status',3)->count()}} 已解决
                                         </span>
                                     </div>
                                 </div>
@@ -354,7 +354,7 @@
                         value: {{$reply}},
                         className: 'custom',
                         meta: {
-                            color: mUtil.getColor('brand')
+                            color: mUtil.getColor('danger')
                         }
                     },
                         {
@@ -362,13 +362,6 @@
                             className: 'custom',
                             meta: {
                                 color: mUtil.getColor('success')
-                            }
-                        },
-                        {
-                            value: {{$receive}},
-                            className: 'custom',
-                            meta: {
-                                color: mUtil.getColor('danger')
                             }
                         },
                         {

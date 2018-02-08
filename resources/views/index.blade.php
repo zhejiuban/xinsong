@@ -109,16 +109,16 @@
                             </div>
                             <div class="col">
                                 <div class="m-widget14__legends">
-                                    <div class="m-widget14__legend">
+                                    {{--<div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-danger"></span>
                                         <span class="m-widget14__legend-text">
                                             待接收 {{$question['receive']}}
                                         </span>
-                                    </div>
+                                    </div>--}}
                                     <div class="m-widget14__legend">
-                                        <span class="m-widget14__legend-bullet m--bg-brand"></span>
+                                        <span class="m-widget14__legend-bullet m--bg-danger"></span>
                                         <span class="m-widget14__legend-text">
-                                            待回复 {{$question['reply']}}
+                                            未解决 {{$question['reply']}}
                                         </span>
                                     </div>
                                     <div class="m-widget14__legend">
@@ -130,7 +130,7 @@
                                     <div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-success"></span>
                                         <span class="m-widget14__legend-text">
-                                            已关闭 {{$question['close']}}
+                                            已解决 {{$question['close']}}
                                         </span>
                                     </div>
                                 </div>
@@ -462,7 +462,7 @@
                         value: {{$question['reply']}},
                         className: 'custom',
                         meta: {
-                            color: mUtil.getColor('brand')
+                            color: mUtil.getColor('danger')
                         }
                     },
                         {
@@ -470,13 +470,6 @@
                             className: 'custom',
                             meta: {
                                 color: mUtil.getColor('success')
-                            }
-                        },
-                        {
-                            value: {{$question['receive']}},
-                            className: 'custom',
-                            meta: {
-                                color: mUtil.getColor('danger')
                             }
                         },
                         {

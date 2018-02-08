@@ -111,13 +111,21 @@
                 </div>
             </div>
             <label class="col-lg-2 col-form-label">
+                回复时间:
+            </label>
+            <div class="col-lg-3">
+                <div class="form-static-text">
+                    {{ $question->replied_at}}
+                </div>
+            </div>
+            <!-- <label class="col-lg-2 col-form-label">
                 接收时间:
             </label>
             <div class="col-lg-3">
                 <div class="form-static-text">
                     {{ $question->received_at}}
                 </div>
-            </div>
+            </div> -->
             <label class="col-lg-2 col-form-label">
                 回复内容:
             </label>
@@ -126,14 +134,7 @@
                     {{ $question->reply_content}}
                 </div>
             </div>
-            <label class="col-lg-2 col-form-label">
-                回复时间:
-            </label>
-            <div class="col-lg-9">
-                <div class="form-static-text">
-                    {{ $question->replied_at}}
-                </div>
-            </div>
+            
         </div>
         <div class="form-group m-form__group row">
             <label class="col-lg-2 col-form-label">

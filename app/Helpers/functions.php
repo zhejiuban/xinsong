@@ -1251,13 +1251,7 @@ function get_user_info($id, $field = 'name')
  * @return string
  */
 function project_phase_select2($selected=''){
-    $phase = [
-        '现场装配',
-        '现场调试',
-        '陪产试机',
-        '终验整改',
-        '质保售后',
-    ];
+    $phase = config('common.project_default_phase');
     $str = '<option value="">选择阶段名称</option>';
     foreach ($phase as $key=>$val){
         if($val == $selected){

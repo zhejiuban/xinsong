@@ -10,10 +10,10 @@ return [
         'per_page' => 10
     ],
     'question_status' => [
-        0 => ['title' => '待接收', 'class' => ' m-badge--danger'],
-        1 => ['title' => '处理中', 'class' => ' m-badge--warning'],
+//        0 => ['title' => '待接收', 'class' => ' m-badge--danger'],
+        1 => ['title' => '未解决', 'class' => ' m-badge--danger'],
         2 => ['title' => '已回复', 'class' => ' m-badge--primary'],
-        3 => ['title' => '已关闭', 'class' => ' m-badge--success'],
+        3 => ['title' => '已解决', 'class' => ' m-badge--success'],
     ],
     'status' => [
         0 => ['title' => '禁用', 'class' => ' m-badge--danger'],
@@ -65,5 +65,12 @@ return [
             'name' => '其他资料',
             'children' => null
         ],
+    ],
+    'project_default_phase'=>[
+        '现场装配',
+        '现场调试',
+        '陪产试机',
+        '终验整改',
+        '质保售后'
     ],
 ];
