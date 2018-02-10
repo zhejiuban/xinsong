@@ -73,6 +73,9 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::get('tasks', 'TaskController@index')->name('project.task.tasks');
     Route::get('tasks/{task}/dynamics','TaskController@dynamics')->name('task.dynamics');
 
+    Route::get('projects/{project}/plan','PlanController@show');
+    Route::post('projects/{project}/plan','PlanController@store');
+
     Route::get('dynamics', 'DynamicController@index')->name('project.dynamic.dynamics');
     Route::get('malfunctions', 'MalfunctionController@index')->name('project.malfunction.malfunctions');
 });

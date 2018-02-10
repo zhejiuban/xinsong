@@ -72,7 +72,7 @@
                            class="question-look btn btn-outline-info m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
                     <i class="la la-eye"></i></a>
                     @endif
-                    @if((check_project_owner($project,'company') || $question->user_id == get_current_login_user_info()) && $question->status == 2)
+                    @if((check_project_owner($project,'company') || $question->user_id == get_current_login_user_info()) && $question->status != 3)
                         <a href="{{ route('questions.finished',['question'=>$question->id,'board'=>1,'mid'=>request('mid')]) }}" title="关闭"
                            class="question-close btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
                         <i class="la la-power-off"></i></a>

@@ -240,6 +240,12 @@ class DynamicController extends Controller
             }elseif(!$task->builded_at){
                 $task->builded_at = Carbon::now();
                 $task->save();
+            }else{
+                $task->leaved_at = null;
+                $task->result = null;
+                $task->finished_at = null;
+                $task->status = 0;
+                $task->save();
             }
             activity('项目日志')->performedOn($project)
                 ->withProperties($dynamic->toArray())

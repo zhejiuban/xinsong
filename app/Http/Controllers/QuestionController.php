@@ -477,7 +477,7 @@ class QuestionController extends Controller
             $update = Question::whereIn('id', $question)->where(
                 'user_id', get_current_login_user_info()
             )->where(
-                'status', '=', 2
+                'status', '<=', 2
             )->update([
                 'status' => 3, 'finished_at' => Carbon::now()
             ]);

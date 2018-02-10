@@ -101,7 +101,7 @@
                 </a>
                 <a class="m-btn-right-bottom-border-none m-btn
                 m-btn--square btn btn-secondary col m-btn--icon
-                m-btn--icon-center action-finished @if($question->status != 2 ) disabled @endif" href="{{route('questions.finished',[
+                m-btn--icon-center action-finished @if($question->status > 2 ) disabled @endif" href="{{route('questions.finished',[
                             'question'=>$question->id,'mid'=>request('mid')
                             ])}}">
                     <span>

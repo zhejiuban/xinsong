@@ -164,9 +164,20 @@ class Project extends Model
         if (!$user) {
             $user = get_current_login_user_info();
         }
-        return $this->tasks()->where('status', 0)->whereDate(
-            'start_at', '<=', Carbon::now()->toDateString()
-        )->where('leader', $user)->whereDoesntHave('dynamics', function ($query) {
+        $date = current_date();
+        return $this->tasks()->where(function ($query) use ($date) {
+            $query->where(function ($query) use ($date) {
+                $query->where('status', 0)->whereDate(
+                    'start_at', '<=', $date
+                );
+            })->orWhere(function ($query) use ($date) {
+                $query->where('status', 1)->whereDate(
+                    'start_at', '<=', $date
+                )->whereDate(
+                    'finished_at', '>=', $date
+                );
+            });
+        })->where('leader', $user)->whereDoesntHave('dynamics', function ($query) {
             return $query->whereBetween('created_at', [
                 date_start_end(), date_start_end(null, 'end')
             ]);

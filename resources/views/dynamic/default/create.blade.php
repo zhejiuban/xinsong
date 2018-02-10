@@ -52,12 +52,13 @@
                 <div>
                     <input data-switch="true" type="checkbox" data-on-text="已完成"
                            data-handle-width="60" data-off-text="进行中" data-on-color="success"
-                           data-off-color="brand" name="task_status"  id="task_status" value="1">
+                           data-off-color="brand" name="task_status"  id="task_status" value="1"
+                        @if($task->status) checked="checked" @endif />
                 </div>
                 <span class="m-form__help"></span>
 
             </div>
-            <div class="form-group task-finish-detail" style="display: none">
+            <div class="form-group task-finish-detail" @if(!$task->status) style="display: none" @endif>
                 <label for="name" class="form-control-label">
                     去、离现场日期:<span class="required">*</span>
                 </label>
@@ -72,11 +73,11 @@
                 </div>
                 <span class="m-form__help"></span>
             </div>
-            <div class="form-group task-finish-detail "  style="display: none">
+            <div class="form-group task-finish-detail "  @if(!$task->status) style="display: none" @endif>
                 <label for="content" class="form-control-label">
                     任务完成情况:<span class="required">*</span>
                 </label>
-                <textarea class="form-control" name="task_result" id="task_result" rows="6"></textarea>
+                <textarea class="form-control" name="task_result" id="task_result" rows="6">{{$task->result}}</textarea>
                 <span class="m-form__help"></span>
             </div>
             <input type="hidden" name="task_id" value="{{$task->id}}">

@@ -206,7 +206,7 @@
                         title: "创建时间", width: 150
                     }, {
                         field: "actions",
-                        width: 110,
+                        width: 140,
                         title: "操作",
                         sortable: false,
                         // locked: {right: 'xl'},
@@ -232,7 +232,7 @@
                                 del = '';
                                 edit = '';
                             }
-                            if (row.status != 2) {
+                            if (row.status > 2) {
                                 finish = '';
                             }
                             return look + edit + del + finish;

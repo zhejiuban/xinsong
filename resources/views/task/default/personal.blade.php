@@ -41,55 +41,69 @@
             </div>
         </form>
     </div>
-    @foreach($list as $task)
-        <div class="m-portlet">
-            <div class="m-portlet__body  m-portlet__body--no-padding">
-                <div class="row m-row--no-padding m-row--col-separator-xl">
-                    <div class="col-xl-11">
-                        <div class="m-widget m--padding-20">
-                            <div class="m-widget-body">
-                                <div class="m-section m-section-none">
-                                    <h3 class="m-section__heading m-line-height-25">
-                                        @if($task->status)
-                                            <s><a class="look-task "  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">
+
+    <div class="row">
+        @foreach($list as $task)
+        <div class="col-xl-6">
+            <div class="m-portlet">
+                <div class="m-portlet__body m-portlet__body--no-padding">
+                    <div class="row m-row--no-padding m-row--col-separator-xl">
+                        <div class="col-xl-12">
+                            <div class="m-widget m--padding-20">
+                                <div class="m-widget-body">
+                                    <div class="m-section m-section-none">
+                                        <h3 class="m-section__heading m-line-height-25">
+                                            @if($task->status)
+                                                <s><a class="look-task "  href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">
+                                                        {{str_limit($task->content,50,'...')}}
+                                                    </a></s>
+                                            @else
+                                                <a class="look-task" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">
                                                     {{str_limit($task->content,50,'...')}}
-                                                </a></s>
-                                        @else
-                                            <a class="look-task" href="{{ route('tasks.show',['task'=>$task->id,'mid'=>request('mid')]) }}">
-                                                {{str_limit($task->content,50,'...')}}
-                                            </a>
-                                        @endif
-                                            {{--<span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">--}}
-                                            {{--{{tasks_status($task->status)}}--}}
-                                            {{--</span>--}}
-                                    </h3>
-                                    <span class="m-section__sub m-section__sub-margin-bottom-none">
-                                        所属项目：{{$task->project->title}} <br>
-                                        开始时间：{{$task->start_at}}
-                                        {{$task->finished_at ?'，完成时间：'.$task->finished_at : null}}
-                                    </span>
+                                                </a>
+                                            @endif
+                                                {{--<span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">--}}
+                                                {{--{{tasks_status($task->status)}}--}}
+                                                {{--</span>--}}
+                                        </h3>
+                                        <span class="m-section__sub m-section__sub-margin-bottom-none">
+                                            所属项目：{{$task->project->title}} <br>
+                                            开始时间：{{$task->start_at}} <br>
+                                            完成时间：{{$task->finished_at?$task->finished_at:'进行中'}}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-1 text-center">
+                </div>
+                <div class="m-portlet-action row">
+                    <div class="btn-group m-btn-group col" role="group" aria-label="">
                         @if(!$task->status)
-                            <button href="{{ route('tasks.finish',['task'=>$task->id,'mid'=>request('mid')])}}"
-                                    class="finish-task btn m-btn--square btn-secondary full-width-height btn-border-none m--padding-10 m--border-radius-none">
-                                <i class="flaticon-add"></i>
-                                <p class="m--margin-0 m--font-default">完成任务</p>
-                            </button>
+                            <a href="{{ route('tasks.finish',['task'=>$task->id,'mid'=>request('mid')])}}" class="m-btn--square m-btn--icon btn btn-secondary col m-btn--icon-center m-btn-left-bottom-border-none m-btn-right-bottom-border-none finish-task"  >
+                                <span>
+                                    <i class="la la-check-circle-o"></i>
+                                    <span>完成任务</span>
+                                </span>
+                            </a>
                         @else
-                            <button class="btn m-btn--square btn-accent full-width-height btn-border-none m--padding-10 m--border-radius-none">
-                                <i class="la la-check "></i>
-                                <p class="m--margin-0">已完成</p>
-                            </button>
+                            <a href="javascript:;" class="m-btn--square m-btn--icon btn btn-success col m-btn--icon-center  m-btn-right-bottom-border-none"  >
+                                <span>
+                                    <i class="la la-check"></i>
+                                    <span>已完成</span>
+                                </span>
+                            </a>
                         @endif
+
+
                     </div>
                 </div>
             </div>
         </div>
-    @endforeach
+        @endforeach
+    </div>
+
+
     {{ $list->appends([
         'mid' => request('mid'),
         'project_id' => request('project_id'),
