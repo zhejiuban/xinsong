@@ -126,6 +126,7 @@ class UserController extends Controller
         $user->sex = $request->sex;
         $user->department_id = $request->department_id ? $request->department_id : 0;
         $user->status = $request->status ? 1 : 0;
+        $user->avatar = $request->avatar;
         if ($user->save()) {
             //授权角色
             if ($request->role_id) {
@@ -200,6 +201,7 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->tel = $request->tel;
             $user->sex = $request->sex;
+            $user->avatar = $request->avatar;
             $is_own = $user->id !== get_current_login_user_info();
             if(!is_administrator_user($user->id)){
                 $user->department_id = $request->department_id ? $request->department_id : 0;

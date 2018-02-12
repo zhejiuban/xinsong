@@ -11,6 +11,27 @@
 <div class="modal-body">
   <form action="{{ route('users.update',['user'=>$user->id]) }}" class="m-form m-form--fit " method="post" id="edit-data-form">
     <div class="row">
+      <div class="col-lg-12">
+        <div class="form-group ">
+          <div>
+            <div class="m-card-user">
+                    <div class="m-card-user__pic">
+                        <img src="{{avatar($user->avatar)}}" class="m--img-rounded m--marginless" alt="">
+                    </div>
+                </div>
+                <div class="">
+                    <div id="forms-avatar-upload" class="btn-upload">
+                        <div id="forms-avatar-upload-picker" class="pickers tooltips forms-avatar-upload-tooltips"
+                             data-toggle="tooltip" data-placement="bottom" data-skin="dark"
+                             data-original-title="最佳尺寸：96*96">
+                            <i class="fa fa-upload"></i> 修改头像</div>
+                        <div id="forms-avatar-upload-file-list"></div>
+                    </div>
+                </div>
+                <input type="hidden" name="avatar" value="{{$user->avatar}}">
+          </div>
+        </div>
+      </div>
       <div class="col-lg-6">
         <div class="form-group ">
           <label>
@@ -152,6 +173,38 @@
 <script type="text/javascript">
   jQuery(document).ready(function () {
     mAppExtend.init();
+    mAppExtend.handleInitTooltips(".forms-avatar-upload-tooltips");
+    mAppExtend.singleImageUpload({
+        uploader: 'avatarUploadForm',
+        picker: 'forms-avatar-upload',
+        swf: '{{ asset("assets/js/plugins/webuploader/Uploader.swf") }}',
+        server: '{{ route("image.upload") }}',
+        formData: {
+            '_token': '{{ csrf_token() }}',
+            'avatar_upload':1
+        },
+        errorMsgHiddenTime: 1000,
+        isAutoInsertInput: false,//上传成功是否自动创建input存储区域
+        isHiddenResult: true,
+        uploadComplete: function (file) {
+        },
+        uploadError: function (file) {
+        },
+        uploadSuccess: function (file, response) {
+            //上传完成触发时间
+            $img = $('.m-card-user__pic').find('img');
+            if (!$img.length) {
+                $img = $('.m-card-user__pic').html('<img src="' + response.data.url + '" class="m--img-rounded m--marginless">');
+            } else {
+                $img.attr({'src': response.data.url});
+                $('.m-topbar__userpic').find('img').attr({'src': response.data.url});
+            }
+            $('input[name="avatar"]').val(response.data.path);
+            window.setTimeout(function () {
+                $('#' + file.id).remove();
+            }, 1000);
+        }
+    });
     var form = $( "#edit-data-form" );
     var submitButton = $("#edit-submit-button");
     form.validate({
