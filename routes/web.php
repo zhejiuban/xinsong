@@ -75,6 +75,7 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
 
     Route::delete('{project}/plans/batch_delete','PlanController@batchDelete')->name('plans.batch_delete');
     Route::match(['get','post'],'{project}/import','PlanController@import')->name('plans.import');
+    Route::put('single_field_update','PlanController@singleFieldUpdate')->name('plans.field.update');
     Route::resource('{project}/plans','PlanController');
 
     Route::get('dynamics', 'DynamicController@index')->name('project.dynamic.dynamics');

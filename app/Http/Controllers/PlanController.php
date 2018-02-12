@@ -263,4 +263,20 @@ class PlanController extends Controller
             return view('project.plan.import', compact('project'));
         }
     }
+
+    public function singleFieldUpdate(Request $request){
+        $id = $request->input('id');
+        $field = $request->input('field');
+        $value = $request->input('value');
+        $plan = Plan::where('id',$id)->find();
+        //判断计划删除权限
+        if (!check_project_leader($project = $plan->project, 1)) {
+            return _404('无权操作');
+        }
+        if($plan->update([$field=>$value])){
+            return _success();
+        }else{
+            return _error();
+        }
+    }
 }

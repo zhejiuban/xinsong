@@ -296,6 +296,110 @@
                     }
                 });
             });
+            /*$(".m-datatable").on('blur','td.m-datatable__cell .edit-text-input',function (event) {
+                var that = $(this);
+                var field = that.attr('data-update-field');
+                var id = that.attr('data-update-id');
+                var value = that.val();
+                var old_value = that.attr('data-old-value');
+                mAppExtend.ajaxPostSubmit({
+                    'el': '',
+                    'url': '{{route("plans.field.update")}}',
+                    'query': {
+                        '_method':'PUT',
+                        'id':id,
+                        'field':field,
+                        'value':value,
+                    },
+                    'showLoading': false,
+                    'callback': function (data, textStatus, xhr) {
+                        that.parent('span').text(value);
+                    },
+                    'errorCallback': function (xhr, textStatus, errorThrown) {
+                        if (xhr.status == 401) { //未认证
+                            mAppExtend.notification('登录超时'
+                                , 'error', 'toastr', function () {
+                                    mAppExtend.backUrl('reload');
+                                });
+                        } else {
+                            var _err_mes = '未知错误，请重试';
+                            if (xhr.responseJSON != undefined) {
+                                _$error = xhr.responseJSON.errors;
+                                if (_$error != undefined) {
+                                    _err_mes = '';
+                                    $.each(_$error, function (i, v) {
+                                        _err_mes += v[0] + '<br>';
+                                    });
+                                }
+                            }
+                            mAppExtend.notification(_err_mes
+                                , 'error');
+                            that.parent('span').text(old_value);
+                        }
+                    }
+                });
+            });
+            $(".m-datatable").on('change','td.m-datatable__cell .edit-date-input',function (event) {
+                var that = $(this);
+                var field = that.attr('data-update-field');
+                var id = that.attr('data-update-id');
+                var value = that.val();
+                var old_value = that.attr('data-old-value');
+            
+                mAppExtend.ajaxPostSubmit({
+                    'el': '',
+                    'url': '{{route("plans.field.update")}}',
+                    'query': {
+                        '_method':'PUT',
+                        'id':id,
+                        'field':field,
+                        'value':value,
+                    },
+                    'showLoading': false,
+                    'callback': function (data, textStatus, xhr) {
+                        that.parent('span').text(value);
+                    },
+                    'errorCallback': function (xhr, textStatus, errorThrown) {
+                        if (xhr.status == 401) { //未认证
+                            mAppExtend.notification('登录超时'
+                                , 'error', 'toastr', function () {
+                                    mAppExtend.backUrl('reload');
+                                });
+                        } else {
+                            var _err_mes = '未知错误，请重试';
+                            if (xhr.responseJSON != undefined) {
+                                _$error = xhr.responseJSON.errors;
+                                if (_$error != undefined) {
+                                    _err_mes = '';
+                                    $.each(_$error, function (i, v) {
+                                        _err_mes += v[0] + '<br>';
+                                    });
+                                }
+                            }
+                            mAppExtend.notification(_err_mes
+                                , 'error');
+                            that.parent('span').text(old_value);
+                        }
+                    }
+                });
+            });
+
+            $(".m-datatable").on('dblclick','td.m-datatable__cell',function (event) {
+                var that = $(this);
+                var row = that.parent('tr');
+                var recordId = row.find('input[type="checkbox"]').val();
+                var recordField = that.attr('data-field');
+                var inputType = 'text';
+                if(recordField == 'started_at' || recordField == 'finished_at' || recordField == 'last_finished_at'){
+                    inputType = 'date';
+                }
+                if(recordField != 'actions'){
+                    var old_value = that.children('span').text();
+                    that.children('span').html('<input name="'+recordField+'" input-type="'+inputType+'" data-old-value="'+old_value+'" data-update-field="'+recordField+'" data-update-id="'+recordId+'" class="form-control '+inputType+' edit-'+inputType+'-input"  value="'+old_value+'">');
+                    mAppExtend.datePickerInstance('.date',{clearBtn: false});
+                    that.find('input').focus();
+                }
+            });*/
         });
     </script>
 @endsection

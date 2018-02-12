@@ -758,7 +758,7 @@ function question_category_select($selected = '')
  * @param string $url
  * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
  */
-function _error($message = '您访问的信息不存在', $data = null, $url = '')
+function _error($message = '操作失败', $data = null, $url = '')
 {
     return _404($message, $data, $url);
 }
