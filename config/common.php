@@ -33,6 +33,10 @@ return [
         0 => ['title' => '进行中', 'class' => ' m-badge--primary', 'color' => 'danger'],
         1 => ['title' => '已完成', 'class' => ' m-badge--success', 'color' => 'success'],
     ],
+    'plan_finish_status' => [
+        0 => ['title' => '否', 'class' => ' m-badge--danger', 'color' => 'danger'],
+        1 => ['title' => '是', 'class' => ' m-badge--success', 'color' => 'success'],
+    ],
     'project_default_folder' => [
         [
             'name' => '施工资料',
@@ -66,11 +70,47 @@ return [
             'children' => null
         ],
     ],
-    'project_default_phase'=>[
+    'project_default_phase' => [
         '现场装配',
         '现场调试',
         '陪产试机',
         '终验整改',
         '质保售后'
     ],
+    'project_plan_temp' => [
+        [
+            'name'=>'AGV施工计划',
+            'list'=>[
+                '接货、开箱',
+                '货物清点核对',
+                '与甲方确定施工图纸方案',
+                '充电站安装',
+                '控制台安装',
+                'AP电台安装',
+                '磁条铺设',
+                'AGV地图测试',
+                '控制台编辑程序，以及更改AGV车体参数',
+                'AGV环线测试',
+                '夹具试装',
+                '设备培训',
+            ]
+        ],
+        [
+            'name'=>'激光叉车施工计划',
+            'list'=>[
+                "接货、开箱",
+                "货物清点核对",
+                "与甲方确定施工图纸方案",
+                "充电站安装",
+                "控制台安装",
+                "AP电台安装",
+                "反光柱安装",
+                "叉车地图测试",
+                "控制台编辑程序，以及更改AGV车体参数",
+                "叉车环线测试",
+                "现场物料托盘调试",
+                "设备培训",
+            ]
+        ],
+    ]
 ];

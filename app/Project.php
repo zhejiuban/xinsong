@@ -88,6 +88,10 @@ class Project extends Model
         return $this->hasMany('App\Malfunction');
     }
 
+    public function plans(){
+        return $this->hasMany('App\Plan');
+    }
+
     /**
      * 任务已完成百分比
      * @return float

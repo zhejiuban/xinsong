@@ -1262,3 +1262,21 @@ function project_phase_select2($selected=''){
     }
     return $str;
 }
+
+/**
+ * 计划模板导入分类
+ * @param string $selected
+ * @return string
+ */
+function project_plan_temp($selected=''){
+    $phase = config('common.project_plan_temp');
+    $str = '<option value="">选择模板类型</option>';
+    foreach ($phase as $key=>$val){
+        if($val == $selected){
+            $str .= '<option value="'.$key.'" selected="selected">'.$val['name'].'</option>';
+        }else{
+            $str .= '<option value="'.$key.'">'.$val['name'].'</option>';
+        }
+    }
+    return $str;
+}

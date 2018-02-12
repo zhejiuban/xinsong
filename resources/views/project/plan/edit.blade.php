@@ -1,6 +1,6 @@
 <div class="modal-header">
 	<h5 class="modal-title" id="_ModalLabel">
-		发布任务
+		编辑计划
 	</h5>
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		<span aria-hidden="true">
@@ -9,65 +9,96 @@
 	</button>
 </div>
 <div class="modal-body">
-	<form class="m-form" action="{{ route('tasks.store') }}" method="post" id="task-form">
-
-		<div class="form-group">
-			<label>
-				所属项目:
-			</label>
-			<div class="">
-				<select class="form-control m-input select2"  id="project_select" name="project_id">
-					@if(request('project_id'))
-						<option value="{{request('project_id')}}"
-								selected>{{get_project_info(request('project_id'))}}</option>
-					@endif
-				</select>
+	<form class="m-form" action="{{ route('plans.update',['project'=>$project,'plan'=>$plan->id]) }}" method="post" id="plans-form">
+		<div class="row m-form__group ">
+			<div class="col-md-12 hide">
+				<div class="form-group">
+					<label>
+						所属项目:
+					</label>
+					<div class="">
+						<select class="form-control m-input select2"  id="project_select" name="project_id">
+							@if($project)
+								<option value="{{$project->id}}"
+										selected>{{$project->title}}</option>
+							@endif
+						</select>
+					</div>
+					<span class="m-form__help"></span>
+				</div>
 			</div>
-			<span class="m-form__help"></span>
-		</div>
-
-		<div class="form-group">
-			<label for="name" class="form-control-label">
-				开始日期:
-			</label>
-            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" />
-			<span class="m-form__help"></span>
-		</div>
-		<div class="form-group">
-			<label>
-				分派给:
-			</label>
-			<div class="">
-				<select class="form-control m-input select2" multiple id="leader" name="leader[]">
-					{!!project_user_select($project_id)!!}
-				</select>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="sort" class="form-control-label">
+						序号:
+					</label>
+					<div class="">
+						<input type="number" name="sort" value="{{$plan->sort}}" class="form-control m-input" >
+					</div>
+					<span class="m-form__help"></span>
+				</div>
 			</div>
-			<span class="m-form__help">可从项目参与人中选择处理人</span>
-		</div>
-		<div class="form-group">
-			<label for="content" class="form-control-label">
-				任务内容:
-			</label>
-			<textarea class="form-control" name="content" id="content" rows="6"></textarea>
-			<span class="m-form__help"></span>
-		</div>
-		{{--<div class="form-group">
-			<label>
-				是否需要上传计划:
-			</label>
-			<div class="m-radio-inline">
-				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="1" > 是
-					<span></span>
-				</label>
-				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="0" checked> 否
-					<span></span>
-				</label>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="content" class="form-control-label">
+						计划内容:
+					</label>
+					<textarea class="form-control" name="content" id="content" rows="6">{{$plan->content}}</textarea>
+					<span class="m-form__help"></span>
+				</div>
 			</div>
-			<span class="m-form__help"></span>
-		</div>--}}
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="started_at" class="form-control-label">
+						计划开始日期:
+					</label>
+		            <input type="text" class="form-control m-input m-date" value="{{$plan->started_at}}" placeholder="计划开始日期" name="started_at" />
+					<span class="m-form__help"></span>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="finished_at" class="form-control-label">
+						计划完成日期:
+					</label>
+		            <input type="text" value="{{$plan->finished_at}}" class="form-control m-input m-date" placeholder="计划完成日期" name="finished_at" id="finished_at" />
+					<span class="m-form__help"></span>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="leader" class="form-control-label">
+						执行人:
+					</label>
+					<div class="">
+						<select class="form-control m-input select2" id="leader" name="user_id">
+							{!!project_user_select($project->id,$plan->user_id)!!}
+						</select>
+					</div>
+					<span class="m-form__help">可从项目参与人中选择执行人</span>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="last_finished_at" class="form-control-label">
+						实际完成日期:
+					</label>
+		            <input type="text" class="form-control m-input m-date" placeholder="实际完成日期" name="last_finished_at" value="{{$plan->last_finished_at}}" id="last_finished_at"/>
+					<span class="m-form__help"></span>
+				</div>
+			</div>
+			<div id="reason-area" class="col-md-12 @if($plan->is_finished || is_null($plan->is_finished)) hide @endif">
+				<div class="form-group">
+					<label for="content" class="form-control-label">
+						未按计划完成原因说明:
+					</label>
+					<textarea class="form-control" name="reason" id="reason" rows="6">{{$plan->reason}}</textarea>
+					<span class="m-form__help"></span>
+				</div>
+			</div>
+		</div>
 		{{ csrf_field() }}
+		{{ method_field('PUT')}}
 	</form>
 </div>
 <div class="modal-footer">
@@ -97,7 +128,7 @@
 	$('#leader').select2({
 		language:'zh-CN',
 		width: '100%',
-        placeholder:'请选择接收人'
+        placeholder:'请选择执行人'
 	});
 	var $projectSelector = $("#project_select").select2({
 		language: 'zh-CN',
@@ -152,39 +183,44 @@
             }
 		})
 	});
-    var form = $( "#task-form" );
+
+	$("#finished_at,#last_finished_at").change(function(){
+		var finished_at = $("#finished_at").val();
+		var last_finished_at = $("#last_finished_at").val();
+
+		if(finished_at && !checkEndTime(finished_at,last_finished_at)){
+			$('#reason-area').removeClass('hide');
+			$('#reason').rules("add",{required:true});
+		}else{
+			$('#reason-area').addClass('hide');
+			$('#reason').rules("remove");  
+		}
+	});
+
+    var form = $( "#plans-form" );
     var submitButton = $("#submit-button");
     form.validate({
         // define validation rules
         rules: {
+        	sort:{
+                required: true,
+                number:true
+            },
             project_id: {
                 required: true
             },
-            start_at: {
-                required: true
-            },
-            end_at: {
+            started_at: {
                 required: true
             },
             content: {
                 required: true
             },
-            is_need_plan: {
-                required: true
-            },
-            leader: {
-                required: true
-            },
-            project_phase_id: {
+            user_id: {
                 required: true
             }
         },
         messages:{
-            start_at:{
-                required:'请选择开始时间'
-            },end_at:{
-                required:'请选择截止时间'
-            }
+            
         },
         //display error alert on form submit
         invalidHandler: function(event, validator) {
@@ -202,17 +238,9 @@
               },
               success: function(response, status, xhr, $form) {
                     if(response.status == 'success'){
-                        var $board = "{{request('board')}}";
-                        if($board == '1'){
-                            $("#_modal").modal('hide');$('#_modal,#_editModal').modal('hide');
-                            mAppExtend.ajaxGetHtml(
-                                "#project-body","{!! get_redirect_url('board_ajax_url') !!}"
-                                , {}, "#project-body");
-						}else{
-                            mAppExtend.notification(response.message,'success','toastr',function() {
-                                mAppExtend.backUrl(response.url);
-                            });
-						}
+                        mAppExtend.notification(response.message,'success','toastr');
+	                    $('#_modal,#_editModal').modal('hide');
+	                    datatable.reload();
                     }else{
                         mAppExtend.notification(response.message,'error');
                     }

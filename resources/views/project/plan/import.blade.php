@@ -1,6 +1,6 @@
 <div class="modal-header">
 	<h5 class="modal-title" id="_ModalLabel">
-		发布任务
+		添加计划
 	</h5>
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		<span aria-hidden="true">
@@ -9,64 +9,22 @@
 	</button>
 </div>
 <div class="modal-body">
-	<form class="m-form" action="{{ route('tasks.store') }}" method="post" id="task-form">
-
-		<div class="form-group">
-			<label>
-				所属项目:
-			</label>
-			<div class="">
-				<select class="form-control m-input select2"  id="project_select" name="project_id">
-					@if(request('project_id'))
-						<option value="{{request('project_id')}}"
-								selected>{{get_project_info(request('project_id'))}}</option>
-					@endif
-				</select>
+	<form class="m-form" action="{{ route('plans.import',['project'=>$project]) }}" method="post" id="plans-form">
+		<div class="row m-form__group ">
+			<div class="col-md-12 ">
+				<div class="form-group">
+					<label for="project_id" class="form-control-label">
+						模板类型:
+					</label>
+					<div class="">
+						<select class="form-control m-input select2"  id="temp_cate" name="temp_cate">
+							 {!! project_plan_temp() !!}
+						</select>
+					</div>
+					<span class="m-form__help"></span>
+				</div>
 			</div>
-			<span class="m-form__help"></span>
 		</div>
-
-		<div class="form-group">
-			<label for="name" class="form-control-label">
-				开始日期:
-			</label>
-            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" />
-			<span class="m-form__help"></span>
-		</div>
-		<div class="form-group">
-			<label>
-				分派给:
-			</label>
-			<div class="">
-				<select class="form-control m-input select2" multiple id="leader" name="leader[]">
-					{!!project_user_select($project_id)!!}
-				</select>
-			</div>
-			<span class="m-form__help">可从项目参与人中选择处理人</span>
-		</div>
-		<div class="form-group">
-			<label for="content" class="form-control-label">
-				任务内容:
-			</label>
-			<textarea class="form-control" name="content" id="content" rows="6"></textarea>
-			<span class="m-form__help"></span>
-		</div>
-		{{--<div class="form-group">
-			<label>
-				是否需要上传计划:
-			</label>
-			<div class="m-radio-inline">
-				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="1" > 是
-					<span></span>
-				</label>
-				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="0" checked> 否
-					<span></span>
-				</label>
-			</div>
-			<span class="m-form__help"></span>
-		</div>--}}
 		{{ csrf_field() }}
 	</form>
 </div>
@@ -92,13 +50,22 @@
     function formatProjectRepoSelection(repo) {
         return repo.title || repo.text;
     }
+
+	function checkEndTime(startTime,endTime){  
+	    var start = new Date(startTime.replace("-", "/").replace("-", "/"));  
+	    var end = new Date(endTime.replace("-", "/").replace("-", "/"));  
+	    if(end > start){  
+	        return false;  
+	    }  
+	    return true;  
+	}  
 	jQuery(document).ready(function () {
-    mAppExtend.datePickerInstance();
-	$('#leader').select2({
-		language:'zh-CN',
-		width: '100%',
-        placeholder:'请选择接收人'
-	});
+	    mAppExtend.datePickerInstance();
+		$('#leader').select2({
+			language:'zh-CN',
+			width: '100%',
+	        placeholder:'请选择执行人'
+		});
 	var $projectSelector = $("#project_select").select2({
 		language: 'zh-CN',
 		placeholder: "输入项目编号、名称等关键字搜索，选择项目",
@@ -152,40 +119,43 @@
             }
 		})
 	});
-    var form = $( "#task-form" );
+
+	$("#finished_at,#last_finished_at").change(function(){
+		var finished_at = $("#finished_at").val();
+		var last_finished_at = $("#last_finished_at").val();
+
+		if(finished_at && !checkEndTime(finished_at,last_finished_at)){
+			$('#reason-area').removeClass('hide');
+			$('#reason').rules("add",{required:true});
+		}else{
+			$('#reason-area').addClass('hide');
+			$('#reason').rules("remove");  
+		}
+	});
+
+    var form = $( "#plans-form" );
     var submitButton = $("#submit-button");
     form.validate({
         // define validation rules
         rules: {
-            project_id: {
-                required: true
-            },
-            start_at: {
-                required: true
-            },
-            end_at: {
-                required: true
-            },
-            content: {
-                required: true
-            },
-            is_need_plan: {
-                required: true
-            },
-            leader: {
-                required: true
-            },
-            project_phase_id: {
-                required: true
-            }
-        },
-        messages:{
-            start_at:{
-                required:'请选择开始时间'
-            },end_at:{
-                required:'请选择截止时间'
-            }
-        },
+	    	sort:{
+	            required: true,
+	            number:true
+	        },
+	        project_id: {
+	            required: true
+	        },
+	        started_at: {
+	            required: true
+	        },
+	        content: {
+	            required: true
+	        },
+	        user_id: {
+	            required: true
+	        }
+	    },
+        messages:{},
         //display error alert on form submit
         invalidHandler: function(event, validator) {
         },
@@ -202,17 +172,9 @@
               },
               success: function(response, status, xhr, $form) {
                     if(response.status == 'success'){
-                        var $board = "{{request('board')}}";
-                        if($board == '1'){
-                            $("#_modal").modal('hide');$('#_modal,#_editModal').modal('hide');
-                            mAppExtend.ajaxGetHtml(
-                                "#project-body","{!! get_redirect_url('board_ajax_url') !!}"
-                                , {}, "#project-body");
-						}else{
-                            mAppExtend.notification(response.message,'success','toastr',function() {
-                                mAppExtend.backUrl(response.url);
-                            });
-						}
+                        mAppExtend.notification(response.message,'success','toastr');
+	                    $('#_modal,#_editModal').modal('hide');
+	                    datatable.reload();
                     }else{
                         mAppExtend.notification(response.message,'error');
                     }

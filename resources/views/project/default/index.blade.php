@@ -185,6 +185,14 @@
                                 mid: "{{request('mid')}}"
                             }) + '" class="action-show m-portlet__nav-link" title="项目概况">' + row.title + '</a>';
                         }
+                    },{
+                        field: "plans", sortable: false,
+                        title: "实施计划", template: function (row) {
+                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("plans.index")}}', {
+                                project: row.id,
+                                mid: "{{request('mid')}}"
+                            }) + '" title="项目实施计划"><span class="m-badge m-badge--brand m-badge--wide">详情</span></a>';
+                        }
                     }, {
                         field: "leader", sortable: false,
                         title: "新松负责人", template: function (row) {

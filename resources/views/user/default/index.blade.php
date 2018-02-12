@@ -250,7 +250,33 @@
                     }, {
                         field: "name",
                         title: "姓名",
-                        filterable: false
+                        filterable: false,template: function (row) {
+                            if (row.avatar) {
+                                output = '<div class="m-card-user m-card-user--sm">\
+                                        <div class="m-card-user__pic">\
+                                            <img src="/'+row.avatar+'" class="m--img-rounded m--marginless" alt="photo">\
+                                        </div>\
+                                        <div class="m-card-user__details">\
+                                            <span class="m-card-user__name">' + row.name + '</span>\
+                                        </div>\
+                                    </div>';
+                            } else {
+                                var stateNo = mUtil.getRandomInt(0, 7);
+                                var states = ['success', 'brand', 'danger', 'accent', 'warning', 'metal', 'primary', 'info'];
+                                var state = states[stateNo];
+
+                                output = '<div class="m-card-user m-card-user--sm">\
+                                        <div class="m-card-user__pic">\
+                                            <div class="m-card-user__no-photo m--bg-fill-' + state + '"><span>' + row.name.substring(0, 1) + '</span></div>\
+                                        </div>\
+                                        <div class="m-card-user__details">\
+                                            <span class="m-card-user__name">' + row.name + '</span>\
+                                        </div>\
+                                    </div>';
+                            }
+
+                            return output;
+                        }
                     }, {
                         field: "tel",
                         title: "手机号"
