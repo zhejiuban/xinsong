@@ -1157,7 +1157,10 @@ function current_date()
 {
     return \Carbon\Carbon::now()->toDateString();
 }
-
+function yesterday_date()
+{
+    return \Carbon\Carbon::now()->subDay(1)->toDateString();
+}
 function is_image($ext)
 {
     $ext_arr = config('filesystems.disks.image.validate.ext')

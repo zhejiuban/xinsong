@@ -168,13 +168,15 @@ class DynamicController extends Controller
     {
         $project_id = request('project_id');
         $task_id = request('task_id');
+        $fill_date = request('date');
+        $is_fill = request('fill');
         $project = Project::find($project_id);
         if (!$project || !check_project_owner($project, 'look')) {
             return _404('无权操作');
         }
         $task = Task::find($task_id);
         $task->received();
-        return view('dynamic.default.create', compact(['project_id','project','task']));
+        return view('dynamic.default.create', compact(['project_id','project','task','fill_date','is_fill']));
     }
 
     /**
@@ -205,7 +207,13 @@ class DynamicController extends Controller
                 'task_result.required' => '请输入完成情况',
             ]);
         }
-        $dynamic = Dynamic::create($request->input());
+        $data = $request->input();
+        $fill_date = $request->input('fill_date');
+        if($fill_date && Carbon::parse($fill_date) != Carbon::parse(current_date())){
+            $data['created_at'] = Carbon::parse($fill_date)->addHour(9);
+            $data['fill'] = 1;
+        }
+        $dynamic = Dynamic::create($data);
         if ($dynamic) {
             //判断是否改变状态
             $phase_id = $request->phase_id;
@@ -238,7 +246,9 @@ class DynamicController extends Controller
                     ->withProperties($task)
                     ->log('完成任务');
             }elseif(!$task->builded_at){
-                $task->builded_at = Carbon::now();
+                if(!$fill_date){
+                    $task->builded_at = Carbon::now();
+                }
                 $task->save();
             }else{
                 $task->leaved_at = null;
@@ -370,4 +380,10 @@ class DynamicController extends Controller
         set_redirect_url();
         return view('dynamic.default.personal', compact('list'));
     }
+
+    public function fillIn(){
+        set_redirect_url();
+        return view('dynamic.default.fill');
+    }
+
 }

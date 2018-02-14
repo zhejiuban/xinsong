@@ -99,6 +99,9 @@
                 <p class="m-widget3__text">
                     <a href="{{ route('dynamics.show',['dynamic'=>$dynamic->id,'mid'=>request('mid')]) }}"
                     class="dynamic-look m--font-default">{{str_limit($dynamic->content,300)}}</a>
+                    @if($dynamic->fill)
+                    <span class="m-badge  m-badge--warning m-badge--wide">补</span>
+                    @endif
                 </p>
             </div>
         </div>

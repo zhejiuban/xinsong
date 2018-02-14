@@ -90,7 +90,7 @@
 @section('js')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('.tree').treegrid({'initialState':'closed'});
+            $('.tree').treegrid({});
             $('.delete-action').click(function (e) {
                 e.preventDefault();
                 var url = $(this).attr('href');

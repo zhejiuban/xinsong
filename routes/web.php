@@ -80,6 +80,8 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
 
     Route::get('dynamics', 'DynamicController@index')->name('project.dynamic.dynamics');
     Route::get('malfunctions', 'MalfunctionController@index')->name('project.malfunction.malfunctions');
+
+    Route::get('dynamic/fill', 'DynamicController@fillIn')->name('project.dynamic.fill');
 });
 
 Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
@@ -103,6 +105,8 @@ Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
 
     Route::get('dynamic/need/add/count', 'Plugin\DynamicCountController@needAddDynamicCount')->name('dynamic.need.add.count');
     Route::get('dynamic/need/add/user', 'Plugin\DynamicCountController@needAddDynamicUser')->name('dynamic.need.add.user');
+    Route::get('user/need/fill/dynamics', 'Plugin\DynamicCountController@userNeedFillDynamics')->name('user.need.fill.dynamics');
+
 });
 
 Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {

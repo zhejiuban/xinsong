@@ -32,7 +32,10 @@
             </label>
             <div class="col-lg-9">
                 <div class="form-static-text">
-                    {{$dynamic->content}}
+                    {{$dynamic->content}} 
+                    @if($dynamic->fill)
+                    <span class="m-badge  m-badge--warning m-badge--wide">补</span>
+                    @endif
                 </div>
             </div>
             <label class="col-lg-2 col-form-label">

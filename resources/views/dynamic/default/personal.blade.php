@@ -42,6 +42,9 @@
                             <h3 class="m-section__heading m-line-height-25">
                                 <a class="action-show" href="{{route('dynamics.show',['dynamic'=>$task->id,'mid'=>request('mid')])}}">
                                     {{str_limit($task->content,50,'...')}}
+                                    @if($task->fill)
+                                    <span class="m-badge  m-badge--warning m-badge--wide">补</span>
+                                    @endif
                                 </a>
                             </h3>
                             <span class="m-section__sub m-section__sub-margin-bottom-none">

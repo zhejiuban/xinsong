@@ -92,6 +92,9 @@
             <span class="m-form__help"></span>
         </div>
         <input type="hidden" name="project_id" value="{{$project->id}}">
+        @if($is_fill)
+        <input type="hidden" name="fill_date" readonly value="{{$fill_date}}">
+        @endif
         {{ csrf_field() }}
     </form>
 </div>

@@ -56,6 +56,9 @@
                                 <a class="action-show" href="{{route('dynamics.show',['dynamic'=>$task->id,'mid'=>request('mid')])}}">
                                 {{str_limit($task->content,50,'...')}}
                                 </a>
+                                @if($task->fill)
+                                <span class="m-badge  m-badge--warning m-badge--wide">补</span>
+                                @endif
                                 @if(check_project_owner($task->project,'company'))
                                 <a href="{{route("dynamics.destroy",['dynamic'=>$task->id,'mid'=>request('mid')])}}"
                                    class="btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only

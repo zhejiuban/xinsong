@@ -26,7 +26,7 @@ class MenuRequest extends FormRequest
         $rule = [
             'parent_id' => 'bail|required',
             'title' => 'bail|required',
-            'url' => $this->input('menu') ?
+            'url' => request('menu') ?
                 'bail|required|unique:menus,url,'.request('menu')
                 : 'bail|required|unique:menus,url',
 //                    'gurad_name'=> 'bail|required',
