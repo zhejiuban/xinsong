@@ -62,7 +62,7 @@
                                 查询日期:
                             </label>
                             <input type="text" class="form-control m-input m-dates"
-                                   placeholder="开始日期" name="start" id="start" readonly value="{{current_date()}}"/>
+                                   placeholder="开始日期" name="start" id="start" readonly value="{{yesterday_date()}}"/>
                         </div>
                         <div class="form-group">
                             <label>
