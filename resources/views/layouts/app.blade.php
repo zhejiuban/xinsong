@@ -161,6 +161,19 @@
                                                                             </span>
                                                                         </a>
                                                                     </div>
+                                                                    <div class="m-nav-grid__row">
+                                                                        <a href="{{route('project.dynamic.fill',['mid'=>'ad5aa83897ece9173edaba852f2065f6'])}}" class="m-nav-grid__item">
+                                                                            <i class="m-nav-grid__icon flaticon-list-2"></i>
+                                                                            <span class="m-nav-grid__text">
+                                                                                日志补填
+                                                                            </span>
+                                                                        </a>
+                                                                        <a href="javascript:;" class="m-nav-grid__item">
+                                                                            <i class="m-nav-grid__icon flaticon-more-v2"></i>
+                                                                            <span class="m-nav-grid__text">
+                                                                            </span>
+                                                                        </a>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
