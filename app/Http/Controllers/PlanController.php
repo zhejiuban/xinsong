@@ -25,7 +25,10 @@ class PlanController extends Controller
     public function index($project, Request $request)
     {
         $project = $this->project->find($project);
-
+        //检测项目权限
+        if(!check_project_owner($project,'look')){
+           return _error('无权操作');
+        }
         if ($request->ajax()) {
             $sort_field = $request->input('datatable.sort.field')
                 ? $request->input('datatable.sort.field') : 'sort';
@@ -75,10 +78,12 @@ class PlanController extends Controller
     public function create($project)
     {
         $project = $this->project->find($project);
-        if (!check_project_leader($project, 1)) {
+        if (check_project_leader($project, 1) || check_project_leader($project, 2) ) {
+            //公司负责人，分部管理员，现场负责人上传计划
+            return view('project.plan.create', compact('project'));
+        }else{
             return _404('无权操作');
         }
-        return view('project.plan.create', compact('project'));
     }
 
     /**
@@ -93,12 +98,14 @@ class PlanController extends Controller
         if (!$project) {
             return _error('参数有误');
         }
-        if (!check_project_leader($project, 1)) {
+        if (!check_project_leader($project, 1) && !check_project_leader($project, 2)) {
             return _404('无权操作');
         }
         $data = $request->input();
         $last_finished_at = $request->input('last_finished_at');
         $finished_at = $request->input('finished_at');
+        //验证当前项目的计划序号
+
         if ($finished_at && $last_finished_at) {
             if (Carbon::parse($last_finished_at)
                 ->gt(Carbon::parse($finished_at))) {
@@ -137,11 +144,14 @@ class PlanController extends Controller
     public function edit($project, $id)
     {
         $project = $this->project->find($project);
-        if (!check_project_leader($project, 1)) {
+        if (!check_project_leader($project, 1) && !check_project_leader($project, 2)) {
             return _404('无权操作');
         }
         $plan = Plan::find($id);
         if ($plan) {
+            if($plan->status && !check_project_owner($project,'company')){
+                return  _404('已提交');
+            }
             return view('project.plan.edit', compact(['plan', 'project']));
         } else {
             return _404();
@@ -158,10 +168,15 @@ class PlanController extends Controller
     public function update(PlanRequest $request, $project, $id)
     {
         $project = $this->project->find($project);
-        if (!check_project_leader($project, 1)) {
+        if (!check_project_leader($project, 1) && !check_project_leader($project, 2)) {
             return _404('无权操作');
         }
         $plan = Plan::find($id);
+
+        if($plan->status && !check_project_owner($project,'company')){
+            return  _404('已提交');
+        }
+
         $data = $request->input();
         $last_finished_at = $request->input('last_finished_at');
         $finished_at = $request->input('finished_at');
@@ -169,13 +184,45 @@ class PlanController extends Controller
             if (Carbon::parse($last_finished_at)
                 ->gt(Carbon::parse($finished_at))) {
                 $data['is_finished'] = 0;
+                $data['delay'] = Carbon::parse($last_finished_at)->diffInDays(Carbon::parse($finished_at));
+                if($plan->delay && $plan->last_finished_at == null){
+                    if(Carbon::parse($last_finished_at)->diffInDays(Carbon::parse($finished_at)) > $plan->delay){
+                        Plan::autoPlanAfterDelay($plan,Carbon::parse($last_finished_at)->diffInDays(Carbon::parse($finished_at)) - $plan->delay);
+                    }else{
+                        Plan::autoPlanDeforeSub($plan,$plan->delay - Carbon::parse($last_finished_at)->diffInDays(Carbon::parse($finished_at)));
+                    }
+                }else{
+                    if($plan->last_finished_at == null){
+                        Plan::autoPlanAfterDelay($plan,Carbon::parse($last_finished_at)->diffInDays(Carbon::parse($finished_at)));
+                    }elseif(Carbon::parse($plan->last_finished_at)->lt(Carbon::parse($last_finished_at))){
+                        Plan::autoPlanAfterDelay($plan,Carbon::parse($last_finished_at)->diffInDays(Carbon::parse($plan->last_finished_at)));
+                    }else{
+                        Plan::autoPlanDeforeSub($plan,Carbon::parse($plan->last_finished_at)->diffInDays(Carbon::parse($last_finished_at)));
+                    }
+                }
             } else {
                 $data['is_finished'] = 1;
                 $data['reason'] = null;
+                $data['delay'] = null;
+                if(Carbon::parse($plan->last_finished_at)->lt(Carbon::parse($last_finished_at))){
+                    Plan::autoPlanAfterDelay($plan,Carbon::parse($last_finished_at)->diffInDays(Carbon::parse($plan->last_finished_at)));
+                }else{
+                    Plan::autoPlanDeforeSub($plan,Carbon::parse($plan->last_finished_at)->diffInDays(Carbon::parse($last_finished_at)));
+                }
             }
         } else {
-            $data['is_finished'] = null;
-            $data['reason'] = null;
+            if(!$plan->delay && !$plan->last_finished_at){
+                $data['is_finished'] = null;
+                $data['reason'] = null;
+                $data['delay'] = null;
+            }else{
+                //已设置延期暂无完成
+                if(Carbon::parse($plan->finished_at)->gt(Carbon::parse($finished_at))){
+                    Plan::autoPlanDeforeSub($plan,Carbon::parse($plan->finished_at)->diffInDays(Carbon::parse($finished_at)));
+                }else{
+                    Plan::autoPlanAfterDelay($plan,Carbon::parse($finished_at)->diffInDays(Carbon::parse($plan->finished_at)));
+                }
+            }
         }
         if ($plan->update($data)) {
             activity('项目日志')->performedOn($project)
@@ -199,8 +246,11 @@ class PlanController extends Controller
         $project = $this->project->find($project);
         $plan = Plan::find($id);
         //判断计划删除权限
-        if (!check_project_leader($project, 1)) {
+        if (!check_project_leader($project, 1) && !check_project_leader($project, 2)) {
             return _404('无权操作');
+        }
+        if($plan->status && !check_project_owner($project,'company')){
+            return  _404('已提交');
         }
         if ($plan->delete($id)) {
             activity('项目日志')->performedOn($project)
@@ -214,8 +264,10 @@ class PlanController extends Controller
 
     public function batchDelete(Request $request, $project)
     {
+        $project = $this->project->find($project);
+
         //判断计划删除权限
-        if (!check_project_leader($this->project->find($project), 1)) {
+        if (!check_project_leader($project, 1) && !check_project_leader($project, 2)) {
             return _404('无权操作');
         }
 
@@ -223,8 +275,15 @@ class PlanController extends Controller
         if (count($id) < 1 || !current($id)) {
             return _404('请选择要操作的数据');
         }
-        //删除操作
-        $res = Plan::whereIn('id', $id)->delete();
+        if(!check_project_owner($project,'company')){
+            //删除操作
+            $res = Plan::whereIn('id', $id)->where(function ($query){
+                $query->where('status',0)->orWhereNull('status');
+            })->where('project_id',$project->id)->delete();
+        }else{
+            //删除操作
+            $res = Plan::whereIn('id', $id)->where('project_id',$project->id)->delete();
+        }
 
         if ($res) {
             activity('项目日志')->withProperties($id)->log('删除计划');
@@ -239,8 +298,10 @@ class PlanController extends Controller
 
     public function import(Request $request, $project)
     {
+        $project = $this->project->find($project);
+
         //判断计划删除权限
-        if (!check_project_leader($project = $this->project->find($project), 1)) {
+        if (!check_project_leader($project, 1) && !check_project_leader($project, 2)) {
             return _404('无权操作');
         }
         if ($request->isMethod('post')) {
@@ -270,7 +331,7 @@ class PlanController extends Controller
         $value = $request->input('value');
         $plan = Plan::where('id',$id)->find();
         //判断计划删除权限
-        if (!check_project_leader($project = $plan->project, 1)) {
+        if (!check_project_leader($project = $plan->project, 1) && !check_project_leader($plan->project, 2)) {
             return _404('无权操作');
         }
         if($plan->update([$field=>$value])){

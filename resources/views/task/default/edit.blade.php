@@ -48,7 +48,7 @@
             <textarea class="form-control" name="content" id="content" rows="6">{{$task->content}}</textarea>
             <span class="m-form__help"></span>
         </div>
-        {{--<div class="form-group">
+        <div class="form-group">
             <label>
                 是否需要上传计划:
             </label>
@@ -65,7 +65,7 @@
                 </label>
             </div>
             <span class="m-form__help"></span>
-        </div>--}}
+        </div>
         {{ csrf_field() }}
         {{ method_field('PUT') }}
     </form>

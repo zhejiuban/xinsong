@@ -113,6 +113,13 @@
     </form>
 </div>
 <div class="modal-footer">
+    
+    @if($task->is_need_plan)
+      <a class="btn btn-primary" href="{{ route('plans.index',['project'=>$task->project_id,'mid'=>'bd128edbfd250c9c5eff5396329011cd']) }}" >
+        相关计划
+      </a>  
+    @endif
+
   <button type="button" class="btn btn-secondary" data-dismiss="modal"  >
     关闭
   </button>

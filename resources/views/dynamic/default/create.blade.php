@@ -41,6 +41,41 @@
             <div class="m-separator m-separator--dashed "></div>
         @endif
 
+        @if($plan = $project->plans()->processing($is_fill?$fill_date:null)->first())
+            <div class="form-group">
+                <label class="form-control-label">
+                    计划内容：
+                </label>
+                <div class="m--margin-bottom-15">
+                    {{$plan->content}} <br>
+                    计划开始时间：{{$plan->started_at}} , 计划完成时间：{{$plan->finished_at}} 
+                    @if($plan->delay), <span class="m--font-bolder m--font-danger">已延期：{{$plan->delay}} 天 </span> @endif
+                </div>
+                @if(check_project_leader($project,1) || check_project_leader($project,2))
+                    @if($is_end = checkEqTime($plan->finished_at,'now',$plan->delay))
+                    <div>
+                        <input data-switch="true" type="checkbox" data-on-text="已完成"
+                               data-handle-width="60" data-off-text="未完成" data-on-color="success"
+                               data-off-color="brand" name="is_finished"  id="is_finished" value="1"/>
+                    </div>
+                    @endif
+                @endif  
+            </div>
+            @if(check_project_leader($project,1) || check_project_leader($project,2))
+                @if($is_end)
+                    <div class="form-group delay">
+                        <label for="delay" class="form-control-label">
+                            预计延期(天):<span class="required">*</span>
+                        </label>
+                        <input class="form-control" type="number" name="delay" value="">
+                        <span class="m-form__help">请在日志内容中描述未按计划完成原因</span>
+                    </div>
+                    <input type="hidden" name="plan_id" value="{{$plan->id}}">
+                @endif
+            @endif
+            <div class="m-separator m-separator--dashed "></div>
+        @endif
+
         @if($task)
             <div class="form-group">
                 <label class="form-control-label">
@@ -116,6 +151,13 @@
                 $('.task-finish-detail').show();
             }else{
                 $('.task-finish-detail').hide();
+            }
+        });
+        $('#is_finished').on('switchChange.bootstrapSwitch', function(event, state) {
+            if(!state){
+                $('.delay').show();
+            }else{
+                $('.delay').hide();
             }
         });
         var form = $("#dynamic-form");

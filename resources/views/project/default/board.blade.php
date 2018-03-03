@@ -54,6 +54,12 @@
                                     参与人
                                 </a>
                             </li>
+                            <li class="nav-item m-tabs__item">
+                                <a href="{{ route('plans.index',['project'=>$project->id,'mid'=>request('mid')]) }}"
+                                   class="nav-link m-tabs__link ">
+                                    实施计划
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

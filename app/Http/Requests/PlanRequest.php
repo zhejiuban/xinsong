@@ -32,10 +32,10 @@ class PlanRequest extends FormRequest
             case 'PUT':
             case 'PATCH': {
                 return [
-                    'sort' => 'bail|required',
+                    'sort' => 'bail|required|numeric',
                     'content' => 'bail|required',
-                    'started_at' => 'bail|required',
-                    'finished_at' => 'bail|required',
+                    'started_at' => 'bail|required|date',
+                    'finished_at' => 'bail|required|date|after_or_equal:started_at',
                     'user_id' => 'bail|required',
                 ];
             }
@@ -52,6 +52,7 @@ class PlanRequest extends FormRequest
             'content.required' => '请输入计划内容',
             'started_at.required' => '请输入计划开始时间',
             'finished_at.required' => '请输入计划完成时间',
+            'finished_at.after_or_equal' => '计划完成时间要大于开始时间',
             'user_id.required' => '请选择计划执行人',
         ];
     }

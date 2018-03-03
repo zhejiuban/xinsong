@@ -176,6 +176,20 @@
 
                         }
                     },{
+                        field: "is_need_plan",
+                        title: "实施计划", sortable: false,
+                        template: function (row) {
+                            if(row.is_need_plan){
+                                return '<a href="'+ mAppExtend.laravelRoute('{{route_uri("plans.index")}}', {
+                                 project: row.project_id,
+                                 mid: "{{request('mid')}}"
+                                }) +'"><span class="m-badge m-badge--brand m-badge--wide">查看</span></a>';
+                            }else{
+                                return '';
+                            }
+
+                        }
+                    },{
                         field: "project_id",
                         width: 240,
                         title: "所属项目", sortable: false,

@@ -808,10 +808,18 @@ function project_user_select($project, $selected = '', $type = 1)
             foreach ($project->users as $key => $user) {
                 if ($selected == $user->id) {
                     $str .= '<option value="' . $user->id . '" selected="selected">' .
-                        $user->name . ($user->id == get_current_login_user_info() ? '(我自己)' : '') . '</option>';
+                        $user->name
+                        //. ($user->id == get_current_login_user_info() ? '(我自己)' : '')
+                        . ($user->id == $project->agent ? '(现场负责人)' : '')
+                        . ($user->id == $project->subcompany_leader ? '(项目负责人)' : '')
+                        . '</option>';
                 } else {
                     $str .= '<option value="' . $user->id . '">' .
-                        $user->name . ($user->id == get_current_login_user_info() ? '(我自己)' : '') . '</option>';
+                        $user->name
+                        //. ($user->id == get_current_login_user_info() ? '(我自己)' : '')
+                        . ($user->id == $project->agent ? '(现场负责人)' : '')
+                        . ($user->id == $project->subcompany_leader ? '(项目负责人)' : '')
+                        . '</option>';
                 }
             }
         }
@@ -1157,10 +1165,12 @@ function current_date()
 {
     return \Carbon\Carbon::now()->toDateString();
 }
+
 function yesterday_date()
 {
     return \Carbon\Carbon::now()->subDay(1)->toDateString();
 }
+
 function is_image($ext)
 {
     $ext_arr = config('filesystems.disks.image.validate.ext')
@@ -1241,9 +1251,9 @@ function project_device_select($project, $selected = '', $type = 1)
 function get_user_info($id, $field = 'name')
 {
     $user = \App\User::find($id);
-    if($field === true){
+    if ($field === true) {
         return $user;
-    }else{
+    } else {
         return $user->$field;
     }
 }
@@ -1253,14 +1263,15 @@ function get_user_info($id, $field = 'name')
  * @param string $selected
  * @return string
  */
-function project_phase_select2($selected=''){
+function project_phase_select2($selected = '')
+{
     $phase = config('common.project_default_phase');
     $str = '<option value="">选择阶段名称</option>';
-    foreach ($phase as $key=>$val){
-        if($val == $selected){
-            $str .= '<option value="'.$val.'" selected="selected">'.$val.'</option>';
-        }else{
-            $str .= '<option value="'.$val.'">'.$val.'</option>';
+    foreach ($phase as $key => $val) {
+        if ($val == $selected) {
+            $str .= '<option value="' . $val . '" selected="selected">' . $val . '</option>';
+        } else {
+            $str .= '<option value="' . $val . '">' . $val . '</option>';
         }
     }
     return $str;
@@ -1271,15 +1282,48 @@ function project_phase_select2($selected=''){
  * @param string $selected
  * @return string
  */
-function project_plan_temp($selected=''){
+function project_plan_temp($selected = '')
+{
     $phase = config('common.project_plan_temp');
     $str = '<option value="">选择模板类型</option>';
-    foreach ($phase as $key=>$val){
-        if($val == $selected){
-            $str .= '<option value="'.$key.'" selected="selected">'.$val['name'].'</option>';
-        }else{
-            $str .= '<option value="'.$key.'">'.$val['name'].'</option>';
+    foreach ($phase as $key => $val) {
+        if ($val == $selected) {
+            $str .= '<option value="' . $key . '" selected="selected">' . $val['name'] . '</option>';
+        } else {
+            $str .= '<option value="' . $key . '">' . $val['name'] . '</option>';
         }
     }
     return $str;
+}
+
+/**
+ * 判断两个时间是否相等
+ * @param $first
+ * @param $second
+ * @return bool
+ */
+function checkEqTime($first, $second, $inc = null)
+{
+    if ($first == 'now') {
+        $first = \Carbon\Carbon::parse(current_date());
+    }
+    if ($second == 'now') {
+        $second = \Carbon\Carbon::parse(current_date());
+    }
+    if (is_string($first)) {
+        $first = \Carbon\Carbon::parse($first);
+    }
+    if (is_string($second)) {
+        $second = \Carbon\Carbon::parse($second);
+    }
+
+    if($inc){
+        //第一个时间累加几天之后再比较
+        $first = $first->addDay($inc);
+    }
+
+    if ($first->eq($second)) {
+        return true;
+    }
+    return false;
 }

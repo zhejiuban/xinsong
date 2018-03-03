@@ -62,9 +62,14 @@
                                                     {{str_limit($task->content,50,'...')}}
                                                 </a>
                                             @endif
-                                                {{--<span class="m-badge {{tasks_status($task->status,'class')}} m-badge--wide">--}}
-                                                {{--{{tasks_status($task->status)}}--}}
-                                                {{--</span>--}}
+                                            @if($task->is_need_plan && $task->project->plans->isEmpty() && check_project_leader($task->project,2))
+                                            <br>
+                                            <a href="{{ route('plans.index',['project'=>$task->project_id,'mid'=>'bd128edbfd250c9c5eff5396329011cd']) }}" >
+                                                <span class="m-badge m-badge--danger m-badge--wide">
+                                                    请及时填写项目实施计划，点击上传
+                                                </span>
+                                            </a> 
+                                            @endif
                                         </h3>
                                         <span class="m-section__sub m-section__sub-margin-bottom-none">
                                             所属项目：{{$task->project->title}} <br>

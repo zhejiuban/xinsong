@@ -82,7 +82,7 @@
 							<span class="m-form__help"></span>
 						</div>
 					</div>
-					{{--<div class="col-md-12">
+					<div class="col-md-12">
 						<div class="form-group">
 							<label>
 								是否需要上传计划:
@@ -99,7 +99,7 @@
 							</div>
 							<span class="m-form__help"></span>
 						</div>
-					</div>--}}
+					</div>
 				</div>
 			</div>
 			<div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">

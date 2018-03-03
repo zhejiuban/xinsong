@@ -98,12 +98,19 @@
 			</div>
 		</div>
 		{{ csrf_field() }}
+		<input type="hidden" id="status" name="status" value="0">
 	</form>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal">
-		关闭
-	</button>
+	<span class="m--font-danger">
+        提交之后不允许再修改，请及时提交
+    </span>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        关闭
+    </button>
+    <button type="button" class="btn btn-warning" id="save-button">
+        保存
+    </button>
 	<button type="button" class="btn btn-primary" id="submit-button">
 		提交
 	</button>
@@ -207,6 +214,7 @@
 
     var form = $( "#plans-form" );
     var submitButton = $("#submit-button");
+    var saveButton = $("#save-button");
     form.validate({
         // define validation rules
         rules: {
@@ -265,8 +273,13 @@
           });
         }
     });
-    $("#submit-button").click(function(event) {
-      form.submit();
+    submitButton.click(function(event) {
+    	$('#status').val(1);
+      	form.submit();
+    });
+    saveButton.click(function(event) {
+    	$('#status').val(0);
+      	form.submit();
     });
   });
 

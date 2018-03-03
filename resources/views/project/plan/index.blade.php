@@ -24,6 +24,7 @@
             </div>
             <div class="m-portlet__head-tools">
                 <ul class="m-portlet__nav">
+                    @if(check_project_leader($project, 1) || check_project_leader($project, 2))
                     <li class="m-portlet__nav-item">
                         <a href="{{route('plans.create',['project'=>$project->id])}}"
                            class="btn btn-primary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air modal-action">
@@ -57,6 +58,7 @@
                         </span>
                         </a>
                     </li>
+                    @endif
                     <li class="m-portlet__nav-item">
                         
                         <a href="{{ get_redirect_url() }}"
@@ -150,9 +152,31 @@
                         title: "序号",
                         width: 80
                     }, {
-                        width: 340,
+                        field: "is_finished",
+                        title: "按计划完成",
+                        width: 100,template: function (row) {
+                            if(row.is_finished == null){
+                                return '';
+                            }
+                            var status = @json(config('common.plan_finish_status'));
+                            var rowStatus = Number(row.is_finished);
+                            return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
+                        }
+                    },{
+                        width: 200,
                         field: "content", sortable: false,
-                        title: "计划内容"
+                        title: "计划内容",
+                        template: function (row) {
+                            var is_edit = "{{check_project_owner($project,'company')}}";
+                            if(row.status && is_edit == ""){
+                                return row.content;
+                            }else{
+                                return '<a href="' + mAppExtend.laravelRoute('{{route_uri("plans.edit")}}', {
+                                project: row.project_id,plan: row.id,
+                                mid: "{{request('mid')}}"
+                                }) + '" class="action-edit" title="编辑">'+row.content+'</a>' + ' <span class="m-badge m-badge--danger m-badge--wide">草稿</span>';; 
+                            }
+                        }
                     },  {
                         field: "started_at",
                         title: "计划开始时间",
@@ -170,21 +194,14 @@
                             }
                         }
                     }, {
+                        field: "delay",
+                        title: "延期(天)",
+                        width: 80
+                    }, {
                         field: "last_finished_at",
                         title: "实际完成时间",
                         width: 150
                     }, {
-                        field: "is_finished",
-                        title: "是否按计划完成",
-                        width: 150,template: function (row) {
-                            if(row.is_finished == null){
-                                return '';
-                            }
-                            var status = @json(config('common.plan_finish_status'));
-                            var rowStatus = Number(row.is_finished);
-                            return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
-                        }
-                    },{
                         field: "reason",
                         title: "未按计划完成原因说明",sortable: false,
                         width: 300
@@ -204,7 +221,13 @@
                                 mid: "{{request('mid')}}"
                             }) + '" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
                                 <i class="la la-edit"></i></a>';
-                            return edit + del;
+
+                            var is_edit = "{{check_project_owner($project,'company')}}";
+                            if(row.status && is_edit == ""){
+                                return '<span class="m-badge m-badge--success m-badge--wide">已提交</span>';
+                            }else{
+                                return edit + del;
+                            }
                         }
                     }]
                 });

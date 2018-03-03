@@ -28,6 +28,14 @@
                         class="look-task">{{$t->content}}</a>
                         <br>
                         所属项目：{{$t->project ? $t->project->title : null }}
+                        @if($t->is_need_plan && $t->project->plans()->status(1)->get()->isEmpty() && check_project_leader($t->project,2))
+                        <br>
+                        <a href="{{ route('plans.index',['project'=>$t->project_id,'mid'=>'bd128edbfd250c9c5eff5396329011cd']) }}" >
+                            <span class="m-badge m-badge--danger m-badge--wide">
+                                请及时填写项目实施计划，点击上传
+                            </span>
+                        </a> 
+                        @endif
                     </div>
                 </div>
                 <div class="col-xl-1 text-center">

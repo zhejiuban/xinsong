@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dynamic;
 use App\Http\Requests\DynamicRequest;
+use App\Plan;
 use App\Project;
 use App\ProjectPhase;
 use App\Task;
@@ -207,6 +208,17 @@ class DynamicController extends Controller
                 'task_result.required' => '请输入完成情况',
             ]);
         }
+
+        if($request->plan_id && $request->is_finished == null){ //如果计划延期
+            //验证计划的信息
+            $this->validate($request, [
+                'delay' => 'bail|required|numeric',
+            ], [
+                'delay.required' => '请输入延期天数',
+                'delay.numeric' => '延期天数必须是数字',
+            ]);
+        }
+
         $data = $request->input();
         $fill_date = $request->input('fill_date');
         if($fill_date && Carbon::parse($fill_date) != Carbon::parse(current_date())){
@@ -231,6 +243,35 @@ class DynamicController extends Controller
                 //如果是完成某个阶段，自动启动下一个阶段
                 //更新项目状态
                 $project->updateStatus();
+            }
+            $plan_id = $request->plan_id;
+            $plan_status = $request->is_finished;
+            $delay = $request->input('delay');
+            if($plan_id && $plan = Plan::find($plan_id)){
+                if($plan_status == null){
+                    $update_plan = [
+                        'is_finished' => 0,
+                        'reason'=>$data['content'],
+                        'delay'=>$delay + $plan->delay
+                    ];
+                    Plan::where('id',$plan_id)->update($update_plan);
+                    //该计划之后的计划自动延期
+                    Plan::autoPlanAfterDelay($plan,$delay);
+                }else{
+                    $update_plan = [
+                        'is_finished' => 1,
+                        'last_finished_at' => Carbon::now(),
+                        'reason'=>null,
+                        'delay'=>null
+                    ];
+                    if($plan->delay){
+                        //已是延期的计划
+                        $update_plan['is_finished'] = 0;
+                        unset($update_plan['reason']);
+                        unset($update_plan['delay']);
+                    }
+                    Plan::where('id',$plan_id)->update($update_plan);
+                }
             }
             $task = Task::find($request->task_id);
             if($request->task_status){
