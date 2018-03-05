@@ -188,7 +188,7 @@
                     },{
                         field: "plans", sortable: false,
                         title: "实施计划", template: function (row) {
-                            return row.plans.length > 0 ? '<a href="' + mAppExtend.laravelRoute('{{route_uri("plans.index")}}', {
+                            return row.committed_plans.length > 0 ? '<a href="' + mAppExtend.laravelRoute('{{route_uri("plans.index")}}', {
                                 project: row.id,
                                 mid: "{{request('mid')}}"
                             }) + '" title="项目实施计划"><span class="m-badge m-badge--brand m-badge--wide">详情</span></a>':'';
