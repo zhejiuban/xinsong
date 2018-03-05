@@ -50,6 +50,10 @@
                             <span class="m-section__sub m-section__sub-margin-bottom-none">
                                 所属项目：{{$task->project ? $task->project->title : null}} <br>
                                 上传日期：{{$task->created_at}}
+                                @if($task->project && $task->project->plans->isNotEmpty())
+                                <br>
+                                实施计划：<a href="{{route('plans.index',['project'=>$task->project,'mid'=>request('mid')])}}" title="项目实施计划"><span class="m-badge m-badge--brand m-badge--wide">详情</span></a>
+                                @endif
                             </span>
                         </div>
                     </div>

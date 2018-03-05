@@ -75,6 +75,10 @@
                                             所属项目：{{$task->project->title}} <br>
                                             开始时间：{{$task->start_at}} <br>
                                             完成时间：{{$task->finished_at?$task->finished_at:'进行中'}}
+                                            @if($task->is_need_plan)
+                                                <br>
+                                                实施计划：<a class="m-badge m-badge--brand m-badge--wide" href="{{ route('plans.index',['project'=>$task->project_id,'mid'=>request('mid')]) }}">查看</a>
+                                            @endif
                                         </span>
                                     </div>
                                 </div>

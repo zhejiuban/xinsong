@@ -30,7 +30,7 @@ class TaskController extends Controller
                 //管理员或总部管理员获取所有
                 if (check_user_role(null, '总部管理员')) {
                     $task = Task::with([
-                        'user', 'leaderUser', 'project'
+                        'user', 'leaderUser', 'project','project.plans'
                     ])->baseSearch($status,$search,$project_id,$user_id)
                         ->orderBy('status', 'asc')
                         ->orderBy($sort_field, $sort)->paginate(
@@ -42,7 +42,7 @@ class TaskController extends Controller
                     //获取分部所有用户
                     $user = get_company_user(null,'id');
                     $task = Task::with([
-                        'user', 'leaderUser', 'project'
+                        'user', 'leaderUser', 'project','project.plans'
                     ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)
                         ->orderBy('status', 'asc')->orderBy(
                         $sort_field
@@ -75,7 +75,7 @@ class TaskController extends Controller
             //管理员或总部管理员获取所有
             if (check_user_role(null, '总部管理员')) {
                 $list = Task::with([
-                    'user', 'leaderUser', 'project'
+                    'user', 'leaderUser', 'project','project.plans'
                 ])->baseSearch($status,$search,$project_id,$user_id)->orderBy('status', 'asc')->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
@@ -83,7 +83,7 @@ class TaskController extends Controller
                 //获取分部所有用户
                 $user = get_company_user(null,'id');
                 $list = Task::with([
-                    'user', 'leaderUser', 'project'
+                    'user', 'leaderUser', 'project','project.plans'
                 ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)
                     ->orderBy('status', 'asc')->orderBy(
                     'id'
@@ -296,7 +296,9 @@ class TaskController extends Controller
         $user = get_current_login_user_info(true);
         $project_id = $request->input('project_id');
         $status = $request->input('status');
-        $list = $user->leaderTasks()->when($project_id, function ($query) use ($project_id) {
+        $list = $user->leaderTasks()->with([
+            'project','project.plans'
+        ])->when($project_id, function ($query) use ($project_id) {
             return $query->where('project_id', $project_id);
         })->when($status, function ($query) use ($status) {
             return $query->where('status', $status);

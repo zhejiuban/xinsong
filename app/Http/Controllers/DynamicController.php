@@ -36,7 +36,7 @@ class DynamicController extends Controller
                 //管理员或总部管理员获取所有
                 if (check_user_role(null, '总部管理员')) {
                     $task = Dynamic::with([
-                        'user', 'project','project.committedPlans'
+                        'user', 'project','project.committedPlans','project.plans'
                     ])->when($search, function ($query) use ($search) {
                         return $query->where(function ($query) use ($search) {
                             $query->where(
@@ -64,7 +64,7 @@ class DynamicController extends Controller
                     //获取分部所有用户
                     $user = get_company_user(null,'id');
                     $task = Dynamic::with([
-                        'user',  'project','project.committedPlans'
+                        'user',  'project','project.committedPlans','project.plans'
                     ])->whereIn('user_id',$user)->when($search, function ($query) use ($search) {
                         return $query->where(function ($query) use ($search) {
                             $query->where(
@@ -111,7 +111,7 @@ class DynamicController extends Controller
             //管理员或总部管理员获取所有
             if (check_user_role(null, '总部管理员')) {
                 $list = Dynamic::with([
-                    'user', 'project','project.committedPlans'
+                    'user', 'project','project.committedPlans','project.plans'
                 ])->when($search, function ($query) use ($search) {
                     return $query->where(function ($query) use ($search) {
                         $query->where(
@@ -135,7 +135,7 @@ class DynamicController extends Controller
                 //获取分部所有用户
                 $user = get_company_user(null,'id');
                 $list = Dynamic::with([
-                    'user',  'project','project.committedPlans'
+                    'user',  'project','project.committedPlans','project.plans'
                 ])->whereIn('user_id',$user)->when($search, function ($query) use ($search) {
                     return $query->where(function ($query) use ($search) {
                         $query->where(
@@ -411,7 +411,9 @@ class DynamicController extends Controller
         $user = get_current_login_user_info(true);
         $project_id = $request->input('project_id');
         $date = $request->input('date');
-        $list = $user->dynamics()->when($project_id, function ($query) use ($project_id) {
+        $list = $user->dynamics()->with([
+            'project','project.plans'
+        ])->when($project_id, function ($query) use ($project_id) {
             return $query->where('project_id', $project_id);
         })->when($date,function ($query) use ($date){
             return $query->whereBetween('created_at', [

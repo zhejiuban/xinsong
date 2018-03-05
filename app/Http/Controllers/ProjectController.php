@@ -41,7 +41,7 @@ class ProjectController extends Controller
                 if (check_user_role(null, '总部管理员')) {
                     $project = Project::with([
                         'department', 'leaderUser', 'agentUser', 'companyUser'
-                        , 'phases','committedPlans'
+                        , 'phases','plans','committedPlans'
                     ])->baseSearch($status, $search, $department_id
                         , $phase_name, $phase_status)->orderBy(
                         $sort_field
@@ -54,7 +54,7 @@ class ProjectController extends Controller
                     //分部管理员获取分部所有项目
                     $project = Project::with([
                         'department', 'leaderUser', 'agentUser', 'companyUser'
-                        , 'phases','committedPlans'
+                        , 'phases','committedPlans','plans'
                     ])->baseSearch($status, $search, null, $phase_name, $phase_status)
                         ->companySearch(get_user_company_id())
                         ->orderBy(
@@ -90,7 +90,7 @@ class ProjectController extends Controller
             if (check_user_role(null, '总部管理员')) {
                 $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
-                    , 'phases','committedPlans'
+                    , 'phases','committedPlans','plans'
                 ])->baseSearch($status, $search, $department_id
                     , $phase_name, $phase_status)->orderBy(
                     'id'
@@ -99,7 +99,7 @@ class ProjectController extends Controller
                 //分部管理员获取分部所有项目
                 $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
-                    , 'phases','committedPlans'
+                    , 'phases','committedPlans','plans'
                 ])->baseSearch($status, $search, null, $phase_name, $phase_status)->companySearch(get_user_company_id())->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
