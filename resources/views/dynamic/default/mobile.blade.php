@@ -69,6 +69,10 @@
                                 所属项目：{{$task->project ? $task->project->title : null}} <br>
                                 上报人：{{$task->user?$task->user->name : null}} <br>
                                 上传日期：{{$task->created_at}}
+                                @if($task->project && $task->project->committedPlans->isNotEmpty())
+                                <br>
+                                实施计划：<a href="{{route('plans.index',['project'=>$task->project,'mid'=>request('mid')])}}" title="项目实施计划"><span class="m-badge m-badge--brand m-badge--wide">详情</span></a>
+                                @endif
                             </span>
                         </div>
                     </div>

@@ -167,14 +167,15 @@
                         field: "content", sortable: false,
                         title: "计划内容",
                         template: function (row) {
-                            var is_edit = "{{check_project_owner($project,'company')}}";
+                            var is_edit = "{{is_administrator()}}";
+                            var submit = ' <span class="m-badge m-badge--danger m-badge--wide">草稿</span>';
                             if(row.status && is_edit == ""){
                                 return row.content;
                             }else{
                                 return '<a href="' + mAppExtend.laravelRoute('{{route_uri("plans.edit")}}', {
                                 project: row.project_id,plan: row.id,
                                 mid: "{{request('mid')}}"
-                                }) + '" class="action-edit" title="编辑">'+row.content+'</a>' + ' <span class="m-badge m-badge--danger m-badge--wide">草稿</span>';; 
+                                }) + '" class="action-edit" title="编辑">'+row.content+'</a>' + (!row.status?submit:''); 
                             }
                         }
                     },  {
@@ -222,7 +223,7 @@
                             }) + '" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
                                 <i class="la la-edit"></i></a>';
 
-                            var is_edit = "{{check_project_owner($project,'company')}}";
+                            var is_edit = "{{is_administrator()}}";
                             if(row.status && is_edit == ""){
                                 return '<span class="m-badge m-badge--success m-badge--wide">已提交</span>';
                             }else{

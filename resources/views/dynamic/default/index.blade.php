@@ -156,6 +156,18 @@
                                 return row.project.title;
                             }
                         }
+                    },{
+                        field: "plans",
+                        width: 80,
+                        title: "相关计划", sortable: false,
+                        template: function (row) {
+                            if (row.project) {
+                                return row.project.committed_plans.length > 0 ? '<a href="' + mAppExtend.laravelRoute('{{route_uri("plans.index")}}', {
+                                project: row.project_id,
+                                mid: "{{request('mid')}}"
+                            }) + '" title="项目实施计划"><span class="m-badge m-badge--brand m-badge--wide">详情</span></a>':'';
+                            }
+                        }
                     }, {
                         field: "user_id", sortable: false,
                         width: 60, title: "上报人", template: function (row) {

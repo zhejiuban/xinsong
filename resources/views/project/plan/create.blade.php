@@ -78,6 +78,7 @@
 					<span class="m-form__help">可从项目参与人中选择执行人</span>
 				</div>
 			</div>
+			@if(is_administrator())
 			<div class="col-md-6">
 				<div class="form-group">
 					<label for="last_finished_at" class="form-control-label">
@@ -97,6 +98,7 @@
 				</div>
 			</div>
 		</div>
+		@endif
 		{{ csrf_field() }}
 		<input type="hidden" id="status" name="status" value="0">
 	</form>

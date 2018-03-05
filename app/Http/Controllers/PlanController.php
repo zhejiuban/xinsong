@@ -149,7 +149,7 @@ class PlanController extends Controller
         }
         $plan = Plan::find($id);
         if ($plan) {
-            if($plan->status && !check_project_owner($project,'company')){
+            if($plan->status && !is_administrator()){
                 return  _404('已提交');
             }
             return view('project.plan.edit', compact(['plan', 'project']));
@@ -173,7 +173,7 @@ class PlanController extends Controller
         }
         $plan = Plan::find($id);
 
-        if($plan->status && !check_project_owner($project,'company')){
+        if($plan->status && !is_administrator()){
             return  _404('已提交');
         }
 
@@ -249,7 +249,7 @@ class PlanController extends Controller
         if (!check_project_leader($project, 1) && !check_project_leader($project, 2)) {
             return _404('无权操作');
         }
-        if($plan->status && !check_project_owner($project,'company')){
+        if($plan->status && !is_administrator()){
             return  _404('已提交');
         }
         if ($plan->delete($id)) {
@@ -275,7 +275,7 @@ class PlanController extends Controller
         if (count($id) < 1 || !current($id)) {
             return _404('请选择要操作的数据');
         }
-        if(!check_project_owner($project,'company')){
+        if(!is_administrator()){
             //删除操作
             $res = Plan::whereIn('id', $id)->where(function ($query){
                 $query->where('status',0)->orWhereNull('status');

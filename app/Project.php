@@ -92,6 +92,10 @@ class Project extends Model
         return $this->hasMany('App\Plan');
     }
 
+    public function committedPlans(){
+        return $this->hasMany('App\Plan')->where('status',1);
+    }
+
     /**
      * 任务已完成百分比
      * @return float
