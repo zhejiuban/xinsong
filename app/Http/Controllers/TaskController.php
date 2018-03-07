@@ -30,7 +30,7 @@ class TaskController extends Controller
                 //管理员或总部管理员获取所有
                 if (check_user_role(null, '总部管理员')) {
                     $task = Task::with([
-                        'user', 'leaderUser', 'project','project.plans'
+                        'user', 'leaderUser', 'project','project.committedPlans','project.plans'
                     ])->baseSearch($status,$search,$project_id,$user_id)
                         ->orderBy('status', 'asc')
                         ->orderBy($sort_field, $sort)->paginate(
@@ -42,7 +42,7 @@ class TaskController extends Controller
                     //获取分部所有用户
                     $user = get_company_user(null,'id');
                     $task = Task::with([
-                        'user', 'leaderUser', 'project','project.plans'
+                        'user', 'leaderUser', 'project','project.plans','project.committedPlans'
                     ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)
                         ->orderBy('status', 'asc')->orderBy(
                         $sort_field
@@ -75,7 +75,7 @@ class TaskController extends Controller
             //管理员或总部管理员获取所有
             if (check_user_role(null, '总部管理员')) {
                 $list = Task::with([
-                    'user', 'leaderUser', 'project','project.plans'
+                    'user', 'leaderUser', 'project','project.plans','project.committedPlans'
                 ])->baseSearch($status,$search,$project_id,$user_id)->orderBy('status', 'asc')->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
@@ -83,7 +83,7 @@ class TaskController extends Controller
                 //获取分部所有用户
                 $user = get_company_user(null,'id');
                 $list = Task::with([
-                    'user', 'leaderUser', 'project','project.plans'
+                    'user', 'leaderUser', 'project','project.plans','project.committedPlans'
                 ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)
                     ->orderBy('status', 'asc')->orderBy(
                     'id'

@@ -78,7 +78,7 @@
                                         接收人：{{$task->leaderUser ? $task->leaderUser->name : null}}，
                                         开始时间：{{$task->start_at}}
                                         {{$task->finished_at ?'，完成时间：'.$task->finished_at : null}}
-                                        @if($task->is_need_plan)
+                                        @if($task->is_need_plan && $task->project && $task->project->committedPlans->isNotEmpty())
                                             <br>
                                             实施计划：<a class="m-badge m-badge--brand m-badge--wide" href="{{ route('plans.index',['project'=>$task->project_id,'mid'=>request('mid')]) }}">查看</a>
                                         @endif

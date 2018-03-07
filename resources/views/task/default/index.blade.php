@@ -179,7 +179,7 @@
                         field: "is_need_plan",
                         title: "实施计划", sortable: false,
                         template: function (row) {
-                            if(row.is_need_plan){
+                            if(row.is_need_plan && row.project.committed_plans.length > 0){
                                 return '<a href="'+ mAppExtend.laravelRoute('{{route_uri("plans.index")}}', {
                                  project: row.project_id,
                                  mid: "{{request('mid')}}"
