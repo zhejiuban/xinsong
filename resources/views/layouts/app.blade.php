@@ -168,9 +168,10 @@
                                                                                 日志补填
                                                                             </span>
                                                                         </a>
-                                                                        <a href="javascript:;" class="m-nav-grid__item">
-                                                                            <i class="m-nav-grid__icon flaticon-more-v2"></i>
+                                                                        <a href="{{route('product_faults.create',['mid'=>'343cb319697e6c567a2354bc67918987'])}}" class="m-nav-grid__item">
+                                                                            <i class="m-nav-grid__icon flaticon-interface-1"></i>
                                                                             <span class="m-nav-grid__text">
+                                                                                陪产故障录入
                                                                             </span>
                                                                         </a>
                                                                     </div>

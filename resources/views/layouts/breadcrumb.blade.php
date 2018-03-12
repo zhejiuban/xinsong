@@ -108,6 +108,14 @@
 										</span>
 									</a>
 								</li>
+								<li class="m-nav__item">
+									<a href="{{url('produce/product_faults?mid=343cb319697e6c567a2354bc67918987')}}" class="m-nav__link">
+										<i class="m-nav__link-icon flaticon-interface-1"></i>
+										<span class="m-nav__link-text">
+											陪产故障统计
+										</span>
+									</a>
+								</li>
 								{{--<li class="m-nav__item">
 									<a href="" class="m-nav__link">
 										<i class="m-nav__link-icon flaticon-lifebuoy"></i>

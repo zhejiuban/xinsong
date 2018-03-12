@@ -1327,3 +1327,41 @@ function checkEqTime($first, $second, $inc = null)
     }
     return false;
 }
+
+/**
+ * 设备类型选择项
+ * @param string $selected
+ * @return string
+ */
+function fault_cause_select($selected = '')
+{
+    $list = \App\FaultCause::lists()->toArray();
+    $str = '<option value="">请选择故障现象</option>';
+    if ($list) {
+        foreach ($list as $key => $val) {
+            $str .= '<option value="' . $val['id'] . '" '
+                . ($selected == $val['id'] ? 'selected="selected"' : '') . '>'
+                . $val['name'] . '</option>';
+        }
+    }
+    return $str;
+}
+if (!function_exists('getDateRange')) {
+    /**
+     * 获取指定范围内的所有日期
+     * @param $startdate
+     * @param $enddate
+     * @return array
+     */
+    function getDateRange($startdate, $enddate)
+    {
+        $stime = strtotime($startdate);
+        $etime = strtotime($enddate);
+        $datearr = [];
+        while ($stime <= $etime) {
+            $datearr[] = date('Y-m-d', $stime);//得到dataarr的日期数组。
+            $stime = $stime + 86400;
+        }
+        return $datearr;
+    }
+}

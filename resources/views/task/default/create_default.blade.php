@@ -50,15 +50,25 @@
 							<span class="m-form__help"></span>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-							<label for="name" class="form-control-label">
-								开始日期:
-							</label>
-							<input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" />
-							<span class="m-form__help"></span>
-						</div>
-					</div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                是否需要上传计划:
+                            </label>
+                            <div class="m-radio-inline">
+                                <label class="m-radio">
+                                    <input type="radio" name="is_need_plan" value="1" > 是
+                                    <span></span>
+                                </label>
+                                <label class="m-radio">
+                                    <input type="radio" name="is_need_plan" value="0" checked> 否
+                                    <span></span>
+                                </label>
+                            </div>
+                            <span class="m-form__help"></span>
+                        </div>
+                    </div>
+					
 
 					<div class="col-md-6">
 						<div class="form-group">
@@ -73,6 +83,15 @@
 							<span class="m-form__help">可从项目参与人中选择处理人</span>
 						</div>
 					</div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name" class="form-control-label">
+                                开始日期:
+                            </label>
+                            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" />
+                            <span class="m-form__help"></span>
+                        </div>
+                    </div>
 					<div class="col-md-12">
 						<div class="form-group">
 							<label for="content" class="form-control-label">
@@ -82,24 +101,7 @@
 							<span class="m-form__help"></span>
 						</div>
 					</div>
-					<div class="col-md-12">
-						<div class="form-group">
-							<label>
-								是否需要上传计划:
-							</label>
-							<div class="m-radio-inline">
-								<label class="m-radio">
-									<input type="radio" name="is_need_plan" value="1" > 是
-									<span></span>
-								</label>
-								<label class="m-radio">
-									<input type="radio" name="is_need_plan" value="0" checked> 否
-									<span></span>
-								</label>
-							</div>
-							<span class="m-form__help"></span>
-						</div>
-					</div>
+					
 				</div>
 			</div>
 			<div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
@@ -188,7 +190,26 @@
                     'type': 'get',
                     'showLoading':false,
                     url:"{{route('project.users.selector')}}",
-                    query:{'id':project_id},
+                    query:{'id':project_id,'need_plan':$('input[name="is_need_plan"]:checked').val()},
+                    callback:function (data, textStatus, xhr) {
+                        var $user = data.data;
+                        if($user){
+                            $.each($user, function (i, item) {
+                                $('#leader').append("<option value='" + item.id + "'>" + item.name + "</option>");
+                            });
+                        }
+                    }
+                })
+            });
+            $('input[name="is_need_plan"]').change(function(event) {
+                /* Act on the event */
+                var project_id = $("#project_select").val();
+                $('#leader').empty();
+                mAppExtend.ajaxPostSubmit({
+                    'type': 'get',
+                    'showLoading':false,
+                    url:"{{route('project.users.selector')}}",
+                    query:{'id':project_id,'need_plan':$('input[name="is_need_plan"]:checked').val()},
                     callback:function (data, textStatus, xhr) {
                         var $user = data.data;
                         if($user){

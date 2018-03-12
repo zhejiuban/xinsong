@@ -71,12 +71,12 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::match(['get', 'put'], 'phases/{phase}', 'ProjectController@phaseUpdate')->name('project.phases.update');
 
     Route::get('tasks', 'TaskController@index')->name('project.task.tasks');
-    Route::get('tasks/{task}/dynamics','TaskController@dynamics')->name('task.dynamics');
+    Route::get('tasks/{task}/dynamics', 'TaskController@dynamics')->name('task.dynamics');
 
-    Route::delete('{project}/plans/batch_delete','PlanController@batchDelete')->name('plans.batch_delete');
-    Route::match(['get','post'],'{project}/import','PlanController@import')->name('plans.import');
-    Route::put('single_field_update','PlanController@singleFieldUpdate')->name('plans.field.update');
-    Route::resource('{project}/plans','PlanController');
+    Route::delete('{project}/plans/batch_delete', 'PlanController@batchDelete')->name('plans.batch_delete');
+    Route::match(['get', 'post'], '{project}/import', 'PlanController@import')->name('plans.import');
+    Route::put('single_field_update', 'PlanController@singleFieldUpdate')->name('plans.field.update');
+    Route::resource('{project}/plans', 'PlanController');
 
     Route::get('dynamics', 'DynamicController@index')->name('project.dynamic.dynamics');
     Route::get('malfunctions', 'MalfunctionController@index')->name('project.malfunction.malfunctions');
@@ -93,7 +93,7 @@ Route::group(['prefix' => 'plugin', 'middleware' => 'auth'], function () {
     Route::get('projects/logs', 'Plugin\ProjectLogController@index')->name('projects.logs');
     Route::get('projects/selector/project/device', 'Plugin\ProjectSelectorController@devices')->name('project.devices.selector');
     Route::get('projects/selector/project/phase', 'Plugin\ProjectSelectorController@phases')->name('project.phases.selector');
-    Route::get('projects/export','Plugin\ProjectExportController@index')->name('projects.export');
+    Route::get('projects/export', 'Plugin\ProjectExportController@index')->name('projects.export');
 
 //    Route::get('tasks/selector/data', 'Plugin\TaskSelectorController@data')->name('tasks.selector.data');
 
@@ -132,9 +132,17 @@ Route::group(['prefix' => 'malfunction', 'middleware' => 'auth'], function () {
 });
 //消息模块
 Route::resource('notifications', 'NotificationController', [
-    'only' => ['index'],'middleware' => 'auth']);
-Route::get('notifications/{notification}/read','NotificationController@read')
+    'only' => ['index'], 'middleware' => 'auth']);
+Route::get('notifications/{notification}/read', 'NotificationController@read')
     ->middleware('auth')->name('notifications.read');
-Route::get('notifications/mark_read','NotificationController@markAsRead')
+Route::get('notifications/mark_read', 'NotificationController@markAsRead')
     ->middleware('auth')->name('notifications.mark_read');
 
+Route::group(['prefix' => 'produce', 'middleware' => 'auth'], function () {
+    Route::match(['get', 'post'],
+        'product_faults/export'
+        , 'ProductFaultController@export')
+        ->name('product_faults.export');
+    Route::resource('fault_causes', 'FaultCauseController');
+    Route::resource('product_faults', 'ProductFaultController');
+});

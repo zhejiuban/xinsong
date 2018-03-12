@@ -80,10 +80,19 @@ class UserSelectorController extends Controller
      */
     public function projectUserData(Request $request){
         $project_id = $request->input('id');
+        $project = Project::find($project_id);
+        $list = $project->users;
+        if($request->input('need_plan')){
+            foreach ($list as $key=>$val){
+                if ($project->subcompany_leader != $val->id && $project->agent != $val->id){
+                    unset($list[$key]);
+                }
+            }
+        }
         return response()->json([
             'message' => '用户列表'
             , 'status' => 'success'
-            , 'data' => Project::find($project_id)->users
+            , 'data' => $list
             , 'url' => ''
         ]);
     }

@@ -35,6 +35,22 @@
 		</div>
 		<div class="form-group">
 			<label>
+				是否需要上传计划:
+			</label>
+			<div class="m-radio-inline">
+				<label class="m-radio">
+					<input type="radio" name="is_need_plan" value="1" > 是
+					<span></span>
+				</label>
+				<label class="m-radio">
+					<input type="radio" name="is_need_plan" value="0" checked> 否
+					<span></span>
+				</label>
+			</div>
+			<span class="m-form__help"></span>
+		</div>
+		<div class="form-group">
+			<label>
 				分派给:
 			</label>
 			<div class="">
@@ -51,22 +67,7 @@
 			<textarea class="form-control" name="content" id="content" rows="6"></textarea>
 			<span class="m-form__help"></span>
 		</div>
-		<div class="form-group">
-			<label>
-				是否需要上传计划:
-			</label>
-			<div class="m-radio-inline">
-				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="1" > 是
-					<span></span>
-				</label>
-				<label class="m-radio">
-					<input type="radio" name="is_need_plan" value="0" checked> 否
-					<span></span>
-				</label>
-			</div>
-			<span class="m-form__help"></span>
-		</div>
+		
 		{{ csrf_field() }}
 	</form>
 </div>
@@ -141,7 +142,7 @@
 			'type': 'get',
 			'showLoading':false,
 			url:"{{route('project.users.selector')}}",
-			query:{'id':project_id},
+			query:{'id':project_id,'need_plan':$('input[name="is_need_plan"]:checked').val()},
             callback:function (data, textStatus, xhr) {
 				var $user = data.data;
                 if($user){
@@ -152,6 +153,27 @@
             }
 		})
 	});
+
+	$('input[name="is_need_plan"]').change(function(event) {
+		/* Act on the event */
+		var project_id = $("#project_select").val();
+        $('#leader').empty();
+		mAppExtend.ajaxPostSubmit({
+			'type': 'get',
+			'showLoading':false,
+			url:"{{route('project.users.selector')}}",
+			query:{'id':project_id,'need_plan':$('input[name="is_need_plan"]:checked').val()},
+            callback:function (data, textStatus, xhr) {
+				var $user = data.data;
+                if($user){
+                    $.each($user, function (i, item) {
+                        $('#leader').append("<option value='" + item.id + "'>" + item.name + "</option>");
+                    });
+				}
+            }
+		})
+	});
+
     var form = $( "#task-form" );
     var submitButton = $("#submit-button");
     form.validate({
