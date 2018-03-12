@@ -26,13 +26,7 @@
 			<span class="m-form__help"></span>
 		</div>
 
-		<div class="form-group">
-			<label for="name" class="form-control-label">
-				开始日期:
-			</label>
-            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" />
-			<span class="m-form__help"></span>
-		</div>
+		
 		<div class="form-group">
 			<label>
 				是否需要上传计划:
@@ -59,6 +53,13 @@
 				</select>
 			</div>
 			<span class="m-form__help">可从项目参与人中选择处理人</span>
+		</div>
+		<div class="form-group">
+			<label for="name" class="form-control-label">
+				开始日期:
+			</label>
+            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at" />
+			<span class="m-form__help"></span>
 		</div>
 		<div class="form-group">
 			<label for="content" class="form-control-label">

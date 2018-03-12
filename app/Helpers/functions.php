@@ -793,7 +793,7 @@ function _success($message = '操作成功', $data = null, $url = '')
  * @param string $selected
  * @return string
  */
-function project_user_select($project, $selected = '', $type = 1)
+function project_user_select($project, $selected = '', $type = 1, $need_plan = 0)
 {
     if (is_numeric($project)) {
         $project = \App\Project::find($project);
@@ -806,6 +806,11 @@ function project_user_select($project, $selected = '', $type = 1)
     if ($project) {
         if ($project->users->isNotEmpty()) {
             foreach ($project->users as $key => $user) {
+                if($need_plan
+                    && $user->id != $project->subcompany_leader
+                    && $project->agent != $user->id){
+                    continue;
+                }
                 if ($selected == $user->id) {
                     $str .= '<option value="' . $user->id . '" selected="selected">' .
                         $user->name
@@ -1317,7 +1322,7 @@ function checkEqTime($first, $second, $inc = null)
         $second = \Carbon\Carbon::parse($second);
     }
 
-    if($inc){
+    if ($inc) {
         //第一个时间累加几天之后再比较
         $first = $first->addDay($inc);
     }
@@ -1346,6 +1351,7 @@ function fault_cause_select($selected = '')
     }
     return $str;
 }
+
 if (!function_exists('getDateRange')) {
     /**
      * 获取指定范围内的所有日期

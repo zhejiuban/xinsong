@@ -23,32 +23,6 @@
             <span class="m-form__help"></span>
         </div>
         <div class="form-group">
-            <label for="name" class="form-control-label">
-                开始日期:
-            </label>
-            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at"
-                   value="{{$task->start_at}}"/>
-            <span class="m-form__help"></span>
-        </div>
-        <div class="form-group">
-            <label>
-                分派给:
-            </label>
-            <div class="">
-                <select class="form-control m-input select2" id="leader" name="leader">
-                    {!!project_user_select($task->project_id,$task->leader)!!}
-                </select>
-            </div>
-            <span class="m-form__help">可从项目参与人中选择处理人</span>
-        </div>
-        <div class="form-group">
-            <label for="content" class="form-control-label">
-                任务内容:
-            </label>
-            <textarea class="form-control" name="content" id="content" rows="6">{{$task->content}}</textarea>
-            <span class="m-form__help"></span>
-        </div>
-        <div class="form-group">
             <label>
                 是否需要上传计划:
             </label>
@@ -66,6 +40,33 @@
             </div>
             <span class="m-form__help"></span>
         </div>
+        <div class="form-group">
+            <label>
+                分派给:
+            </label>
+            <div class="">
+                <select class="form-control m-input select2" id="leader" name="leader">
+                    {!!project_user_select($task->project_id,$task->leader,1,$task->is_need_plan)!!}
+                </select>
+            </div>
+            <span class="m-form__help">可从项目参与人中选择处理人</span>
+        </div>
+        <div class="form-group">
+            <label for="name" class="form-control-label">
+                开始日期:
+            </label>
+            <input type="text" class="form-control m-input m-date" placeholder="开始日期" name="start_at"
+                   value="{{$task->start_at}}"/>
+            <span class="m-form__help"></span>
+        </div>
+        <div class="form-group">
+            <label for="content" class="form-control-label">
+                任务内容:
+            </label>
+            <textarea class="form-control" name="content" id="content" rows="6">{{$task->content}}</textarea>
+            <span class="m-form__help"></span>
+        </div>
+        
         {{ csrf_field() }}
         {{ method_field('PUT') }}
     </form>
@@ -139,10 +140,29 @@
                 'type': 'get',
                 'showLoading': false,
                 url: "{{route('project.users.selector')}}",
-                query: {'id': project_id},
+                query: {'id': project_id,'need_plan':$('input[name="is_need_plan"]:checked').val()},
                 callback: function (data, textStatus, xhr) {
                     var $user = data.data;
                     if ($user) {
+                        $.each($user, function (i, item) {
+                            $('#leader').append("<option value='" + item.id + "'>" + item.name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+        $('input[name="is_need_plan"]').change(function(event) {
+            /* Act on the event */
+            var project_id = $("#project_select").val();
+            $('#leader').empty();
+            mAppExtend.ajaxPostSubmit({
+                'type': 'get',
+                'showLoading':false,
+                url:"{{route('project.users.selector')}}",
+                query:{'id':project_id,'need_plan':$('input[name="is_need_plan"]:checked').val()},
+                callback:function (data, textStatus, xhr) {
+                    var $user = data.data;
+                    if($user){
                         $.each($user, function (i, item) {
                             $('#leader').append("<option value='" + item.id + "'>" + item.name + "</option>");
                         });
