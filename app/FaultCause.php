@@ -16,6 +16,6 @@ class FaultCause extends Model
     }
 
     public static function lists($status = 1){
-        return self::where('status',$status)->get();
+        return self::where('status',$status)->orderBy('id','desc')->get();
     }
 }
