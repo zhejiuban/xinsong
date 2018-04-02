@@ -182,12 +182,12 @@
                                             {{$reply = $user->questions()->where('status',1)->count()}} 未解决
                                         </span>
                                     </div>
-                                    <div class="m-widget14__legend">
+                                    <!-- <div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-info"></span>
                                         <span class="m-widget14__legend-text">
                                             {{$replyed = $user->questions()->where('status',2)->count()}} 已回复
                                         </span>
-                                    </div>
+                                    </div> -->
                                     <div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-success"></span>
                                         <span class="m-widget14__legend-text">
@@ -371,14 +371,14 @@
                             meta: {
                                 color: mUtil.getColor('success')
                             }
-                        },
-                        {
-                            value: {{$replyed}},
-                            className: 'custom',
-                            meta: {
-                                color: mUtil.getColor('info')
-                            }
                         }
+                        // ,{
+                        //     value: {{$replyed}},
+                        //     className: 'custom',
+                        //     meta: {
+                        //         color: mUtil.getColor('info')
+                        //     }
+                        // }
                     ],
                     labels: [1, 2, 3,4]
                 }, {

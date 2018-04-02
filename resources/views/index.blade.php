@@ -121,12 +121,12 @@
                                             未解决 {{$question['reply']}}
                                         </span>
                                     </div>
-                                    <div class="m-widget14__legend">
+                                    <!-- <div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-info"></span>
                                         <span class="m-widget14__legend-text">
                                            已回复 {{$question['replyed']}}
                                         </span>
-                                    </div>
+                                    </div> -->
                                     <div class="m-widget14__legend">
                                         <span class="m-widget14__legend-bullet m--bg-success"></span>
                                         <span class="m-widget14__legend-text">
@@ -471,14 +471,14 @@
                             meta: {
                                 color: mUtil.getColor('success')
                             }
-                        },
-                        {
-                            value: {{$question['replyed']}},
-                            className: 'custom',
-                            meta: {
-                                color: mUtil.getColor('info')
-                            }
                         }
+                        // ,{
+                        //     value: {{$question['replyed']}},
+                        //     className: 'custom',
+                        //     meta: {
+                        //         color: mUtil.getColor('info')
+                        //     }
+                        // }
                     ],
                     labels: [1, 2, 3,4]
                 }, {

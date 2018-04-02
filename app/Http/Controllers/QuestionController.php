@@ -200,8 +200,8 @@ class QuestionController extends Controller
             if (!is_administrator()
                 && $question->user_id != get_current_login_user_info()) {
                 return _error('无权操作');
-            }elseif(!is_administrator() && $question->status > 1){
-                return _error('问题已提交，不可修改');
+            }elseif(!is_administrator() && $question->replied_at){
+                return _error('问题已回复，不可修改');
             }
             if($request->ajax()){
                 return view('question.default.edit_ajax', compact('question'));
@@ -277,7 +277,7 @@ class QuestionController extends Controller
         } else {
             $res = Question::whereIn('id', $id)->where(
                 'user_id', get_current_login_user_info()
-            )->where('status', '<', 1)->delete();
+            )->where('status', '=', 1)->delete();
         }
         if ($res) {
             activity('项目日志')->withProperties($id)->log('删除问题');
@@ -420,7 +420,7 @@ class QuestionController extends Controller
         }
         $info = Question::find($request->question);
         //获取问题详情
-        if(!$info || $info->status > 2){
+        if(!$info || $info->status > 1){
             return _404('无权操作！');
         }
         if(!check_user_role(null,'总部管理员')
@@ -434,7 +434,7 @@ class QuestionController extends Controller
             ], ['reply_content.required' => '请填写回复内容']);
             $info->reply_content = $request->reply_content;
             $info->replied_at = Carbon::now();
-            $info->status = 2; //设置已回复
+            // $info->status = 2; //设置已回复
             if ($info->save()) {
                 //增加回复提醒
 

@@ -228,7 +228,7 @@
                                 mid: "{{request('mid')}}"
                             }) + '" class="action-finished m-portlet__nav-link btn m-btn m-btn--hover-primary m-btn--icon m-btn--icon-only m-btn--pill" title="关闭">\
                 <i class="la la-check"></i></a>';
-                            if (row.status > 1) {
+                            if (row.status > 1 || row.replied_at) {
                                 del = '';
                                 edit = '';
                             }

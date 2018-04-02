@@ -157,6 +157,9 @@
             template:function (row) {
                 var status = @json(config('common.question_status'));
 								var rowStatus = Number(row.status);
+                if(row.replied_at){
+                  return '<span class="m-badge  m-badge--primary  m-badge--wide">已回复</span>';
+                }
                 return '<span class="m-badge ' + status[rowStatus].class + ' m-badge--wide">' + status[rowStatus].title + '</span>';
             }
         }, {

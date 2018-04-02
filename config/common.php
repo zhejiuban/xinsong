@@ -12,7 +12,7 @@ return [
     'question_status' => [
 //        0 => ['title' => '待接收', 'class' => ' m-badge--danger'],
         1 => ['title' => '未解决', 'class' => ' m-badge--danger'],
-        2 => ['title' => '已回复', 'class' => ' m-badge--primary'],
+        // 2 => ['title' => '已回复', 'class' => ' m-badge--primary'],
         3 => ['title' => '已解决', 'class' => ' m-badge--success'],
     ],
     'status' => [
