@@ -21,7 +21,7 @@ class QuestionController extends Controller
         if (!check_permission('question/questions')) {
             return _404('无权操作！');
         }
-        if(!Agent::isMobile()){
+        if (!Agent::isMobile()) {
             if ($request->ajax()) {
                 $sort_field = $request->input('datatable.sort.field')
                     ? $request->input('datatable.sort.field') : 'id';
@@ -33,26 +33,32 @@ class QuestionController extends Controller
                 $project_id = $request->input('datatable.query.project_id');
                 $date = $request->input('datatable.query.date');
                 $status = $request->input('datatable.query.status');
+                $user_id = $request->input('datatable.query.user_id');
+                $receive_user_id = $request->input('datatable.query.receive_user_id');
+
                 if (check_user_role(null, '总部管理员')) {
                     $role = Question::with([
                         'category', 'project', 'user', 'receiveUser'
-                    ])->baseQuestion($status,$search,$date,$project_id)->orderBy(
+                    ])->baseQuestion($status, $search, $date
+                        , $project_id, $user_id, $receive_user_id)->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage
                         , ['*']
                         , 'datatable.pagination.page'
                     );
-                } else{
+                } else {
                     $role = Question::with([
                         'category', 'project', 'user', 'receiveUser'
-                    ])->baseQuestion($status,$search,$date,$project_id)->companyQuestion()->orderBy(
-                        $sort_field
-                        , $sort)->paginate(
-                        $prepage
-                        , ['*']
-                        , 'datatable.pagination.page'
-                    );
+                    ])->baseQuestion($status, $search, $date
+                        , $project_id, $user_id, $receive_user_id)
+                        ->companyQuestion()->orderBy(
+                            $sort_field
+                            , $sort)->paginate(
+                            $prepage
+                            , ['*']
+                            , 'datatable.pagination.page'
+                        );
                 }
                 $meta = [
                     'field' => $sort_field,
@@ -68,26 +74,30 @@ class QuestionController extends Controller
             }
             set_redirect_url();
             return view('question.default.index');
-        }else{
+        } else {
             $search = $request->input('search');
             $project_id = $request->input('project_id');
             $date = $request->input('date');
             $status = $request->input('status');
+            $user_id = $request->input('user_id');
+            $receive_user_id = $request->input('receive_user_id');
             if (check_user_role(null, '总部管理员')) {
                 $list = Question::with([
                     'category', 'project', 'user', 'receiveUser'
-                ])->baseQuestion($status,$search,$date,$project_id)->orderBy(
+                ])->baseQuestion($status, $search, $date
+                    , $project_id, $user_id, $receive_user_id)->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             } else {
                 $list = Question::with([
                     'category', 'project', 'user', 'receiveUser'
-                ])->baseQuestion($status,$search,$date,$project_id)->companyQuestion()->orderBy(
+                ])->baseQuestion($status, $search, $date
+                    , $project_id, $user_id, $receive_user_id)->companyQuestion()->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             }
             set_redirect_url();
-            return view('question.default.index_mobile',compact('list'));
+            return view('question.default.index_mobile', compact('list'));
         }
     }
 
@@ -101,9 +111,9 @@ class QuestionController extends Controller
         if (!check_permission('question/questions/create')) {
             return _404('无权操作！');
         }
-        if($request->ajax()){
+        if ($request->ajax()) {
             return view('question.default.create_ajax', ['back' => null]);
-        }else{
+        } else {
             return view('question.default.create', ['back' => null]);
         }
     }
@@ -191,7 +201,7 @@ class QuestionController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request,$id)
+    public function edit(Request $request, $id)
     {
         $question = Question::with([
             'category', 'receiveUser', 'project'
@@ -200,12 +210,12 @@ class QuestionController extends Controller
             if (!is_administrator()
                 && $question->user_id != get_current_login_user_info()) {
                 return _error('无权操作');
-            }elseif(!is_administrator() && $question->replied_at){
+            } elseif (!is_administrator() && $question->replied_at) {
                 return _error('问题已回复，不可修改');
             }
-            if($request->ajax()){
+            if ($request->ajax()) {
                 return view('question.default.edit_ajax', compact('question'));
-            }else{
+            } else {
                 return view('question.default.edit', compact('question'));
             }
         } else {
@@ -228,7 +238,7 @@ class QuestionController extends Controller
             if (!is_administrator()
                 && $question->user_id != get_current_login_user_info()) {
                 return _error('无权操作');
-            }elseif(!is_administrator() && $question->status > 1){
+            } elseif (!is_administrator() && $question->status > 1) {
                 return _error('问题已提交，不可修改');
             }
             //修改数据
@@ -303,7 +313,7 @@ class QuestionController extends Controller
         if (!check_permission('question/personal')) {
             return _404('无权操作！');
         }
-        if (!Agent::isMobile()){
+        if (!Agent::isMobile()) {
             if ($request->ajax()) {
                 $sort_field = $request->input('datatable.sort.field')
                     ? $request->input('datatable.sort.field') : 'id';
@@ -317,7 +327,7 @@ class QuestionController extends Controller
                 $status = $request->input('datatable.query.status');
                 $role = Question::with([
                     'category', 'project', 'receiveUser'
-                ])->baseQuestion($status,$search,$date,$project_id)->personalQuestion()->orderBy(
+                ])->baseQuestion($status, $search, $date, $project_id)->personalQuestion()->orderBy(
                     $sort_field
                     , $sort)->paginate(
                     $prepage
@@ -338,18 +348,18 @@ class QuestionController extends Controller
             }
             set_redirect_url();
             return view('question.default.personal');
-        }else{
+        } else {
             $search = $request->input('search');
             $project_id = $request->input('project_id');
             $date = $request->input('date');
             $status = $request->input('status');
             $list = Question::with([
                 'category', 'project', 'receiveUser'
-            ])->baseQuestion($status,$search,$date,$project_id)->personalQuestion()->orderBy(
+            ])->baseQuestion($status, $search, $date, $project_id)->personalQuestion()->orderBy(
                 'id'
                 , 'desc')->paginate(config('common.page.per_page'));
             set_redirect_url();
-            return view('question.default.personal_mobile',compact('list'));
+            return view('question.default.personal_mobile', compact('list'));
         }
     }
 
@@ -358,7 +368,7 @@ class QuestionController extends Controller
         if (!check_permission('question/pending')) {
             return _404('无权操作！');
         }
-        if (!Agent::isMobile()){
+        if (!Agent::isMobile()) {
             if ($request->ajax()) {
                 $sort_field = $request->input('datatable.sort.field')
                     ? $request->input('datatable.sort.field') : 'id';
@@ -373,7 +383,7 @@ class QuestionController extends Controller
 
                 $role = Question::with([
                     'category', 'project', 'receiveUser', 'user'
-                ])->baseQuestion($status,$search,$date,$project_id)->receiveQuestion()->orderBy(
+                ])->baseQuestion($status, $search, $date, $project_id)->receiveQuestion()->orderBy(
                     $sort_field
                     , $sort)->paginate(
                     $prepage
@@ -394,7 +404,7 @@ class QuestionController extends Controller
             }
             set_redirect_url();
             return view('question.default.pending');
-        }else{
+        } else {
             $search = $request->input('search');
             $project_id = $request->input('project_id');
             $date = $request->input('date');
@@ -402,12 +412,12 @@ class QuestionController extends Controller
 
             $list = Question::with([
                 'category', 'project', 'receiveUser', 'user'
-            ])->baseQuestion($status,$search,$date,$project_id)->receiveQuestion()->orderBy(
+            ])->baseQuestion($status, $search, $date, $project_id)->receiveQuestion()->orderBy(
                 'id'
                 , 'desc')->paginate(config('common.page.per_page'));
 
             set_redirect_url();
-            return view('question.default.pending_mobile',compact('list'));
+            return view('question.default.pending_mobile', compact('list'));
         }
     }
 
@@ -420,11 +430,11 @@ class QuestionController extends Controller
         }
         $info = Question::find($request->question);
         //获取问题详情
-        if(!$info || $info->status > 1){
+        if (!$info || $info->status > 1) {
             return _404('无权操作！');
         }
-        if(!check_user_role(null,'总部管理员')
-            && $info->receive_user_id != get_current_login_user_info()){
+        if (!check_user_role(null, '总部管理员')
+            && $info->receive_user_id != get_current_login_user_info()) {
             return _404('无权操作！');
         }
         if ($request->isMethod('post')) {

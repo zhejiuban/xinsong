@@ -44,7 +44,7 @@
             <!--begin: Search Form -->
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
                 <div class="m-form__group row align-items-center">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <div class="m-input-icon m-input-icon--left">
                                 <input type="text" class="form-control m-input" placeholder="关键字..."
@@ -57,25 +57,37 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <input type="text" class="form-control m-input m-date"
                                    placeholder="上传日期" name="date" id="date"
                                    readonly value="{{request('date')}}"/>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control m-bootstrap-select" id="m_form_status">
+                                {!! question_status_select() !!}
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="row align-items-center">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <select name="project_id" class="form-control m-input" id="project_id">
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <select class="form-control m-bootstrap-select" id="m_form_status">
-                                {!! question_status_select() !!}
+                            <select name="user_id" class="form-control" id="user_id">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                             <select name="receive_user_id" class="form-control" id="receive_user_id">
                             </select>
                         </div>
                     </div>
@@ -285,6 +297,12 @@
                 $('#m_form_status').on('change', function () {
                     datatable.search($(this).val(), 'status');
                 }).val(typeof query.status !== 'undefined' ? query.status : '');
+                $('#user_id').on('change', function () {
+                    datatable.search($(this).val(), 'user_id');
+                }).val(typeof query.user_id !== 'undefined' ? query.user_id : '');
+                $('#receive_user_id').on('change', function () {
+                    datatable.search($(this).val(), 'receive_user_id');
+                }).val(typeof query.receive_user_id !== 'undefined' ? query.receive_user_id : '');
 
             };
 
@@ -295,6 +313,38 @@
                 }
             };
         }();
+
+        function formatRepos(repo) {
+            if (repo.loading) return repo.text;
+            var markup = "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" + repo.name + "</div>";
+            if (repo.department) {
+                markup += "<div class='select2-result-repository__description'>所在部门：" + repo.department.name + "</div>";
+            }
+            markup += "</div></div>";
+            return markup;
+        }
+
+        function formatReposSelection(repo) {
+            return repo.name || repo.text;
+        }
+
+        function formatReceiveUser(repo) {
+            if (repo.loading) return repo.text;
+            var markup = "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" + repo.name + "</div>";
+            if (repo.department) {
+                markup += "<div class='select2-result-repository__description'>所在部门：" + repo.department.name + "</div>";
+            }
+            markup += "</div></div>";
+            return markup;
+        }
+
+        function formatReceiveUserSelection(repo) {
+            return repo.name || repo.text;
+        }
 
         jQuery(document).ready(function () {
             DatatableAjax.init(); //加载数据列表
@@ -334,6 +384,76 @@
                 templateResult: formatProjectRepo, // omitted for brevity, see the source of this page
                 templateSelection: formatProjectRepoSelection // omitted for brevity, see the source of this page
             });
+            //上报人
+            $("#user_id").select2({
+                language: 'zh-CN',
+                placeholder: "选择上报人",
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{route('users.selector.data')}}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            per_page: {{config('common.page.per_page')}}
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (params.page * data.per_page) < data.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 0,
+                templateResult: formatRepos, // omitted for brevity, see the source of this page
+                templateSelection: formatReposSelection // omitted for brevity, see the source of this page
+            });
+            //接收人
+            var $receiveUserSelector = $("#receive_user_id").select2({
+                language: 'zh-CN',
+                placeholder: "选择接收人",
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{route('users.selector.data',['type'=>check_company_admin() ? 'headquarters' : 'sub_and_headquarters'])}}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            per_page: {{config('common.page.per_page')}}
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: (params.page * data.per_page) < data.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 0,
+                templateResult: formatReceiveUser, // omitted for brevity, see the source of this page
+                templateSelection: formatReceiveUserSelection // omitted for brevity, see the source of this page
+            });
             $('.m_datatable').on('click', 'a.action-show,a.action-reply', function (event) {
                 event.preventDefault();
                 var url = $(this).attr('href');
@@ -353,6 +473,7 @@
                     }
                 });
             });
+
             $('.m_datatable').on('click', 'a.action-finished', function (event) {
                 event.preventDefault();
                 var url = $(this).attr('href');

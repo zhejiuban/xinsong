@@ -37,25 +37,31 @@ class Question extends Model
         return $value;
     }
 
-    public function scopeBaseQuestion($query
-        , $status = null, $search = null, $date = null, $project_id = null){
+    public function scopeBaseQuestion($query, $status = null
+        , $search = null, $date = null, $project_id = null
+        , $user_id = null, $receive_user_id = null)
+    {
         return $query->when($status, function ($query) use ($status) {
             return $query->where('status', $status);
         }, function ($query) use ($status) {
             if ($status !== null) {
                 return $query->where('status', $status);
             }
-        })->when($search,function ($query) use ($search){
+        })->when($search, function ($query) use ($search) {
             return $query->where(
                 'title', 'like',
                 "%$search%"
             );
-        })->when($date,function ($query) use ($date) {
+        })->when($date, function ($query) use ($date) {
             return $query->whereBetween('created_at', [
-                date_start_end($date),date_start_end($date,'end')
+                date_start_end($date), date_start_end($date, 'end')
             ]);
-        })->when($project_id,function ($query) use ($project_id) {
+        })->when($project_id, function ($query) use ($project_id) {
             return $query->where('project_id', $project_id);
+        })->when($user_id, function ($query) use ($user_id) {
+            return $query->where('user_id', $user_id);
+        })->when($receive_user_id, function ($query) use ($receive_user_id) {
+            return $query->where('receive_user_id', $receive_user_id);
         });
     }
 
@@ -74,11 +80,13 @@ class Question extends Model
      * @param $query
      * @return mixed
      */
-    public function scopeReceiveQuestion($query){
+    public function scopeReceiveQuestion($query)
+    {
         return $query->where('receive_user_id', get_current_login_user_info());
     }
 
-    public function scopeCompanyQuestion($query){
-        return $query->whereIn('user_id',get_company_user(null, 'id'));
+    public function scopeCompanyQuestion($query)
+    {
+        return $query->whereIn('user_id', get_company_user(null, 'id'));
     }
 }
