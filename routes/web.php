@@ -123,6 +123,7 @@ Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'task', 'middleware' => 'auth'], function () {
     Route::match(['get', 'post'], 'finisk/{task}', 'TaskController@finish')->name('tasks.finish');
+    Route::get('tasks/export', 'Plugin\TaskExportController@index')->name('tasks.export');
     Route::resource('tasks', 'TaskController');
 });
 Route::group(['prefix' => 'dynamic', 'middleware' => 'auth'], function () {

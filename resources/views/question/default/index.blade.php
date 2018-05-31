@@ -535,18 +535,6 @@
             $("#whereExport").click(function(event) {
                 event.preventDefault();
                 $("#exportForm").submit();
-                /*var url = $(this).attr('href');
-                mAppExtend.ajaxPostSubmit({
-                    'url':url,
-                    'query':{
-                        project_id:$('#project_id').val(),
-                        date:$('#date').val(),
-                        status:$('#m_form_status').val(),
-                        user_id:$('#user_id').val(),
-                        receive_user_id:$('#receive_user_id').val(),
-                        search:$("#m_form_search").val()
-                    }
-                });*/
             });
         });
     </script>

@@ -14,10 +14,35 @@
                 </div>
             </div>
             <div class="m-portlet__head-tools">
+                <ul class="m-portlet__nav">
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('tasks.export'),['mid'=>request('mid')])  }}" class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                            target="_blank">
+                            <span>
+                                <i class="fa fa-download"></i>
+                                <span>
+                                    全部导出
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('tasks.export'),['mid'=>request('mid')])  }}" id="whereExport" class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                            target="_blank">
+                            <span>
+                                <i class="fa fa-download"></i>
+                                <span>
+                                    按条件导出
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="m-portlet__body">
             <!--begin: Search Form -->
+            <form id="exportForm" action="{{ menu_url_format(route('tasks.export'),['mid'=>request('mid')])  }}" method="get">
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
                 <div class="row align-items-center">
                     <div class="col-xl-12 order-2 order-xl-1">
@@ -66,6 +91,7 @@
                     </div>
                 </div>
             </div>
+            </form> 
             <div class="m-separator m-separator--dashed"></div>
             <!--end: Search Form -->
             <!--begin: Datatable -->
@@ -390,6 +416,10 @@
                     '#_modal .modal-content',
                     url,
                     {}, true);
+            });
+            $("#whereExport").click(function(event) {
+                event.preventDefault();
+                $("#exportForm").submit();
             });
 
         });
