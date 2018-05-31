@@ -21,8 +21,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('users/power', 'UserController@power')->name('users.power');//用户授权管理
     Route::post('users/edit_pwd', 'UserController@editPwd')->name('users.edit_pwd');//重置密码
     Route::match(['get', 'put'], 'profile', 'UserController@profile')->name('user.profile');
+    Route::get('users/export', 'Plugin\UserExportController@index')->name('users.export');
     Route::resource('users', 'UserController');//用户管理
-
 });
 /*系统模块*/
 Route::group(['prefix' => 'system', 'middleware' => 'auth'], function () {
@@ -116,6 +116,7 @@ Route::group(['prefix' => 'question', 'middleware' => 'auth'], function () {
     Route::match(['get', 'post'], 'reply', 'QuestionController@reply')->name('questions.reply');//问题回复
     Route::post('finished', 'QuestionController@finished')->name('questions.finished');//问题关闭设置
     Route::delete('questions/delete', 'QuestionController@destroy')->name('questions.delete');
+    Route::get('questions/export', 'Plugin\QuestionExportController@index')->name('questions.export');
     Route::resource('questions', 'QuestionController');
     Route::resource('categories', 'QuestionCategoryController');
 });

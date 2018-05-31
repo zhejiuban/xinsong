@@ -6,7 +6,7 @@
             <!--begin: Search Form -->
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
                 <div class="row align-items-center">
-                    <div class="col-xl-8 order-2 order-xl-1">
+                    <div class="col-xl-7 order-2 order-xl-1">
                         <div class="m-form__group row align-items-center">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -30,7 +30,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 order-1 order-xl-2 m--align-right">
+                    <div class="col-xl-5 order-1 order-xl-2 m--align-right">
                         @if(check_permission('user/users/create'))
                             <a href="{{ menu_url_format(route('users.create'),['mid'=>request('mid')]) }}"
                                data-toggle="modal" data-target="#m_role_modal"
@@ -65,6 +65,18 @@
                                 </span>
                             </button>
                         @endif
+
+                        <a href="{{ menu_url_format(route('users.export'),['mid'=>request('mid')])  }}"
+                           class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                        target="_blank">
+                        <span>
+                            <i class="fa fa-download"></i>
+                            <span>
+                                导出
+                            </span>
+                        </span>
+                        </a>
+
                         <div class="m-separator m-separator--dashed d-xl-none"></div>
                     </div>
                 </div>
