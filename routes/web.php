@@ -76,7 +76,9 @@ Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
     Route::delete('{project}/plans/batch_delete', 'PlanController@batchDelete')->name('plans.batch_delete');
     Route::match(['get', 'post'], '{project}/import', 'PlanController@import')->name('plans.import');
     Route::put('single_field_update', 'PlanController@singleFieldUpdate')->name('plans.field.update');
+    Route::get('{project}/plans/export', 'Plugin\PlanExportController@index')->name('plans.export');
     Route::resource('{project}/plans', 'PlanController');
+
 
     Route::get('dynamics', 'DynamicController@index')->name('project.dynamic.dynamics');
     Route::get('malfunctions', 'MalfunctionController@index')->name('project.malfunction.malfunctions');
@@ -127,9 +129,11 @@ Route::group(['prefix' => 'task', 'middleware' => 'auth'], function () {
     Route::resource('tasks', 'TaskController');
 });
 Route::group(['prefix' => 'dynamic', 'middleware' => 'auth'], function () {
+    Route::get('dynamics/export', 'Plugin\DynamicExportController@index')->name('dynamics.export');
     Route::resource('dynamics', 'DynamicController');
 });
 Route::group(['prefix' => 'malfunction', 'middleware' => 'auth'], function () {
+    Route::get('malfunctions/export', 'Plugin\MalfunctionExportController@index')->name('malfunctions.export');
     Route::resource('malfunctions', 'MalfunctionController');
 });
 //消息模块

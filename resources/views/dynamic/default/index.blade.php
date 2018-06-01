@@ -14,11 +14,35 @@
                 </div>
             </div>
             <div class="m-portlet__head-tools">
-
+                <ul class="m-portlet__nav">
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('dynamics.export'),['mid'=>request('mid')])  }}" class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                            target="_blank">
+                            <span>
+                                <i class="fa fa-download"></i>
+                                <span>
+                                    全部导出
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('dynamics.export'),['mid'=>request('mid')])  }}" id="whereExport" class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                            target="_blank">
+                            <span>
+                                <i class="fa fa-download"></i>
+                                <span>
+                                    按条件导出
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="m-portlet__body">
             <!--begin: Search Form -->
+            <form id="exportForm" action="{{ menu_url_format(route('dynamics.export'),['mid'=>request('mid')])  }}" method="get">
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
                 <div class="row align-items-center">
                     <div class="col-xl-12 order-2 order-xl-1">
@@ -38,7 +62,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="m-input-icon m-input-icon--left">
-                                        <input type="text" class="form-control m-input" placeholder="关键字..."
+                                        <input type="text" name="search" class="form-control m-input" placeholder="关键字..."
                                                id="m_form_search">
                                         <span class="m-input-icon__icon m-input-icon__icon--left">
   									<span>
@@ -59,6 +83,7 @@
                     </div>
                 </div>
             </div>
+            </form>
             <div class="m-separator m-separator--dashed"></div>
             <!--end: Search Form -->
             <!--begin: Datatable -->
@@ -350,6 +375,10 @@
                 minimumInputLength: 0,
                 templateResult: formatRepos, // omitted for brevity, see the source of this page
                 templateSelection: formatReposSelection // omitted for brevity, see the source of this page
+            });
+            $("#whereExport").click(function(event) {
+                event.preventDefault();
+                $("#exportForm").submit();
             });
         });
     </script>

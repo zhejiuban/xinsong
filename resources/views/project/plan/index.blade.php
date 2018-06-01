@@ -60,6 +60,17 @@
                     </li>
                     @endif
                     <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('plans.export',['project'=>$project->id]),['mid'=>request('mid')])  }}" class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                            target="_blank">
+                            <span>
+                                <i class="fa fa-download"></i>
+                                <span>
+                                    导出
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-portlet__nav-item">
                         
                         <a href="{{ get_redirect_url() }}"
                            class="btn btn-secondary btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air">

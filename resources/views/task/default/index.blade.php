@@ -55,7 +55,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <select class="form-control m-bootstrap-select" id="m_form_status">
+                                    <select class="form-control m-bootstrap-select" name="status" id="m_form_status">
                                         <option value="">
                                             所有状态
                                         </option>
@@ -77,7 +77,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="m-input-icon m-input-icon--left">
-                                        <input type="text" class="form-control m-input" placeholder="关键字..."
+                                        <input type="text" name="search" class="form-control m-input" placeholder="关键字..."
                                                id="m_form_search">
                                         <span class="m-input-icon__icon m-input-icon__icon--left">
                                             <span>

@@ -13,18 +13,27 @@ class ProjectExportController extends Controller
      * 项目导出
      */
     public function index(Request $request){
-        Excel::create(date('Y-m-d').'项目导出',function ($excel){
+        Excel::create(date('Y-m-d').'项目导出',function ($excel) use ($request){
+            $status = $request->input('status');
+            $search = $request->input('search');
+            $department_id = $request->input('department_id');
+            $phase_name = $request->input('phase_name');
+            $phase_status = $request->input('phase_status');
             //获取所有项目信息
             if(check_user_role(null, '总部管理员')){
                 $data = Project::with([
                     'devices','phases','users','department'
                     ,'leaderUser','companyUser','agentUser'
-                ])->orderBy('id', 'desc')->get();
+                ])->baseSearch($status, $search, $department_id
+                    , $phase_name, $phase_status)
+                    ->orderBy('id', 'desc')->get();
             }elseif(check_company_admin()){
                 $data = Project::with([
                     'devices','phases','users','department'
                     ,'leaderUser','companyUser','agentUser'
-                ])->where('department_id', get_user_company_id())
+                ])->baseSearch($status, $search, $department_id
+                    , $phase_name, $phase_status)
+                    ->where('department_id', get_user_company_id())
                     ->orderBy('id', 'desc')->get();
             }else{
                 $data = null;

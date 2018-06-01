@@ -37,17 +37,40 @@
                             </span>
                         </a>
                     </li>--}}
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('malfunctions.export'),['mid'=>request('mid')])  }}" class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                            target="_blank">
+                            <span>
+                                <i class="fa fa-download"></i>
+                                <span>
+                                    全部导出
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-portlet__nav-item">
+                        <a href="{{ menu_url_format(route('malfunctions.export'),['mid'=>request('mid')])  }}" id="whereExport" class="btn btn-info btn-sm m-btn  m-btn m-btn--icon m-btn--pill m-btn--air"
+                            target="_blank">
+                            <span>
+                                <i class="fa fa-download"></i>
+                                <span>
+                                    按条件导出
+                                </span>
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
         <div class="m-portlet__body">
             <!--begin: Search Form -->
+            <form id="exportForm" action="{{ menu_url_format(route('malfunctions.export'),['mid'=>request('mid')])  }}" method="get">
             <div class="m-form m-form--label-align-right  m--margin-bottom-20">
                 <div class="m-form__group row align-items-center">
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class="m-input-icon m-input-icon--left">
-                                <input type="text" class="form-control m-input" placeholder="关键字、小车编号..."
+                                <input type="text" name="search" class="form-control m-input" placeholder="关键字、小车编号..."
                                        id="m_form_search">
                                 <span class="m-input-icon__icon m-input-icon__icon--left">
                                     <span>
@@ -74,13 +97,14 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <select class="form-control m-bootstrap-select" id="m_form_status">
+                            <select class="form-control m-bootstrap-select" name="device_id" id="m_form_status">
                                 {!! device_select() !!}
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
+            </form>
             <div class="m-separator m-separator--dashed"></div>
             <!--end: Search Form -->
             <!--begin: Datatable -->
@@ -318,6 +342,10 @@
                         datatable.load();
                     }
                 });
+            });
+            $("#whereExport").click(function(event) {
+                event.preventDefault();
+                $("#exportForm").submit();
             });
         });
     </script>
