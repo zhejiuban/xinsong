@@ -54,7 +54,9 @@ class LoginController extends Controller
         //假设字段是 email
         if ($this->guard()->attempt([
             'email' => $username,
-            'password' => $password],
+            'password' => $password,
+            'status' => 1
+        ],
             $request->filled('remember'))
         ) {
             activity('登录日志')->withProperties(['username' => $username])->log('登录成功');
@@ -62,13 +64,21 @@ class LoginController extends Controller
         }
 
         //假设字段是 mobile
-        if ($this->guard()->attempt(['tel' => $username, 'password' => $password], $request->filled('remember'))) {
+        if ($this->guard()->attempt([
+            'tel' => $username,
+            'password' => $password,
+            'status' => 1
+        ], $request->filled('remember'))) {
             activity('登录日志')->withProperties(['username' => $username])->log('登录成功');
             return $this->sendLoginResponse($request);
         }
 
         //假设字段是 username
-        if ($this->guard()->attempt(['username' => $username, 'password' => $password], $request->filled('remember'))) {
+        if ($this->guard()->attempt([
+            'username' => $username,
+            'password' => $password,
+            'status' => 1
+        ], $request->filled('remember'))) {
             activity('登录日志')->withProperties(['username' => $username])->log('登录成功');
             return $this->sendLoginResponse($request);
         }
