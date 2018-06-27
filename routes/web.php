@@ -152,3 +152,17 @@ Route::group(['prefix' => 'produce', 'middleware' => 'auth'], function () {
     Route::resource('fault_causes', 'FaultCauseController');
     Route::resource('product_faults', 'ProductFaultController');
 });
+
+Route::group(['prefix' => 'assessment', 'middleware' => 'auth'], function () {
+    Route::get('assessments/personal'
+        ,'AssessmentController@show')->name('user.assessments.personal');
+    Route::get('user/{user}/assessments'
+        ,'AssessmentController@detail')->name('user.assessments');
+    Route::match(['get', 'post'],
+        'assessments/export'
+        , 'AssessmentController@export')
+        ->name('assessments.export');
+    Route::resource('assessments','AssessmentController');
+    Route::resource('rules','AssessmentRuleController');
+    Route::resource('scores','UserMonthScoreController');
+});

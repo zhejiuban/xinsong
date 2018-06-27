@@ -659,7 +659,7 @@
         <!-- end::Scroll Top -->
 
         <!--begin::Modal-->
-        <div class="modal fade" id="_CommonModal" tabindex="-1" role="dialog" aria-labelledby="_CommonModalLabel" aria-hidden="true">
+        <div class="modal fade" id="_CommonModal" tabindex="-1" role="dialog" aria-labelledby="_CommonModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                 </div>

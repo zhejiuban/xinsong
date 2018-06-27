@@ -91,6 +91,13 @@ class User extends Authenticatable
         return $this->hasMany('App\Malfunction');
     }
 
+    public function userMonthScores(){
+        return $this->hasMany(UserMonthScore::class);
+    }
+
+    public function assessments(){
+        return $this->hasMany(Assessment::class);
+    }
     /**
      * 获取某个用户所在公司
      * @return null
@@ -107,6 +114,4 @@ class User extends Authenticatable
             return null;
         }
     }
-
-
 }

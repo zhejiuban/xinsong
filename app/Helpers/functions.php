@@ -806,9 +806,9 @@ function project_user_select($project, $selected = '', $type = 1, $need_plan = 0
     if ($project) {
         if ($project->users->isNotEmpty()) {
             foreach ($project->users as $key => $user) {
-                if($need_plan
+                if ($need_plan
                     && $user->id != $project->subcompany_leader
-                    && $project->agent != $user->id){
+                    && $project->agent != $user->id) {
                     continue;
                 }
                 if ($selected == $user->id) {
@@ -1370,4 +1370,46 @@ if (!function_exists('getDateRange')) {
         }
         return $datearr;
     }
+}
+/**
+ * 生成从开始月份到结束月份的月份数组
+ * @param int $start 开始时间戳
+ * @param int $end 结束时间戳
+ */
+function month_list($start, $end)
+{
+    if (!is_numeric($start) || !is_numeric($end) || ($end <= $start)) return '';
+    $start = date('Y-m', $start);
+    $end = date('Y-m', $end);
+    //转为时间戳
+    $start = strtotime($start . '-01');
+    $end = strtotime($end . '-01');
+    $i = 0;
+    $d = array();
+    while ($start <= $end) {
+        //这里累加每个月的的总秒数 计算公式：上一月1号的时间戳秒数减去当前月的时间戳秒数
+        $d[$i] = trim(date('Y-m', $start), ' ');
+        $start += strtotime('+1 month', $start) - $start;
+        $i++;
+    }
+    return $d;
+}
+
+/**
+ * 考核细则选择项
+ * @param string $selected
+ * @return string
+ */
+function assessment_rule_select($selected = '')
+{
+    $list = \App\AssessmentRule::lists()->toArray();
+    $str = '<option value="">请选择考核细则</option>';
+    if ($list) {
+        foreach ($list as $key => $val) {
+            $str .= '<option value="' . $val['id'] . '" '
+                . ($selected == $val['id'] ? 'selected="selected"' : '') . '>'
+                . $val['name'] . '</option>';
+        }
+    }
+    return $str;
 }
