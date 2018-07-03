@@ -39,13 +39,13 @@
 		<div class="m_datatable" id="ajax_data"></div>
 		<!--end: Datatable -->
     <!--begin::Modal-->
-		<div class="modal fade" id="m_role_modal" tabindex="-1" role="dialog" aria-labelledby="RoleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="m_role_modal" tabindex="-1" role="dialog" aria-labelledby="RoleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 				</div>
 			</div>
 		</div>
-    <div class="modal fade" id="m_role_modal_edit" tabindex="-1" role="dialog" aria-labelledby="RoleModalEditLabel" aria-hidden="true">
+    <div class="modal fade" id="m_role_modal_edit" tabindex="-1" role="dialog" aria-labelledby="RoleModalEditLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 				</div>

@@ -87,21 +87,21 @@
             <div class="m_datatable" id="ajax_data"></div>
             <!--end: Datatable -->
             <!--begin::Modal-->
-            <div class="modal fade" id="m_role_modal" role="dialog" aria-labelledby="RoleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="m_role_modal" role="dialog" aria-labelledby="RoleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                     </div>
                 </div>
             </div>
             <div class="modal fade" id="m_role_modal_edit" role="dialog" aria-labelledby="RoleModalEditLabel"
-                 aria-hidden="true">
+                 aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                     </div>
                 </div>
             </div>
             <div class="modal fade" id="m_power_modal" role="dialog" aria-labelledby="PowerModalEditLabel"
-                 aria-hidden="true">
+                 aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -139,7 +139,7 @@
                 </div>
             </div>
             <div class="modal fade" id="m_editpwd_modal" role="dialog" aria-labelledby="EditpwdModalEditLabel"
-                 aria-hidden="true">
+                 aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">

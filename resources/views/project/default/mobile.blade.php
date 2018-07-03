@@ -143,7 +143,7 @@
         'search' => request('search'),
     ])->links('vendor.pagination.bootstrap-4') }}
     <!--begin::Modal-->
-    <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true">
+    <div class="modal fade" id="_modal" tabindex="-1" role="dialog" aria-labelledby="_ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             </div>

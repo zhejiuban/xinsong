@@ -177,7 +177,7 @@
 </div>
 <!--End::Main Portlet-->
 <!--begin::Modal-->
-<div class="modal fade" id="_phaseModal" tabindex="-1" role="dialog" aria-labelledby="_PhaseModalLabel" aria-hidden="true">
+<div class="modal fade" id="_phaseModal" tabindex="-1" role="dialog" aria-labelledby="_PhaseModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
         </div>
@@ -185,7 +185,7 @@
 </div>
 <!--end::Modal-->
 <!--begin::Modal-->
-<div class="modal fade" id="_lookProjectModal" tabindex="-1" role="dialog" aria-labelledby="_ProjectModalLabel" aria-hidden="true">
+<div class="modal fade" id="_lookProjectModal" tabindex="-1" role="dialog" aria-labelledby="_ProjectModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
         </div>
