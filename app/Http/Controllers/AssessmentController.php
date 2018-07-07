@@ -19,7 +19,7 @@ class AssessmentController extends Controller
      */
     public function index(Request $request)
     {
-        if (!check_permission('user/users')) {
+        if (!check_permission('assessment/assessments')) {
             return _404('无权操作');
         }
         if ($request->ajax()) {
