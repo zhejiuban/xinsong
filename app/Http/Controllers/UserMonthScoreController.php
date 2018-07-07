@@ -48,7 +48,7 @@ class UserMonthScoreController extends Controller
         } else {
             $user = get_company_user();
         }
-        try {
+//        try {
             if ($user && $start && (!$end || $start == $end)) {
                 //获取已存在初始化信息的
                 $list = UserMonthScore::where('month'
@@ -84,9 +84,9 @@ class UserMonthScoreController extends Controller
                 }
             }
             return _success();
-        } catch(\Exception $exception){
-            return _error();
-        }
+//        } catch(\Exception $exception){
+//            return _error();
+//        }
     }
 
     /**
