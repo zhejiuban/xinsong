@@ -233,6 +233,7 @@
                     }, {
                         field: "department_id",
                         title: "所属部门",
+                        sortable: false,
                         template: function (row) {
                             if (row.department || row.company) {
                                  return (row.company ? row.company.name : '') + (row.department && row.department.level == 3 ? '/' + row.department.name : '');
