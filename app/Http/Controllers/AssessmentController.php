@@ -55,7 +55,7 @@ class AssessmentController extends Controller
                         return $query->whereIn('department_id', array_unique($department_arr));
                     })->when(!is_administrator(), function ($query) {
                         return $query->where('id', '!=', config('auth.administrator'));
-                    })->orderBy(
+                    })->status(1)->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage
@@ -87,7 +87,7 @@ class AssessmentController extends Controller
                     })->where(function ($query) {
                         //获取用户所属分部所有部门
                         $query->whereIn('department_id', get_company_deparent(get_user_company_id()));
-                    })->orderBy(
+                    })->status(1)->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage

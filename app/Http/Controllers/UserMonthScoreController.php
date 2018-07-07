@@ -44,11 +44,11 @@ class UserMonthScoreController extends Controller
         $end = $request->end;
         //获取单位所有人员
         if (is_administrator() || check_user_role(null, '总部管理员')) {
-            $user = User::get()->pluck('id')->all();
+            $user = User::status(1)->get()->pluck('id')->all();
         } else {
             $user = get_company_user();
         }
-//        try {
+        try {
             if ($user && $start && (!$end || $start == $end)) {
                 //获取已存在初始化信息的
                 $list = UserMonthScore::where('month'
@@ -84,9 +84,9 @@ class UserMonthScoreController extends Controller
                 }
             }
             return _success();
-//        } catch(\Exception $exception){
-//            return _error();
-//        }
+        } catch(\Exception $exception){
+            return _error();
+        }
     }
 
     /**

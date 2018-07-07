@@ -1096,10 +1096,12 @@ function get_company_user($company = null, $field = true)
     //获取分部所有部门信息
     $dep = get_company_deparent($company);
     if ($dep && count($dep)) {
-        $list = \App\User::where('department_id', $company)
-            ->orWhereIn('department_id', $dep)->get();
+        $list = \App\User::where(function ($query) use ($company, $dep) {
+            $query->where('department_id', $company)
+                ->orWhereIn('department_id', $dep);
+        })->status(1)->get();
     } else {
-        $list = \App\User::where('department_id', $company)->get();
+        $list = \App\User::where('department_id', $company)->status(1)->get();
     }
     if ($list) {
         if ($field !== true) {

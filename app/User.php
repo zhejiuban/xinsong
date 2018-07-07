@@ -114,4 +114,7 @@ class User extends Authenticatable
             return null;
         }
     }
+    public function scopeStatus($query,$status = [0,1]){
+        return $query->whereIn('status',(array) $status);
+    }
 }
