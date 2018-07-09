@@ -47,10 +47,11 @@
         @foreach($folders as $folder)
             <div class="m-widget4__item" id="folder-{{$folder->id}}">
                 <div class="m-widget4__info m--padding-left-0">
-                    <span class="m-widget4__text">
+                    <span class="m-widget4__text @if($folder->is_empty != 1) m--font-danger @endif">
                         <i class="la la-folder-o"></i>
                         <a href="{{route('project.files',['project'=>$project->id,'folder_id'=>$folder->id,'mid'=>request('mid')])}}"
-                           title="{{$folder->name}}" data-toggle="relaodHtml" data-target="#project-body" data-loading="#project-body">
+                           title="{{$folder->name}}" data-toggle="relaodHtml" data-target="#project-body" data-loading="#project-body"
+                            class="@if($folder->is_empty != 1) m--font-danger @endif">
                             {{$folder->name}}
                         </a>
                     </span>

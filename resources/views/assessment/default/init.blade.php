@@ -23,6 +23,16 @@
         </label>
         <input type="text" name="end" readonly="true" class="form-control month" id="end">
       </div>
+
+      <div class="form-group">
+        <label for="end" class="form-control-label">
+          考核人员:
+        </label>
+        <select name="user_id[]" class="form-control" id="user_id" multiple="true">
+        </select>
+        <span class="help-block">不选择表示全部参与考核的人员</span>
+      </div>
+
       {{ csrf_field() }}
     </form>
 </div>
@@ -35,6 +45,23 @@
   </button>
 </div>
 <script type="text/javascript">
+
+    function formatRepos(repo) {
+        if (repo.loading) return repo.text;
+        var markup = "<div class='select2-result-repository clearfix'>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" + repo.name + "</div>";
+        if (repo.department) {
+            markup += "<div class='select2-result-repository__description'>所在部门：" + repo.department.name + "</div>";
+        }
+        markup += "</div></div>";
+        return markup;
+    }
+
+    function formatReposSelection(repo) {
+        return repo.name || repo.text;
+    }
+
   jQuery(document).ready(function () {
     mAppExtend.datePickerInstance('.month',{
       language: "zh-CN",
@@ -53,6 +80,41 @@
           rightArrow: '<i class="la la-angle-right"></i>'
       }
     });
+    $("#user_id").select2({
+          language: 'zh-CN',
+          placeholder: "输入姓名、用户名等关键字搜索，选择用户",
+          allowClear: true,
+          width: '100%',
+          ajax: {
+              url: "{{route('users.selector.data')}}",
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                  return {
+                      q: params.term, // search term
+                      page: params.page,
+                      is_assessment: 1,
+                      per_page: {{config('common.page.per_page')}}
+                  };
+              },
+              processResults: function (data, params) {
+                  params.page = params.page || 1;
+                  return {
+                      results: data.data,
+                      pagination: {
+                          more: (params.page * data.per_page) < data.total
+                      }
+                  };
+              },
+              cache: true
+          },
+          escapeMarkup: function (markup) {
+              return markup;
+          }, // let our custom formatter work
+          minimumInputLength: 0,
+          templateResult: formatRepos, // omitted for brevity, see the source of this page
+          templateSelection: formatReposSelection // omitted for brevity, see the source of this page
+      });
     var form = $( "#data-form" );
     var submitButton = $("#submit-button");
     form.validate({

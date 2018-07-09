@@ -141,8 +141,8 @@
       @endif
     </div>
     @endif
-    @if (!is_administrator_user($user->id) && $user->id != get_current_login_user_info())
       <div class="row">
+        @if (!is_administrator_user($user->id) && $user->id != get_current_login_user_info())
         <div class="col-lg-6">
           <div class="form-group">
             <label>
@@ -156,8 +156,28 @@
             <span class="m-form__help">请选择授权角色</span>
           </div>
         </div>
+        @endif
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label class="">
+              是否参与考核<span class="required">*</span>:
+            </label>
+            <div class="m-radio-inline">
+              <label class="m-radio">
+                <input type="radio" name="is_assessment" value="1" {{ $user->is_assessment ? 'checked' : '' }}>
+                是
+                <span></span>
+              </label>
+              <label class="m-radio">
+                <input type="radio" name="is_assessment" value="0" {{ $user->is_assessment ? '' : 'checked' }}>
+                否
+                <span></span>
+              </label>
+            </div>
+            <span class="m-form__help"></span>
+          </div>
+        </div>
       </div>
-    @endif
     {{ csrf_field() }}
     {{method_field('PUT')}}
   </form>

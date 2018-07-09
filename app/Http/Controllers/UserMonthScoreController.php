@@ -42,11 +42,14 @@ class UserMonthScoreController extends Controller
     {
         $start = $request->start;
         $end = $request->end;
-        //获取单位所有人员
-        if (is_administrator() || check_user_role(null, '总部管理员')) {
-            $user = User::status(1)->get()->pluck('id')->all();
-        } else {
-            $user = get_company_user();
+        $user = $request->user_id;
+        if(!$user){
+            //获取单位所有人员
+            if (is_administrator() || check_user_role(null, '总部管理员')) {
+                $user = User::status(1)->isAssessment(1)->get()->pluck('id')->all();
+            } else {
+                $user = get_company_user(null, 'id', true);
+            }
         }
         try {
             if ($user && $start && (!$end || $start == $end)) {
@@ -84,7 +87,7 @@ class UserMonthScoreController extends Controller
                 }
             }
             return _success();
-        } catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return _error();
         }
     }

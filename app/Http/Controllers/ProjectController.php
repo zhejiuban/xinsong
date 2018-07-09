@@ -625,6 +625,19 @@ class ProjectController extends Controller
             })->when($only, function ($query) {
                 return $query->where('user_id', get_current_login_user_info());
             })->get();
+            //检测目录下是否有文档
+            $all_folders = $project->folders()->get()->toArray();
+            foreach ($folders as $key=>$val){
+                //获取目录所有子目录
+                $child = getChildsId($val->id,$all_folders);
+                $child[] = $val->id;
+                $files = $project->files()->whereIn('project_folder_id',$child)->get();
+                if($files->isEmpty()){
+                    $folders[$key]->is_empty = true;
+                }else{
+                    $folders[$key]->is_empty = false;
+                }
+            }
             $files = $project->files()
                 ->where(function ($query) use ($folder) {
                     if ($folder) {

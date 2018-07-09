@@ -28,7 +28,9 @@ class UserSelectorController extends Controller
                     ->orWhere('email', 'like', "%$search%")
                     ->orWhere('username', 'like', "%$search%")
                     ->orWhere('tel', 'like', "%$search%");
-            })->paginate(config('common.page.per_page'));
+            })->when($request->input('is_assessment'),function ($query){
+                return $query->isAssessment(1);
+            })->status(1)->paginate(config('common.page.per_page'));
         }elseif($request->input('type') == 'sub_and_headquarters'){
             //获取分部以及总部所有用户信息
             $list = User::with(['department'])->when($search, function ($query) use ($search) {
@@ -38,12 +40,15 @@ class UserSelectorController extends Controller
                         ->orWhere('username', 'like', "%$search%")
                         ->orWhere('tel', 'like', "%$search%");
                 });
-            })->whereIn('department_id'
-                , get_company_deparent(get_user_company_id()))
-                ->orWhere('id'
-                    , get_current_login_user_info())
-                ->orWhereIn('department_id',get_company_deparent(headquarters('id')))
-                ->paginate(config('common.page.per_page'));
+            })->where(function ($query){
+                $query->whereIn('department_id'
+                    , get_company_deparent(get_user_company_id()))
+                    ->orWhere('id'
+                        , get_current_login_user_info())
+                    ->orWhereIn('department_id',get_company_deparent(headquarters('id')));
+            })->when($request->input('is_assessment'),function ($query){
+                    return $query->isAssessment(1);
+                })->status(1)->paginate(config('common.page.per_page'));
         }elseif($request->input('type') == 'headquarters'){
             $list = User::with(['department'])->when($search, function ($query) use ($search) {
                 return $query->where(function ($query) use ($search){
@@ -52,8 +57,10 @@ class UserSelectorController extends Controller
                         ->orWhere('username', 'like', "%$search%")
                         ->orWhere('tel', 'like', "%$search%");
                 });
-            })->WhereIn('department_id',get_company_deparent(headquarters('id')))
-                ->paginate(config('common.page.per_page'));
+            })->whereIn('department_id',get_company_deparent(headquarters('id')))
+                ->when($request->input('is_assessment'),function ($query){
+                    return $query->isAssessment(1);
+                })->status(1)->paginate(config('common.page.per_page'));
         }else{
             $list = User::with(['department'])->when($search, function ($query) use ($search) {
                 return $query->where(function ($query) use ($search){
@@ -62,10 +69,14 @@ class UserSelectorController extends Controller
                         ->orWhere('username', 'like', "%$search%")
                         ->orWhere('tel', 'like', "%$search%");
                 });
-            })->whereIn('department_id'
-                , get_company_deparent(get_user_company_id()))
-                ->orWhere('id'
-                    , get_current_login_user_info())->paginate(config('common.page.per_page'));
+            })->where(function ($query){
+                $query->whereIn('department_id'
+                    , get_company_deparent(get_user_company_id()))
+                    ->orWhere('id'
+                        , get_current_login_user_info());
+            })->when($request->input('is_assessment'),function ($query){
+                    return $query->isAssessment(1);
+                })->status(1)->paginate(config('common.page.per_page'));
         }
         if($list){
             foreach ($list as $key=>$val){

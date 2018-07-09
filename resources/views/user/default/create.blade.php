@@ -151,6 +151,26 @@
           <span class="m-form__help">请选择授权角色</span>
         </div>
       </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="">
+            是否参与考核<span class="required">*</span>:
+          </label>
+          <div class="m-radio-inline">
+            <label class="m-radio">
+              <input type="radio" name="is_assessment" value="1" checked>
+              是
+              <span></span>
+            </label>
+            <label class="m-radio">
+              <input type="radio" name="is_assessment" value="0">
+              否
+              <span></span>
+            </label>
+          </div>
+          <span class="m-form__help"></span>
+        </div>
+      </div>
     </div>
     {{ csrf_field() }}
   </form>
@@ -228,6 +248,8 @@
             },status: {
                 required: true
             },department_id: {
+                required: true
+            },is_assessment: {
                 required: true
             }
         },

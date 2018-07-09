@@ -1088,7 +1088,7 @@ function project_status($status, $field = 'title')
     return isset($data[$status][$field]) ? $data[$status][$field] : null;
 }
 
-function get_company_user($company = null, $field = true)
+function get_company_user($company = null, $field = true, $is_assessment = false)
 {
     if (!$company) {
         $company = get_user_company_id();
@@ -1099,9 +1099,15 @@ function get_company_user($company = null, $field = true)
         $list = \App\User::where(function ($query) use ($company, $dep) {
             $query->where('department_id', $company)
                 ->orWhereIn('department_id', $dep);
-        })->status(1)->get();
+        })->status(1)->when($is_assessment,function ($query){
+            $query->isAssessment(1);
+        })->get();
     } else {
-        $list = \App\User::where('department_id', $company)->status(1)->get();
+        $list = \App\User::where('department_id', $company)
+            ->status(1)
+            ->when($is_assessment,function ($query){
+                $query->isAssessment(1);
+            })->get();
     }
     if ($list) {
         if ($field !== true) {
@@ -1414,4 +1420,22 @@ function assessment_rule_select($selected = '')
         }
     }
     return $str;
+}
+
+/**
+ * 传递一个父级分类ID返回所有子分类Id
+ */
+function getChildsId($pid, $data, $idField = 'id', $pidField = "parent_id", $all = true)
+{
+    $cate = $data;
+    $arr = array();
+    foreach ($cate as $v) {
+        if ($v[$pidField] == $pid) {
+            $arr[] = $v[$idField];
+            if ($all) {
+                $arr = array_merge($arr, getChildsId($v[$idField], $data));
+            }
+        }
+    }
+    return $arr;
 }

@@ -238,6 +238,16 @@
                             return '<span class="m-badge ' + status[row.status].class + ' m-badge--wide">' + status[row.status].title + '</span>';
                         }
                     }, {
+                        field: "is_assessment",
+                        title: "参与考核", width: 80,
+                        template: function (row) {
+                            var status = {
+                                1: {'title': '是', 'class': ' m-badge--success'},
+                                0: {'title': '否', 'class': ' m-badge--danger'}
+                            };
+                            return '<span class="m-badge ' + status[row.is_assessment].class + ' m-badge--wide">' + status[row.is_assessment].title + '</span>';
+                        }
+                    }, {
                         field: "username",
                         title: "用户名",template:function (row) {
                             return '<a href="' + mAppExtend.laravelRoute('{{route_uri("users.edit")}}', {user: row.id}) + '" class="action-edit " title="编辑">' +

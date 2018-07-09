@@ -20,7 +20,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'tel', 'department_id', 'avatar', 'sex', 'status'
+        'name', 'email', 'password', 'tel', 'department_id',
+        'avatar', 'sex', 'status','is_assessment'
     ];
 
     /**
@@ -116,5 +117,8 @@ class User extends Authenticatable
     }
     public function scopeStatus($query,$status = [0,1]){
         return $query->whereIn('status',(array) $status);
+    }
+    public function scopeIsAssessment($query,$status = [0,1]){
+        return $query->whereIn('is_assessment',(array) $status);
     }
 }
