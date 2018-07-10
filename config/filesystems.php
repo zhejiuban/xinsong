@@ -69,7 +69,7 @@ return [
             'base_path' => 'uploads/image',
             'url' => env('APP_URL') . '/uploads/image',
             'validate' => [
-                'size' => 5 * 1024, //单位kb
+                'size' => 10 * 1024, //单位kb
                 'ext' => ['jpg', 'jpeg', 'png', 'gif']
             ],
             'upload_path_format' => date("Ym", time())
@@ -84,7 +84,7 @@ return [
             'base_path' => 'uploads/file',
             'url' => env('APP_URL') . '/uploads/file',
             'validate' => [
-                'size' => 20 * 1024,//单位kb
+                'size' => 200 * 1024,//单位kb
                 'ext' => [
                     'jpg', 'jpeg', 'png', 'gif', 'doc', 'docx',
                     'zip', 'rar', 'tar', 'gz', '7z',
