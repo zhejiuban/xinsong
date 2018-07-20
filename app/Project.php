@@ -204,7 +204,8 @@ class Project extends Model
 
     public function scopeBaseSearch($query
         , $status = null, $search = null
-        , $department_id = null, $phase_name = null, $phase_status = null)
+        , $department_id = null, $phase_name = null
+        , $phase_status = null, $leader = null)
     {
         return $query->when($department_id, function ($query) use ($department_id) {
             return $query->where('department_id', $department_id);
@@ -226,6 +227,8 @@ class Project extends Model
             return $query->whereHas('phases', function ($query) use ($phase_name, $phase_status) {
                 $query->where('name', $phase_name)->where('status', $phase_status);
             });
+        })->when($leader, function ($query) use ($leader) {
+            return $query->where('leader', $leader);
         });
     }
 

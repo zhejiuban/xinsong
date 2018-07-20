@@ -104,6 +104,13 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                             <select name="leader" class="form-control " id="user_id">
+                                <option value="">请选择新松负责人</option>
+                             </select>
+                        </div>  
+                    </div>
                 </div>
             </div>
             </form>
@@ -118,6 +125,7 @@
 
 @section('js')
     <script type="text/javascript">
+        
         var datatable;
         var DatatableAjax = function () {
             //== Private functions
@@ -256,8 +264,7 @@
                             var edit = '<a href="' + mAppExtend.laravelRoute('{{route_uri("projects.edit")}}', {
                                 project: row.id,
                                 mid: "{{request('mid')}}"
-                            }) + '" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑">\
-                <i class="la la-edit"></i></a>';
+                            }) + '" class="action-edit m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
                             if (row.status == 2) {
                                 edit = '';
                             }
@@ -292,6 +299,10 @@
                 $('#phase_status').on('change', function () {
                     datatable.search($(this).val(), 'phase_status');
                 }).val(typeof query.phase_status !== 'undefined' ? query.phase_status : '');
+
+                $('#user_id').on('change', function () {
+                    datatable.search($(this).val(), 'leader');
+                }).val(typeof query.leader !== 'undefined' ? query.leader : '');
             };
 
             return {
@@ -301,6 +312,7 @@
                 }
             };
         }();
+
         jQuery(document).ready(function () {
             $('#m_form_status,#phase_name').selectpicker();
             $('#departments_id,#phase_status').selectpicker();
@@ -315,10 +327,23 @@
                     }
                 });
             });
+            
             $("#whereExport").click(function(event) {
                 event.preventDefault();
                 $("#exportForm").submit();
             });
+
+            $.get("{{route('users.selector.data',['type'=>'headquarters'])}}",{
+                'per_page':100
+            }, function(data) {
+                var str = '';
+                $.each(data.data, function(index, val) {
+                    str += '<option value="'+val.id+'">'+val.name+'</option>';
+                });
+                $('#user_id').append(str);
+                $('#user_id').selectpicker();
+            });
+            
         });
     </script>
 @endsection

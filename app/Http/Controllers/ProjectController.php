@@ -37,13 +37,14 @@ class ProjectController extends Controller
                 $phase_name = $request->input('datatable.query.phase_name');
                 $phase_status = $request->input('datatable.query.phase_status');
                 $department_id = $request->input('datatable.query.department_id');
+                $leader = $request->input('datatable.query.leader');
                 //管理员或总部管理员获取所有项目
                 if (check_user_role(null, '总部管理员')) {
                     $project = Project::with([
                         'department', 'leaderUser', 'agentUser', 'companyUser'
-                        , 'phases','plans','committedPlans'
+                        , 'phases', 'plans', 'committedPlans'
                     ])->baseSearch($status, $search, $department_id
-                        , $phase_name, $phase_status)->orderBy(
+                        , $phase_name, $phase_status, $leader)->orderBy(
                         $sort_field
                         , $sort)->paginate(
                         $prepage
@@ -54,8 +55,9 @@ class ProjectController extends Controller
                     //分部管理员获取分部所有项目
                     $project = Project::with([
                         'department', 'leaderUser', 'agentUser', 'companyUser'
-                        , 'phases','committedPlans','plans'
-                    ])->baseSearch($status, $search, null, $phase_name, $phase_status)
+                        , 'phases', 'committedPlans', 'plans'
+                    ])->baseSearch($status, $search, null
+                        , $phase_name, $phase_status, $leader)
                         ->companySearch(get_user_company_id())
                         ->orderBy(
                             $sort_field
@@ -86,21 +88,22 @@ class ProjectController extends Controller
             $department_id = $request->input('department_id');
             $phase_name = $request->input('phase_name');
             $phase_status = $request->input('phase_status');
-
+            $leader = $request->input('leader');
             if (check_user_role(null, '总部管理员')) {
                 $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
-                    , 'phases','committedPlans','plans'
+                    , 'phases', 'committedPlans', 'plans'
                 ])->baseSearch($status, $search, $department_id
-                    , $phase_name, $phase_status)->orderBy(
+                    , $phase_name, $phase_status, $leader)->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             } elseif (check_company_admin()) {
                 //分部管理员获取分部所有项目
                 $list = Project::with([
                     'department', 'leaderUser', 'agentUser', 'companyUser'
-                    , 'phases','committedPlans','plans'
-                ])->baseSearch($status, $search, null, $phase_name, $phase_status)->companySearch(get_user_company_id())->orderBy(
+                    , 'phases', 'committedPlans', 'plans'
+                ])->baseSearch($status, $search, null
+                    , $phase_name, $phase_status, $leader)->companySearch(get_user_company_id())->orderBy(
                     'id'
                     , 'desc')->paginate(config('common.page.per_page'));
             }
@@ -627,14 +630,14 @@ class ProjectController extends Controller
             })->get();
             //检测目录下是否有文档
             $all_folders = $project->folders()->get()->toArray();
-            foreach ($folders as $key=>$val){
+            foreach ($folders as $key => $val) {
                 //获取目录所有子目录
-                $child = getChildsId($val->id,$all_folders);
+                $child = getChildsId($val->id, $all_folders);
                 $child[] = $val->id;
-                $files = $project->files()->whereIn('project_folder_id',$child)->get();
-                if($files->isEmpty()){
+                $files = $project->files()->whereIn('project_folder_id', $child)->get();
+                if ($files->isEmpty()) {
                     $folders[$key]->is_empty = true;
-                }else{
+                } else {
                     $folders[$key]->is_empty = false;
                 }
             }
