@@ -12,60 +12,62 @@ class ProjectExportController extends Controller
     /**
      * 项目导出
      */
-    public function index(Request $request){
-        Excel::create(date('Y-m-d').'项目导出',function ($excel) use ($request){
+    public function index(Request $request)
+    {
+        Excel::create(date('Y-m-d') . '项目导出', function ($excel) use ($request) {
             $status = $request->input('status');
             $search = $request->input('search');
             $department_id = $request->input('department_id');
             $phase_name = $request->input('phase_name');
             $phase_status = $request->input('phase_status');
+            $leader = $request->input('leader');
             //获取所有项目信息
-            if(check_user_role(null, '总部管理员')){
+            if (check_user_role(null, '总部管理员')) {
                 $data = Project::with([
-                    'devices','phases','users','department'
-                    ,'leaderUser','companyUser','agentUser'
+                    'devices', 'phases', 'users', 'department'
+                    , 'leaderUser', 'companyUser', 'agentUser'
                 ])->baseSearch($status, $search, $department_id
-                    , $phase_name, $phase_status)
+                    , $phase_name, $phase_status, $leader)
                     ->orderBy('id', 'desc')->get();
-            }elseif(check_company_admin()){
+            } elseif (check_company_admin()) {
                 $data = Project::with([
-                    'devices','phases','users','department'
-                    ,'leaderUser','companyUser','agentUser'
+                    'devices', 'phases', 'users', 'department'
+                    , 'leaderUser', 'companyUser', 'agentUser'
                 ])->baseSearch($status, $search, $department_id
-                    , $phase_name, $phase_status)
+                    , $phase_name, $phase_status, $leader)
                     ->where('department_id', get_user_company_id())
                     ->orderBy('id', 'desc')->get();
-            }else{
+            } else {
                 $data = null;
             }
 
             // Call them separately
             $excel->setDescription('项目汇总');
 
-            $excel->sheet('项目列表', function($sheet) use ($data) {
+            $excel->sheet('项目列表', function ($sheet) use ($data) {
                 $export = [
-                    ['序号','项目名称','项目编号','总部项目负责人','所属办事处','办事处项目负责人',
-                        '现场代理负责人','参与人','客户对接人','客户联系电话','客户地址','项目状态']
+                    ['序号', '项目名称', '项目编号', '总部项目负责人', '所属办事处', '办事处项目负责人',
+                        '现场代理负责人', '参与人', '客户对接人', '客户联系电话', '客户地址', '项目状态']
                 ];
-                if($data){
-                    foreach ($data as $key=>$val){
+                if ($data) {
+                    foreach ($data as $key => $val) {
                         $phases = [];
-                        foreach($val->phases as $phase){
-                            $phases[] =  $phase->name . '('.project_phases_status($phase->status,'title').')';
+                        foreach ($val->phases as $phase) {
+                            $phases[] = $phase->name . '(' . project_phases_status($phase->status, 'title') . ')';
                         }
                         $export[] = [
-                            $key+1,
+                            $key + 1,
                             $val->title,
                             $val->no,
                             $val->leaderUser ? $val->leaderUser->name : null,
                             $val->department ? $val->department->name : null,
                             $val->companyUser ? $val->companyUser->name : null,
                             $val->agentUser ? $val->agentUser->name : null,
-                            format_project_users($val->users,'name'),
+                            format_project_users($val->users, 'name'),
                             $val->customers,
                             $val->customers_tel,
                             $val->customers_address,
-                            arr2str($phases,','.PHP_EOL)
+                            arr2str($phases, ',' . PHP_EOL)
                         ];
                     }
                 }
