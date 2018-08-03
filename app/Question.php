@@ -87,6 +87,6 @@ class Question extends Model
 
     public function scopeCompanyQuestion($query)
     {
-        return $query->whereIn('user_id', get_company_user(null, 'id'));
+        return $query->whereIn('user_id', get_company_user(null, 'id', false, [1,0]));
     }
 }

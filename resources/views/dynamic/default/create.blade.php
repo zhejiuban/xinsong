@@ -126,6 +126,13 @@
             <textarea class="form-control" name="content" placeholder="请输入日志内容" id="content" rows="6"></textarea>
             <span class="m-form__help"></span>
         </div>
+        <div class="form-group">
+            <label for="question" class="form-control-label">
+                遗留问题:
+            </label>
+            <textarea class="form-control" name="question" placeholder="请输入遗留问题" id="question" rows="6"></textarea>
+            <span class="m-form__help"></span>
+        </div>
         <input type="hidden" name="project_id" value="{{$project->id}}">
         @if($is_fill)
         <input type="hidden" name="fill_date" readonly value="{{$fill_date}}">

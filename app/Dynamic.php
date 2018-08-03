@@ -9,7 +9,14 @@ class Dynamic extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'user_id','project_id','content','onsite_user','task_id','created_at','fill'
+        'user_id',
+        'project_id',
+        'content',
+        'onsite_user',
+        'task_id',
+        'created_at',
+        'fill',
+        'question',
     ];
     public function user(){
         return $this->belongsTo('App\User');

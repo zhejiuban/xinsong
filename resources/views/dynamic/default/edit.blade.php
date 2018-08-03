@@ -41,9 +41,16 @@
         @endif
         <div class="form-group">
             <label for="content" class="form-control-label">
-                内容:<span class="required">*</span>
+                日志内容:<span class="required">*</span>
             </label>
             <textarea class="form-control" name="content" id="content" rows="6">{{$dynamic->content}}</textarea>
+            <span class="m-form__help"></span>
+        </div>
+         <div class="form-group">
+            <label for="question" class="form-control-label">
+                遗留问题:
+            </label>
+            <textarea class="form-control" name="question" placeholder="请输入遗留问题" id="question" rows="6">{{$dynamic->question}}</textarea>
             <span class="m-form__help"></span>
         </div>
         {{ csrf_field() }}

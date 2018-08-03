@@ -39,6 +39,14 @@
                 </div>
             </div>
             <label class="col-lg-2 col-form-label">
+                遗留问题:
+            </label>
+            <div class="col-lg-9">
+                <div class="form-static-text">
+                    {{$dynamic->question}} 
+                </div>
+            </div>
+            <label class="col-lg-2 col-form-label">
                 上报人:
             </label>
             <div class="col-lg-3">

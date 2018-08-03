@@ -168,9 +168,17 @@
                         width: 340,
                         field: "content", sortable: false,
                         title: "日志内容", template: function (row) {
-                            return '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' +
+                            return row.content ? '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' +
                                 (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
-                                + '</a>' + (row.fill?' <span class="m-badge  m-badge--warning m-badge--wide">补</span>':'');
+                                + '</a>' + (row.fill?' <span class="m-badge  m-badge--warning m-badge--wide">补</span>':'') : '';
+                        }
+                    }, {
+                        width: 340,
+                        field: "question", sortable: false,
+                        title: "遗留问题", template: function (row) {
+                            return row.question  ? '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' +
+                                (row.question.length > 50 ? row.question.substr(0, 50) + '...' : row.question)
+                                + '</a>' : '';
                         }
                     }, {
                         field: "project_id",

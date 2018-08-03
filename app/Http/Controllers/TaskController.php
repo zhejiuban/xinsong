@@ -40,7 +40,7 @@ class TaskController extends Controller
                     );
                 } else{
                     //获取分部所有用户
-                    $user = get_company_user(null,'id');
+                    $user = get_company_user(null,'id', false, [1,0]);
                     $task = Task::with([
                         'user', 'leaderUser', 'project','project.plans','project.committedPlans'
                     ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)
@@ -81,7 +81,7 @@ class TaskController extends Controller
                     , 'desc')->paginate(config('common.page.per_page'));
             } else{
                 //获取分部所有用户
-                $user = get_company_user(null,'id');
+                $user = get_company_user(null,'id', false, [1,0]);
                 $list = Task::with([
                     'user', 'leaderUser', 'project','project.plans','project.committedPlans'
                 ])->whereIn('leader',$user)->baseSearch($status,$search,$project_id,$user_id)

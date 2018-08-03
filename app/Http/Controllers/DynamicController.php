@@ -62,7 +62,7 @@ class DynamicController extends Controller
                 } else{
                     //分部管理员获取分部所有项目
                     //获取分部所有用户
-                    $user = get_company_user(null,'id');
+                    $user = get_company_user(null,'id', false, [1,0]);
                     $task = Dynamic::with([
                         'user',  'project','project.committedPlans','project.plans'
                     ])->whereIn('user_id',$user)->when($search, function ($query) use ($search) {
@@ -133,7 +133,7 @@ class DynamicController extends Controller
             } else{
                 //分部管理员获取分部所有项目
                 //获取分部所有用户
-                $user = get_company_user(null,'id');
+                $user = get_company_user(null,'id', false, [1,0]);
                 $list = Dynamic::with([
                     'user',  'project','project.committedPlans','project.plans'
                 ])->whereIn('user_id',$user)->when($search, function ($query) use ($search) {

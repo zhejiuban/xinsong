@@ -1088,7 +1088,7 @@ function project_status($status, $field = 'title')
     return isset($data[$status][$field]) ? $data[$status][$field] : null;
 }
 
-function get_company_user($company = null, $field = true, $is_assessment = false)
+function get_company_user($company = null, $field = true, $is_assessment = false, $status = 1)
 {
     if (!$company) {
         $company = get_user_company_id();
@@ -1099,12 +1099,12 @@ function get_company_user($company = null, $field = true, $is_assessment = false
         $list = \App\User::where(function ($query) use ($company, $dep) {
             $query->where('department_id', $company)
                 ->orWhereIn('department_id', $dep);
-        })->status(1)->when($is_assessment,function ($query){
+        })->status($status)->when($is_assessment,function ($query){
             $query->isAssessment(1);
         })->get();
     } else {
         $list = \App\User::where('department_id', $company)
-            ->status(1)
+            ->status($status)
             ->when($is_assessment,function ($query){
                 $query->isAssessment(1);
             })->get();
