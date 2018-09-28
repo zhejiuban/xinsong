@@ -149,8 +149,15 @@
                         field: "content", sortable: false,
                         title: "日志内容", template: function (row) {
                             return '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' +
-                                (row.content.length > 50 ? row.content.substr(0, 50) + '...' : row.content)
+                                row.content
                                 + '</a>';
+                        }
+                    },{
+                        width: 340,
+                        field: "question", sortable: false,
+                        title: "遗留问题", template: function (row) {
+                            return row.question  ? '<a href="' + mAppExtend.laravelRoute('{{route_uri("dynamics.show")}}', {dynamic: row.id}) + '" class="action-show m-portlet__nav-link" title="详情">' + row.question 
+                                + '</a>' : '';
                         }
                     },  {
                         field: "created_at",

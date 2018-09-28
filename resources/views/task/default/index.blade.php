@@ -174,7 +174,7 @@
                         selector: {class: 'm-checkbox--solid m-checkbox--brand'}
                     }, {
                         field: "status",
-                        title: "状态", width: 60,
+                        title: "状态", width: 80,
                         template: function (row) {
                             var status = @json(config('common.task_status'));
                             var rowStatus = Number(row.status);
