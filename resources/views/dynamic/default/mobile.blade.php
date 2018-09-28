@@ -54,7 +54,7 @@
                         <div class="m-section m-section-none">
                             <h3 class="m-section__heading m-line-height-25">
                                 <a class="action-show" href="{{route('dynamics.show',['dynamic'=>$task->id,'mid'=>request('mid')])}}">
-                                {{str_limit($task->content,50,'...')}}
+                                {{$task->content}}
                                 </a>
                                 @if($task->fill)
                                 <span class="m-badge  m-badge--warning m-badge--wide">补</span>
