@@ -151,6 +151,9 @@ Route::group(['prefix' => 'produce', 'middleware' => 'auth'], function () {
         ->name('product_faults.export');
     Route::resource('fault_causes', 'FaultCauseController');
     Route::resource('product_faults', 'ProductFaultController');
+
+    Route::get('paternity_records/export', 'Plugin\PaternityRecordExportController@index')->name('paternity_records.export');
+    Route::resource('paternity_records', 'PaternityRecordController');
 });
 
 Route::group(['prefix' => 'assessment', 'middleware' => 'auth'], function () {

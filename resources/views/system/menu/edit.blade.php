@@ -35,7 +35,7 @@
                 上级菜单:
             </label>
             <div class="col-lg-6">
-                <select name="parent_id" id="parent_id" class="form-control select2 m-select2">
+                <select name="parent_id" id="parent_id" class="form-control ">
                     {!! menu_select($menu->parent_id) !!}
                 </select>
                 <span class="m-form__help">请选择上级菜单</span>

@@ -1439,3 +1439,20 @@ function getChildsId($pid, $data, $idField = 'id', $pidField = "parent_id", $all
     }
     return $arr;
 }
+
+function is_handle_select($selected = '')
+{
+    $list = [
+        0=>'否',
+        1=>'是'
+    ];
+    $str = '<option value="">请选择是否解决</option>';
+    if ($list) {
+        foreach ($list as $key => $val) {
+            $str .= '<option value="' . $key . '" '
+                . ($selected == $key && $selected != '' ? 'selected="selected"' : '') . '>'
+                . $val . '</option>';
+        }
+    }
+    return $str;
+}
